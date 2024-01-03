@@ -9,7 +9,7 @@ export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: "Credentials",
       credentials: {
         email: { label: "email", type: "text" },
         password: { label: "password", type: "password" },
@@ -23,8 +23,8 @@ export const authOptions: AuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email,
-          } as any,
+            email: credentials.email ,
+          },
         });
 
         if (!user || !user?.hashedPassword) {

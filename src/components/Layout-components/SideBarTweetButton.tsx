@@ -1,3 +1,4 @@
+import useCurrentUser from "@/hooks/useCurrentUser";
 import { useLoginModal } from "@/hooks/useLoginModal";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
@@ -5,18 +6,15 @@ import { FaFeather } from "react-icons/fa";
 
 const SideBarTweetButton = () => {
   const router = useRouter();
+  const { data: currentUser } = useCurrentUser();
   const loginModal = useLoginModal();
   const onClick = useCallback(() => {
-    // if (!currentUser) {
-    loginModal.onOpen();
-    // }
+    if (!currentUser) {
+      return loginModal.onOpen();
+    }
 
-    // router.push("/");
-  }, [
-    // loginModal,
-    router,
-    //   currentUser
-  ]);
+    router.push("/");
+  }, [loginModal, router, currentUser]);
   return (
     <div onClick={onClick}>
       <div

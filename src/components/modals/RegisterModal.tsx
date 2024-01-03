@@ -102,7 +102,7 @@ const RegisterModal = () => {
       <Input
         register={form.register("password", { required: true })}
         placeholder="Password"
-        type="text"
+        type="password"
         name="password"
         onChange={(e) => form.setValue("password", e.target.value)}
         value={form.watch("password")}

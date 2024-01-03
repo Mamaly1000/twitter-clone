@@ -28,7 +28,7 @@ const Header = ({
       "
           />
         )}
-        <h1 className="text-white text-xl font-semibold">{label}</h1>
+        <h1 className="text-white text-xl font-semibold capitalize">{label}</h1>
       </div>
     </div>
   );

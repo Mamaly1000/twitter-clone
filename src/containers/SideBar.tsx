@@ -7,6 +7,7 @@ import { FaUser } from "react-icons/fa";
 import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButton";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { signOut } from "next-auth/react";
+import { User } from "@prisma/client";
 const SideBar = () => {
   const { data: currentUser } = useCurrentUser();
   const items = [
@@ -18,14 +19,14 @@ const SideBar = () => {
     {
       icon: BsBellFill,
       label: "Notifications",
-      href: "/notifications",
+      href: `/notifications/${currentUser?.id}`,
       auth: true,
-      alert: false,
+      alert: (currentUser as User)?.hasNotification || false,
     },
     {
       icon: FaUser,
       label: "Profile",
-      href: `/users/`,
+      href: `/users/${currentUser?.id}`,
       auth: true,
     },
   ];

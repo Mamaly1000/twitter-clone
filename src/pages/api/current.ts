@@ -11,9 +11,12 @@ export default async function handler(
   }
 
   try {
-    const { currentUser } = await serverAuth(req, res);
+    const currentUser = await serverAuth(req, res);
+    if (!currentUser) {
+      return res.status(401).json({ message: "not signed in!" });
+    }
 
-    return res.status(200).json(currentUser);
+    return res.status(200).json(currentUser.currentUser);
   } catch (error) {
     console.log(error);
     return res.status(400).end();
