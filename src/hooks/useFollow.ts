@@ -13,7 +13,7 @@ const useFollow = (userId: string) => {
   const loginModal = useLoginModal();
 
   const isFollowing = useMemo(() => {
-    const list = (currentUser as User).followingIds || [];
+    const list = (currentUser as User)?.followingIds || [];
     return list.includes(userId);
   }, [currentUser, userId]);
 
