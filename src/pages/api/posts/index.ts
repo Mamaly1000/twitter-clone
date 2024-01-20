@@ -28,12 +28,13 @@ export default async function handler(
       } else {
         posts = await prisma.post.findMany({
           orderBy: {
-            createdAt: "desc",
+            createdAt: "asc",
           },
           include: {
             user: true,
             comments: true,
           },
+          skip: 20,
         });
       }
 
