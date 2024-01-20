@@ -27,18 +27,16 @@ export default async function handler(
         });
       } else {
         posts = await prisma.post.findMany({
-          orderBy: {
-            createdAt: "asc",
-          },
+          take: 20,
+          orderBy: { createdAt: "desc" },
           include: {
             user: true,
             comments: true,
           },
-          skip: 20,
         });
       }
 
-      return res.status(200).json(posts);
+      return res.status(200).json(posts.slice(0, 20));
     }
     if (req.method === "POST") {
       const user = await serverAuth(req, res);
