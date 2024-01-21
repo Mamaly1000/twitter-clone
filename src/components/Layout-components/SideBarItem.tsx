@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { IconType } from "react-icons";
 import { BsDot } from "react-icons/bs";
+import { twMerge } from "tailwind-merge";
 interface Props {
   item: {
     label: string;
@@ -13,9 +14,11 @@ interface Props {
     alert?: undefined;
     onClick?: () => void;
   };
+  labelClassName?: string;
 }
 const SideBarItem = ({
   item: { label, icon: Icon, href, alert, onClick, auth = false },
+  labelClassName,
 }: Props) => {
   const { data: currentUser } = useCurrentUser();
   const loginModal = useLoginModal();
@@ -69,7 +72,14 @@ const SideBarItem = ({
       "
       >
         <Icon size={24} color="white" />
-        <p className="hidden lg:block text-white text-xl">{label}</p>
+        <p
+          className={twMerge(
+            "hidden lg:block text-white text-xl",
+            labelClassName
+          )}
+        >
+          {label}
+        </p>
         {alert ? (
           <BsDot className="text-sky-500 absolute -top-4 left-0" size={70} />
         ) : null}

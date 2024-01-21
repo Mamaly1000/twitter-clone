@@ -3,8 +3,9 @@ import { useLoginModal } from "@/hooks/useLoginModal";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { FaFeather } from "react-icons/fa";
+import { twMerge } from "tailwind-merge";
 
-const SideBarTweetButton = () => {
+const SideBarTweetButton = ({ className }: { className?: string }) => {
   const router = useRouter();
   const { data: currentUser } = useCurrentUser();
   const loginModal = useLoginModal();
@@ -12,13 +13,16 @@ const SideBarTweetButton = () => {
     if (!currentUser) {
       return loginModal.onOpen();
     }
-
+    window.scrollTo({
+      top: 0,
+    });
     router.push("/");
   }, [loginModal, router, currentUser]);
   return (
     <div onClick={onClick}>
       <div
-        className="
+        className={twMerge(
+          `
     mt-6
     lg:hidden 
     rounded-full 
@@ -32,7 +36,9 @@ const SideBarTweetButton = () => {
     hover:bg-opacity-80 
     transition 
     cursor-pointer
-  "
+  `,
+          className
+        )}
       >
         <FaFeather size={24} color="white" />
       </div>

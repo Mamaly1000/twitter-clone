@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 :root,
-body {
+body,
+html {
+  scroll-behavior: smooth;
   @apply h-full bg-black;
+}
+* {
+  @apply transition-all;
 }
