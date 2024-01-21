@@ -8,6 +8,7 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   outline?: boolean;
+  type?: "submit" | "reset" | "button" | undefined;
 }
 const Button = ({
   children,
@@ -17,10 +18,12 @@ const Button = ({
   onClick,
   disabled = false,
   outline = false,
+  type,
 }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
+      type={type}
       disabled={disabled}
       className={twMerge(
         ` 

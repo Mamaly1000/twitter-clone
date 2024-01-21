@@ -32,7 +32,7 @@ const BottomBar = () => {
     },
   ];
   return (
-    <section className="fixed flex items-center justify-between gap-1 px-2 min-w-full z-20 bg-black bg-opacity-30 backdrop-blur-sm min-h-[70px] max-h-[70px] sm:min-h-[100px] sm:max-h-[100px] bottom-0 left-0 ">
+    <section className="fixed flex lg:hidden items-center justify-between gap-1 px-2 min-w-full z-20 bg-black bg-opacity-30 backdrop-blur-sm min-h-[70px] max-h-[70px] sm:min-h-[100px] sm:max-h-[100px] bottom-0 left-0 ">
       <SideBarLogo />
       {items.map((item) => (
         <SideBarItem labelClassName="hidden sm:text-[10px] sm:block" key={item.href} item={item as any} />

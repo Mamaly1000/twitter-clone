@@ -4,11 +4,11 @@ import Button from "../inputs/Button";
 interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   title?: string;
   body?: React.ReactElement;
   footer?: React.ReactElement;
-  actionLabel: string;
+  actionLabel?: string;
   disabled?: boolean;
 }
 const Modal = ({
@@ -33,8 +33,9 @@ const Modal = ({
     if (disabled) {
       return;
     }
-
-    onSubmit();
+    if (onSubmit) {
+      onSubmit();
+    }
   }, [onSubmit, disabled]);
 
   if (!isOpen) {
@@ -106,15 +107,17 @@ const Modal = ({
             <div className="relative p-10 flex-auto">{body}</div>
             {/*footer*/}
             <div className="flex flex-col gap-2 p-10">
-              <Button
-                disabled={disabled}
-                secondary
-                fullWidth
-                large
-                onClick={handleSubmit}
-              >
-                {actionLabel}
-              </Button>
+              {!!actionLabel && (
+                <Button
+                  disabled={disabled}
+                  secondary
+                  fullWidth
+                  large
+                  onClick={handleSubmit}
+                >
+                  {actionLabel}
+                </Button>
+              )}
               {footer}
             </div>
           </div>

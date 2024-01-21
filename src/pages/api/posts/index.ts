@@ -20,6 +20,11 @@ export default async function handler(
           include: {
             user: true,
             comments: true,
+            repost: {
+              include: {
+                user: true,
+              },
+            },
           },
           orderBy: {
             createdAt: "desc",
@@ -32,6 +37,11 @@ export default async function handler(
           include: {
             user: true,
             comments: true,
+            repost: {
+              include: {
+                user: true,
+              },
+            },
           },
         });
       }

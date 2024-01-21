@@ -1,22 +1,29 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useLoginModal } from "@/hooks/useLoginModal";
-import { Post } from "@prisma/client";
+import { Post, Repost, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo } from "react";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import Avatar from "../shared/Avatar";
 import useLike from "@/hooks/useLike";
+import { useRepostModal } from "@/hooks/useRepostModal";
+import { BiRepost } from "react-icons/bi";
 
 const TweetCard = ({
   post,
   userId,
 }: {
   userId?: string;
-  post: Post & { user?: any; comments?: any[] };
+  post: Post & {
+    user?: any;
+    comments?: any[];
+    repost?: Repost & { user?: User };
+  };
 }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
+  const repostModal = useRepostModal();
 
   const { data: currentUser } = useCurrentUser();
 
@@ -47,6 +54,18 @@ const TweetCard = ({
     [loginModal, currentUser, toggleLike]
   );
 
+  const onRepost = useCallback(
+    (e: any) => {
+      e.stopPropagation();
+      if (!currentUser) {
+        loginModal.onOpen();
+      }
+
+      if (post?.id) repostModal.onOpen(post?.id);
+    },
+    [repostModal, loginModal, currentUser]
+  );
+
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
 
   const createdAt = useMemo(() => {
@@ -57,18 +76,17 @@ const TweetCard = ({
     return formatDistanceToNowStrict(new Date(post.createdAt));
   }, [post.createdAt]);
 
+  const repostCreatedAt = useMemo(() => {
+    if (!post.repost || !post.repost.createdAt) {
+      return null;
+    }
+    return formatDistanceToNowStrict(new Date(post.repost.createdAt));
+  }, [post.repost]);
+
   return (
     <div
       onClick={goToPost}
-      className="
-      min-w-full
-    border-b-[1px] 
-    border-neutral-800 
-    p-5 
-    cursor-pointer 
-    hover:bg-neutral-900 
-    transition
-  "
+      className="min-w-full border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition-all group"
     >
       <div className="flex flex-row items-start gap-3">
         <Avatar userId={post.user.id} />
@@ -80,7 +98,7 @@ const TweetCard = ({
             text-white 
             font-semibold 
             cursor-pointer 
-            hover:underline
+            hover:underline text-nowrap
         "
             >
               {post.user.name}
@@ -92,14 +110,54 @@ const TweetCard = ({
             cursor-pointer
             hover:underline
             hidden
-            md:block
+            md:block text-nowrap
         "
             >
               @{post.user.username}
             </span>
-            <span className="text-neutral-500 text-sm">{createdAt}</span>
+            <span className="text-neutral-500 text-sm text-nowrap">
+              {createdAt}
+            </span>
           </div>
-          <div className="text-white mt-1">{post.body}</div>
+          <div className="text-white mt-1 flex flex-col items-start justify-start gap-3">
+            {post.body}
+            {!!post.repost && !!post.repost.user && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (post.repost?.postId) {
+                    router.push(`/posts/${post.repost?.postId}`);
+                  }
+                }}
+                className="min-w-full flex flex-col items-start justify-start p-2 rounded-md border-[1px] border-neutral-900  drop-shadow-2xl text-neutral-500 group-hover:border-white"
+              >
+                <div className="min-w-full flex items-center justify-start gap-2">
+                  <Avatar userId={post.repost.userId} hasBorder />
+                  <p
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/users/${post.repost?.userId}`);
+                    }}
+                    className="text-white hover:underline"
+                  >
+                    {post.repost.user.name}
+                  </p>
+                  <p
+                    className="text-neutral-500 cursor-pointer hover:underline hidden md:block  "
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/users/${post.repost?.userId}`);
+                    }}
+                  >
+                    @{post.repost.user.username}
+                  </p>
+                </div>
+                <p className="text-left min-w-full text-[13px] capitalize text-white">
+                  {post.repost.body}
+                </p>
+              </div>
+            )}
+          </div>
           <div className="flex flex-row items-center mt-3 gap-10">
             <div
               className="
@@ -131,6 +189,12 @@ const TweetCard = ({
             >
               <LikeIcon color={hasLiked ? "red" : ""} size={20} />
               <p>{post.likedIds.length}</p>
+            </div>
+            <div
+              onClick={onRepost}
+              className="hover:text-sky-400 text-neutral-500 "
+            >
+              <BiRepost size={20} />
             </div>
           </div>
         </div>

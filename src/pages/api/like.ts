@@ -49,6 +49,7 @@ export default async function handler(
           await prisma.notification.create({
             data: {
               body: `@${currentUser.currentUser.username} liked your tweet`,
+              postId: post.id,
               userId: post.userId,
             },
           });
@@ -79,6 +80,7 @@ export default async function handler(
             data: {
               body: `@${currentUser.currentUser.username} disLiked your tweet`,
               userId: post.userId,
+              postId: post.id,
             },
           });
           await prisma.user.update({

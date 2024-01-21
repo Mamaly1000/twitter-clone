@@ -27,6 +27,11 @@ export default async function handler(
           orderBy: { createdAt: "desc" },
         },
         user: true,
+        repost: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

@@ -27,6 +27,7 @@ model User {
   hasNotification Boolean?
 
   posts         Post[]
+  reposts Repost[]
   comments      Comment[]
   notifications Notification[]
 }
@@ -39,9 +40,10 @@ model Post {
   userId             String @db.ObjectId
   likedIds           String[] @db.ObjectId
   image              String?
-
+  repostId String? @db.ObjectId
+  repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+ 
   comments          Comment[]
 }
 
@@ -62,6 +64,18 @@ model Notification {
   body               String
   userId             String @db.ObjectId
   createdAt          DateTime @default(now())
-
+postId String? @db.ObjectId
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Repost{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  quoto String?  
+  body String 
+  postId String @db.ObjectId
+  userId String @db.ObjectId 
+  createdAt DateTime @db.Date @default(now())
+  updatedAt DateTime @updatedAt   
+  user User @relation(fields: [userId],references: [id],onDelete:Cascade)  
+  posts Post[]
 }
