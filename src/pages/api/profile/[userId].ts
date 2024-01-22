@@ -20,7 +20,6 @@ export default async function handler(
       },
       select: {
         profileImage: true,
-        coverImage: false,
         id: true,
         username: true,
       },

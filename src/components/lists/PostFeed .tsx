@@ -5,7 +5,8 @@ import TweetCard from "../cards/TweetCard";
 import Loader from "../shared/Loader";
 
 const PostFeed = ({ id }: { id?: string }) => {
-  const { posts, isLoading } = usePosts(id);
+  const { posts, isLoading } = usePosts(id); 
+  
   if (!posts || isLoading) {
     return <Loader message="Loading Tweets" />;
   }

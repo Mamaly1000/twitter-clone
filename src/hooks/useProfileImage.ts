@@ -9,11 +9,11 @@ const useProfileImage = (id?: string) => {
     isLoading,
     mutate,
   } = useSWR(url, fetcher, {
-    revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnMount: false,
     revalidateOnReconnect: false,
-  });
+  }); 
+
   return {
     user: user as {
       id: string;

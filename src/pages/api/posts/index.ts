@@ -42,16 +42,9 @@ export default async function handler(
                 createdAt: true,
                 email: true,
                 followingIds: true,
-                coverImage: false,
                 emailVerified: true,
-                hashedPassword: false,
                 hasNotification: true,
-                image: false,
                 id: true,
-                notifications: false,
-                posts: false,
-                profileImage: false,
-                reposts: false,
                 updatedAt: true,
                 username: true,
               },
@@ -64,14 +57,21 @@ export default async function handler(
             },
             repost: {
               include: {
-                user: true,
+                user: {
+                  select: {
+                    username: true,
+                    name: true,
+                    id: true,
+                    createdAt: true,
+                  },
+                },
               },
             },
           },
         });
       }
 
-      return res.status(200).json(posts.slice(0, 20));
+      return res.status(200).json(posts);
     }
     if (req.method === "POST") {
       const user = await serverAuth(req, res);
