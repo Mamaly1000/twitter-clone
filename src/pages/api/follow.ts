@@ -40,6 +40,8 @@ export default async function handler(
             data: {
               body: `@${currentUser.currentUser.username} unFollowed you on tweeter`,
               userId: userId,
+              actionUser: currentUser.currentUser.id,
+              actionUsername: currentUser.currentUser.username || "",
             },
           });
           await prisma.user.update({
@@ -63,6 +65,8 @@ export default async function handler(
             data: {
               body: `@${currentUser.currentUser.username} followed you on tweeter`,
               userId: userId,
+              actionUser: currentUser.currentUser.id,
+              actionUsername: currentUser.currentUser.username || "",
             },
           });
           await prisma.user.update({

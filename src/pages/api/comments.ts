@@ -38,6 +38,9 @@ export default async function handler(
           data: {
             body: `@${currentUser.currentUser.username} replied on your tweet`,
             userId: post.userId,
+            postId: post.id,
+            actionUser: currentUser.currentUser.id,
+            actionUsername: currentUser.currentUser.username || "",
           },
         });
         await prisma.user.update({

@@ -18,19 +18,19 @@ const NotifCard = ({ notif }: { notif: Notification }) => {
     <div
       onClick={() =>
         router.push(
-          notif.postId ? `/posts/${notif.postId}` : `/users/${notif.userId}`
+          notif.postId ? `/posts/${notif.postId}` : `/users/${notif.actionUser}`
         )
       }
       key={notif.id}
       className="flex flex-row items-center justify-between p-6 gap-4 border-b-[1px] border-neutral-800 min-w-full cursor-pointer hover:opacity-80 transition-all"
     >
       <div className="flex items-center justify-start gap-3 text-[12px] md:text-[15px]">
-        <Avatar userId={notif.userId} />
+        <Avatar userId={notif.actionUser} />
         <p className="text-white">
           <span
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/users/${notif.userId}`);
+              router.push(`/users/${notif.actionUser}`);
             }}
             className="text-sky-300 font-bold"
           >

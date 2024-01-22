@@ -1,6 +1,9 @@
 import prisma from "@/libs/prisma";
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
+
+import { includes } from "lodash";
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -39,28 +42,51 @@ export default async function handler(
           postId,
         },
       });
-      const newPost=await prisma.post.create({
+      const newPost = await prisma.post.create({
         data: {
           body: quote || "",
           userId: currentUser.currentUser.id,
           repostId: newRepost.id,
         },
       });
-      await prisma.notification.create({
-        data: {
-          body: `@${currentUser.currentUser.username} reposted your tweet.`,
-          userId: newRepost.userId,
-          postId: newPost.id,
-        },
-      });
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          hasNotification: true,
-        },
-      });
+      
+      try {
+        if (currentUser.currentUser.id) {
+          await prisma.notification.createMany({
+            data: [
+              ...currentUser.currentUser.followingIds.map((followedId) => ({
+                actionUser: currentUser.currentUser.id,
+                actionUsername: currentUser.currentUser.username || "",
+                body: `@${currentUser.currentUser.username} reposted a tweet.`,
+                userId: followedId,
+                postId: newPost.id,
+              })),
+              {
+                body: `@${currentUser.currentUser.username} reposted your tweet.`,
+                userId: userId,
+                postId: newPost.id,
+                actionUser: currentUser.currentUser.id,
+                actionUsername: currentUser.currentUser.username || "",
+              },
+            ],
+          });
+          await prisma.user.updateMany({
+            where: {
+              id: {
+                in: includes(currentUser.currentUser.followingIds, userId)
+                  ? currentUser.currentUser.followingIds
+                  : [...currentUser.currentUser.followingIds, userId],
+              },
+            },
+            data: {
+              hasNotification: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log("error in saving notification while liking", error);
+      }
+
       return res.status(200).json({
         message: "repost created",
       });
@@ -69,3 +95,4 @@ export default async function handler(
     return res.status(500).json({ message: "error in getting reposts" });
   }
 }
+

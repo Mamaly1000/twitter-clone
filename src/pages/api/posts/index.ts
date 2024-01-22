@@ -18,11 +18,40 @@ export default async function handler(
             userId,
           },
           include: {
-            user: true,
-            comments: true,
+            user: {
+              select: {
+                name: true,
+                username: true,
+                createdAt: true,
+                email: true,
+                followingIds: true,
+                hasNotification: true,
+                id: true,
+              },
+            },
+            comments: {
+              select: {
+                body: true,
+                createdAt: true,
+                id: true,
+                userId: true,
+                user: {
+                  select: {
+                    id: true,
+                  },
+                },
+              },
+            },
             repost: {
               include: {
-                user: true,
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    name: true,
+                    email: true,
+                  },
+                },
               },
             },
           },
@@ -38,31 +67,35 @@ export default async function handler(
             user: {
               select: {
                 name: true,
-                bio: true,
+                username: true,
                 createdAt: true,
                 email: true,
                 followingIds: true,
-                emailVerified: true,
                 hasNotification: true,
                 id: true,
-                updatedAt: true,
-                username: true,
               },
             },
             comments: {
               select: {
+                body: true,
+                createdAt: true,
                 id: true,
                 userId: true,
+                user: {
+                  select: {
+                    id: true,
+                  },
+                },
               },
             },
             repost: {
               include: {
                 user: {
                   select: {
+                    id: true,
                     username: true,
                     name: true,
-                    id: true,
-                    createdAt: true,
+                    email: true,
                   },
                 },
               },
@@ -82,6 +115,32 @@ export default async function handler(
       const newPost = await prisma.post.create({
         data: { body: body, userId: user.currentUser.id },
       });
+
+      try {
+        if (user.currentUser.id) {
+          await prisma.notification.createMany({
+            data: user.currentUser.followingIds.map((followedId) => ({
+              actionUser: user.currentUser.id,
+              actionUsername: user.currentUser.username || "",
+              body: `@${user.currentUser.username} tweeted a new post.`,
+              userId: followedId,
+              postId: newPost.id,
+            })),
+          });
+          await prisma.user.updateMany({
+            where: {
+              id: {
+                in: user.currentUser.followingIds,
+              },
+            },
+            data: {
+              hasNotification: true,
+            },
+          });
+        }
+      } catch (error) {
+        console.log("error in saving notification while liking", error);
+      }
 
       return res.status(200).json({ newPost, message: "post created" });
     }

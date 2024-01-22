@@ -25,7 +25,13 @@ export default async function handler(
       },
       take: 30,
       include: {
-        user: true,
+        user: {
+          select: {
+            name: true,
+            username: true,
+            id: true,
+          },
+        },
       },
     });
 
