@@ -10,6 +10,14 @@ export default async function handler(
   }
   try {
     const { email, username, password, name } = req.body;
+    const existedUser = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (existedUser) {
+      return res.status(200).json({ message: "wellcome back" });
+    }
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await prisma.user.create({
       data: {
@@ -19,12 +27,10 @@ export default async function handler(
         username,
       },
     });
-    return res
-      .status(200)
-      .json({
-        user,
-        message: user?.name ? `wellcome ${user.name}` : "wellcome to twitter",
-      });
+    return res.status(200).json({
+      user,
+      message: user?.name ? `wellcome ${user.name}` : "wellcome to twitter",
+    });
   } catch (error) {
     console.log(error);
     return res.status(400).end();

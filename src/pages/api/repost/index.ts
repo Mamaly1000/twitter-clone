@@ -39,7 +39,7 @@ export default async function handler(
           postId,
         },
       });
-      await prisma.post.create({
+      const newPost=await prisma.post.create({
         data: {
           body: quote || "",
           userId: currentUser.currentUser.id,
@@ -50,7 +50,7 @@ export default async function handler(
         data: {
           body: `@${currentUser.currentUser.username} reposted your tweet.`,
           userId: newRepost.userId,
-          postId: newRepost.postId,
+          postId: newPost.id,
         },
       });
       await prisma.user.update({

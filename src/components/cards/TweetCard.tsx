@@ -9,6 +9,7 @@ import Avatar from "../shared/Avatar";
 import useLike from "@/hooks/useLike";
 import { useRepostModal } from "@/hooks/useRepostModal";
 import { BiRepost } from "react-icons/bi";
+import { formatString } from "@/libs/wordDetector";
 
 const TweetCard = ({
   post,
@@ -120,7 +121,9 @@ const TweetCard = ({
             </span>
           </div>
           <div className="text-white mt-1 flex flex-col items-start justify-start gap-3">
-            {post.body}
+            <p
+              dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
+            ></p>
             {!!post.repost && !!post.repost.user && (
               <div
                 onClick={(e) => {
@@ -152,9 +155,10 @@ const TweetCard = ({
                     @{post.repost.user.username}
                   </p>
                 </div>
-                <p className="text-left min-w-full text-[13px] capitalize text-white">
-                  {post.repost.body}
-                </p>
+                <p
+                  dangerouslySetInnerHTML={{ __html: formatString(post.repost.body) }}
+                  className="text-left min-w-full text-[13px] capitalize text-white"
+                ></p>
               </div>
             )}
           </div>

@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 const registerSchema = z.object({
   email: z.string().email("not valid email").min(1, "minimum character is 1"),
   password: z
@@ -53,7 +54,14 @@ const RegisterModal = () => {
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     try {
       setLoading(true);
-      await axios.post("/api/register", values).then((res) => {
+      await axios.post("/api/register", values).then(async (res) => {
+        await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+        }).then(() => {
+          form.reset();
+          toast.success(res.data.message);
+        });
         toast.success(res.data.message);
         form.reset();
       });
