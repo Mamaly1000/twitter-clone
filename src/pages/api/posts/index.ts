@@ -32,11 +32,10 @@ export default async function handler(
         });
       } else {
         posts = await prisma.post.findMany({
-          take: 10,
+          take: 5,
           orderBy: { createdAt: "desc" },
           include: {
             user: true,
-            comments: true,
             repost: {
               include: {
                 user: true,
