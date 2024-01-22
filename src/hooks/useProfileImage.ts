@@ -3,16 +3,7 @@ import useSWR from "swr";
 
 const useProfileImage = (id?: string) => {
   const url = id ? `/api/profile/${id}` : null;
-  const {
-    data: user,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR(url, fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-    revalidateOnReconnect: false,
-  }); 
+  const { data: user, error, isLoading, mutate } = useSWR(url, fetcher);
 
   return {
     user: user as {
