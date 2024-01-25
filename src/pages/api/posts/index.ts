@@ -61,7 +61,7 @@ export default async function handler(
         });
       } else {
         posts = await prisma.post.findMany({
-          take: 20,
+          take: 50,
           orderBy: { createdAt: "desc" },
           include: {
             user: {

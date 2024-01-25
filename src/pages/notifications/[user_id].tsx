@@ -6,8 +6,8 @@ import { NextPageContext } from "next";
 import { getSession } from "next-auth/react";
 import React from "react";
 
-export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context);
+export const getServerSideProps = async (ctx: NextPageContext) => {
+  const session = await getSession(ctx);
   if (!session) {
     return {
       redirect: {
@@ -16,12 +16,11 @@ export async function getServerSideProps(context: NextPageContext) {
       },
     };
   }
+
   return {
-    props: {
-      session,
-    },
+    props: {},
   };
-}
+};
 
 const UserNotificationsPage = () => {
   const { data: user, isLoading } = useCurrentUser();

@@ -1,15 +1,26 @@
 export function formatString(str: string) {
-  const hashtagRegex = /#(\w+)/g;
-  const usernameRegex = /@(\w+)/g;
+  // Regular expression patterns
+  const linkPattern = /https?:\/\/\S+/g;
+  const usernamePattern = /@(\w+)/g;
+  const hashtagPattern = /#(\w+)/g;
 
-  const formattedStr = str.replace(
-    hashtagRegex,
-    '<span class="text-sky-500">#$1</span>'
+  // Replace links with anchor tags
+  const stringWithLinks = str.replace(
+    linkPattern,
+    '<a href="$&" class="text-sky-500">$&</a>'
   );
-  const finalStr = formattedStr.replace(
-    usernameRegex,
+
+  // Replace usernames with spans
+  const stringWithUsernames = stringWithLinks.replace(
+    usernamePattern,
     '<span class="text-sky-500">@$1</span>'
   );
 
-  return finalStr;
+  // Replace hashtags with spans
+  const stringWithTags = stringWithUsernames.replace(
+    hashtagPattern,
+    '<span class="text-sky-500">#$1</span>'
+  );
+
+  return stringWithTags;
 }

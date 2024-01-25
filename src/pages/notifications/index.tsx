@@ -1,19 +1,23 @@
 import Loader from "@/components/shared/Loader";
-import useCurrentUser from "@/hooks/useCurrentUser";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { NextPageContext } from "next";
+import { getSession } from "next-auth/react";
+import React from "react";
+export const getServerSideProps = async (ctx: NextPageContext) => {
+  const session = await getSession(ctx);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
+  return {
+    props: {},
+  };
+};
 const NotificationsPage = () => {
-  const { data: user, isLoading } = useCurrentUser();
-  const router = useRouter();
-  useEffect(() => {
-    if (!isLoading)
-      if (user) {
-        router.push(`/notifications/${user.id}`);
-      } else {
-        router.back();
-      }
-  }, [user, isLoading]);
   return <Loader message="Loading your Notifications" />;
 };
 
