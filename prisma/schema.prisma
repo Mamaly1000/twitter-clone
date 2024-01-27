@@ -24,6 +24,7 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   followingIds    String[] @db.ObjectId
+  followerIds String[] @db.ObjectId
   hasNotification Boolean?
 
   posts         Post[]
@@ -45,6 +46,7 @@ model Post {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   comments          Comment[]
+  notifications Notification[]
 }
 
 model Comment {
@@ -54,6 +56,7 @@ model Comment {
   updatedAt          DateTime @updatedAt
   userId             String @db.ObjectId
   postId             String @db.ObjectId
+likingIds String[] @db.ObjectId
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -63,11 +66,12 @@ model Notification {
   id                 String @id @default(auto()) @map("_id") @db.ObjectId
   body               String
   userId             String @db.ObjectId
-  actionUser String @db.ObjectId
-  actionUsername String
+  actionUser         String @db.ObjectId
+  actionUsername     String
   createdAt          DateTime @default(now())
-  postId String? @db.ObjectId
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId             String? @db.ObjectId
+  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post               Post? @relation(fields: [postId], references: [id], onDelete:Cascade)
 }
 
 model Repost{

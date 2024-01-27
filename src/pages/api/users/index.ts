@@ -13,13 +13,35 @@ export default async function handler(
   try {
     const username = req.query.username as string;
     if (username) {
-      const user = await prisma.user.findUnique({ where: { username } });
+      const user = await prisma.user.findUnique({
+        where: { username },
+        select: {
+          bio: true,
+          createdAt: true,
+          email: true,
+          id: true,
+          followingIds: true,
+          name: true,
+          username: true,
+          hasNotification: true,
+        },
+      });
       if (!user) throw new Error("User not found");
       return res.status(200).json(user);
     }
     const users = await prisma.user.findMany({
       orderBy: {
         createdAt: "desc",
+      },
+      select: {
+        bio: true,
+        createdAt: true,
+        email: true,
+        id: true,
+        followingIds: true,
+        name: true,
+        username: true,
+        hasNotification: true,
       },
     });
     return res.status(200).json(users);

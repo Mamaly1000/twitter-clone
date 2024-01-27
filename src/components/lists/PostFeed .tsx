@@ -3,10 +3,11 @@ import { Post } from "@prisma/client";
 import React from "react";
 import TweetCard from "../cards/TweetCard";
 import Loader from "../shared/Loader";
+import Pagination from "../shared/Pagination";
 
 const PostFeed = ({ id }: { id?: string }) => {
-  const { posts, isLoading } = usePosts(id); 
-  
+  const { posts, isLoading } = usePosts(id);
+
   if (!posts || isLoading) {
     return <Loader message="Loading Tweets" />;
   }
@@ -18,6 +19,12 @@ const PostFeed = ({ id }: { id?: string }) => {
       {(posts as Post[]).map((post) => (
         <TweetCard post={post} key={post.id} userId={id} />
       ))}
+      {!!(posts.length === 0) && (
+        <p className="min-w-full flex items-center justify-center min-h-[300px] text-neutral-300 text-sm capitalize">
+          no tweets...
+        </p>
+      )}
+      <Pagination />
     </div>
   );
 };

@@ -77,13 +77,6 @@ const TweetCard = ({
     return formatDistanceToNowStrict(new Date(post.createdAt));
   }, [post.createdAt]);
 
-  const repostCreatedAt = useMemo(() => {
-    if (!post.repost || !post.repost.createdAt) {
-      return null;
-    }
-    return formatDistanceToNowStrict(new Date(post.repost.createdAt));
-  }, [post.repost]);
-
   return (
     <div
       onClick={goToPost}
@@ -156,7 +149,9 @@ const TweetCard = ({
                   </p>
                 </div>
                 <p
-                  dangerouslySetInnerHTML={{ __html: formatString(post.repost.body) }}
+                  dangerouslySetInnerHTML={{
+                    __html: formatString(post.repost.body),
+                  }}
                   className="text-left min-w-full text-[13px] capitalize text-white"
                 ></p>
               </div>
