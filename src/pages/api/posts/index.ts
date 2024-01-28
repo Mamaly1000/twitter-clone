@@ -1,6 +1,7 @@
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
+import { difference, without } from "lodash";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -17,11 +18,14 @@ export default async function handler(
       const skip = (+page - 1) * +limit;
 
       if (userId || typeof userId === "string") {
+        const totalPosts = await prisma.post.count({ where: { id: userId } });
+        const maxPages = Math.ceil(totalPosts / limit);
+
         let usersPosts = await prisma.post.findMany({
           where: {
             userId,
           },
-          skip: skip,
+          skip: skip || 0,
           take: limit + 1,
           include: {
             user: {
@@ -65,13 +69,11 @@ export default async function handler(
             createdAt: "desc",
           },
         });
-        const isNextPage = usersPosts.length > limit; // Check if there are more items than the limit
 
-        // Remove the extra item fetched for the next page check
+        const isNextPage = usersPosts.length > limit; // Check if there are more items than the limit
         if (isNextPage) {
           usersPosts.pop();
         }
-
         const hasPrev = page > 1;
         const hasNext = isNextPage;
         const nextPage = hasNext ? page + 1 : null;
@@ -80,16 +82,20 @@ export default async function handler(
 
         res.status(200).json({
           posts: usersPosts,
-          pagination: { hasPrev, hasNext, nextPage, prevPage, currentPage },
+          pagination: {
+            hasPrev,
+            hasNext,
+            nextPage,
+            prevPage,
+            currentPage,
+            maxPages,
+            totalItems: totalPosts,
+          },
         });
       }
 
       const totalPosts = await prisma.post.count();
       const maxPages = Math.ceil(totalPosts / limit);
-
-      if (maxPages === page - 1) {
-        limit = 20;
-      }
 
       let posts = await prisma.post.findMany({
         take: limit + 1,
@@ -162,35 +168,64 @@ export default async function handler(
       if (!user) {
         return res.status(401).json({ message: "not singed in!" });
       }
-      const { body } = req.body;
+      const { body, hashtags, mentions } = req.body;
       const newPost = await prisma.post.create({
         data: { body: body, userId: user.currentUser.id },
       });
-
       try {
-        if (user.currentUser.id) {
-          await prisma.notification.createMany({
-            data: user.currentUser.followingIds.map((followedId) => ({
-              actionUser: user.currentUser.id,
-              actionUsername: user.currentUser.username || "",
-              body: `@${user.currentUser.username} tweeted a new post.`,
-              userId: followedId,
-              postId: newPost.id,
-            })),
-          });
-          await prisma.user.updateMany({
-            where: {
-              id: {
-                in: user.currentUser.followingIds,
-              },
+        let mentionedUsers: string[] = mentions || [];
+        let myFollowers = difference(
+          user.currentUser.followerIds,
+          mentionedUsers
+        );
+        // todo => hashtags functionality
+        let hashtahs = hashtags || [];
+
+        await prisma.notification.createMany({
+          data:
+            mentionedUsers.length > 0
+              ? [
+                  ...myFollowers.map((id) => ({
+                    actionUser: user.currentUser.id,
+                    userId: id,
+                    actionUsername: user.currentUser.username || "somebody",
+                    body: `in case you missed it @${user.currentUser.username} tweets;`,
+                    type: "TWEET",
+                    postId: newPost.id,
+                  })),
+                  ...mentionedUsers.map((id) => ({
+                    actionUser: user.currentUser.id,
+                    userId: id,
+                    actionUsername: user.currentUser.username || "some body",
+                    body: `in case you missed it @${user.currentUser.username} mentioned you in tweets;`,
+                    postId: newPost.id,
+                    type: "MENTION",
+                  })),
+                ]
+              : myFollowers.map((id) => ({
+                  actionUser: user.currentUser.id,
+                  userId: id,
+                  actionUsername: user.currentUser.username || "some body",
+                  body: `in case you missed it @${user.currentUser.username} tweets;`,
+                  postId: newPost.id,
+                  type: "TWEET",
+                })),
+        });
+        await prisma.user.updateMany({
+          where: {
+            id: {
+              in:
+                mentionedUsers.length > 0
+                  ? [...mentionedUsers, ...myFollowers]
+                  : myFollowers,
             },
-            data: {
-              hasNotification: true,
-            },
-          });
-        }
+          },
+          data: {
+            hasNotification: true,
+          },
+        });
       } catch (error) {
-        console.log("error in saving notification while liking", error);
+        console.log("error in creating notification for created tweet");
       }
 
       return res.status(200).json({ newPost, message: "post created" });

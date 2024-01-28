@@ -11,6 +11,10 @@ import { z } from "zod";
 import Avatar from "../shared/Avatar";
 import Button from "../inputs/Button";
 import usePost from "@/hooks/usePost";
+import { formatString } from "@/libs/wordDetector";
+import { getHashtags, getMentions } from "@/libs/getMentions";
+import { useRouter } from "next/router";
+import MentionsList from "../lists/MentionsList";
 
 const createPostSchema = z.object({
   body: z
@@ -18,17 +22,22 @@ const createPostSchema = z.object({
       required_error: "content cannot be empty!",
     })
     .min(5, "minimum characters must be 5"),
+  mentionIds: z.array(z.string()),
 });
 
 const CreatePost = ({
   placeholder,
   isComment = false,
   postId,
+  mainPage = false,
 }: {
+  mainPage?: boolean;
   postId?: string;
   isComment?: boolean;
   placeholder?: string;
 }) => {
+  const router = useRouter();
+
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
@@ -37,10 +46,19 @@ const CreatePost = ({
   const { mutate: mutatePost } = usePost(postId as string);
   const [isLoading, setLoading] = useState(false);
 
+  const [mentions, setMentions] = useState<
+    {
+      id: string | undefined;
+      username: String;
+    }[]
+  >([]);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+
   const form = useForm({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
       body: "",
+      mentionIds: [],
     },
   });
 
@@ -49,12 +67,21 @@ const CreatePost = ({
       try {
         setLoading(true);
         let url = isComment ? `/api/comments?post_id=${postId}` : "/api/posts";
-        await axios.post(url, values).then((res: any) => {
-          mutatePosts();
-          mutatePost();
-          toast.success(res.data.message);
-          form.reset();
-        });
+        await axios
+          .post(url, {
+            body: values.body,
+            hashtags,
+            mentions: values.mentionIds,
+          })
+          .then((res: any) => {
+            mutatePosts();
+            mutatePost();
+            toast.success(res.data.message);
+            form.reset();
+            if (mainPage) {
+              router.push("/");
+            }
+          });
       } catch (error) {
         console.log(error);
         toast.error("something went wrong!");
@@ -67,15 +94,32 @@ const CreatePost = ({
   return (
     <div className="border-b-[1px] border-neutral-800 px-5 py-2">
       {currentUser ? (
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-4 text-white">
           <div>
             <Avatar userId={currentUser?.id} />
           </div>
-          <div className="w-full">
+          <div className="max-w-full overflow-hidden w-full flex items-start justify-start gap-3 flex-col pb-2">
+            {mainPage && (
+              <p
+                className="min-w-full p-2  text-left to-emerald-50 text-white font-semibold"
+                dangerouslySetInnerHTML={{
+                  __html: formatString(form.watch("body")),
+                }}
+              ></p>
+            )}
             <textarea
               disabled={isLoading}
               aria-placeholder={placeholder}
-              onChange={(event) => form.setValue("body", event.target.value)}
+              onChange={(event) => {
+                form.setValue("body", event.target.value);
+                setMentions(
+                  getMentions(event.target.value).map((mention) => {
+                    return { id: "", username: mention };
+                  })
+                );
+                setHashtags(getHashtags(event.target.value));
+              }}
+              maxLength={100}
               value={form.watch("body")}
               className="
             disabled:opacity-80
@@ -88,7 +132,7 @@ const CreatePost = ({
             outline-none 
             text-[20px] 
             placeholder-neutral-500 
-            text-white
+            text-white max-w-full overflow-hidden
           "
               placeholder={placeholder}
             ></textarea>
@@ -101,7 +145,7 @@ const CreatePost = ({
             border-neutral-800 
             transition"
             />
-            <div className="mt-4 flex flex-row justify-end">
+            <div className="mt-4 flex flex-row justify-end w-full ">
               <Button
                 disabled={isLoading || !(form.watch("body").length > 5)}
                 onClick={onSubmit}
@@ -109,6 +153,32 @@ const CreatePost = ({
                 Tweet
               </Button>
             </div>
+            {mainPage && hashtags.length > 0 && (
+              <div className="min-w-full flex flex-row items-center justify-start gap-3 capitalize">
+                <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
+                  hashTags :
+                </h4>
+                <div className="min-w-full flex items-start justify-start flex-wrap gap-2">
+                  {hashtags.map((h) => (
+                    <span
+                      key={h}
+                      className="px-3 py-2 rounded-md drop-shadow-2xl border-[1px] border-sky-400 text-sky-400 text-sm font-semibold capitalize"
+                    >
+                      #{h}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {mainPage && mentions.length > 0 && (
+              <MentionsList
+                mentions={mentions}
+                onChange={(val) => {
+                  const ids = val.map((v) => v.id) as never[];
+                  form.setValue("mentionIds", ids);
+                }}
+              />
+            )}
           </div>
         </div>
       ) : (

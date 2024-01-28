@@ -13,10 +13,8 @@ const SideBarTweetButton = ({ className }: { className?: string }) => {
     if (!currentUser) {
       return loginModal.onOpen();
     }
-    window.scrollTo({
-      top: 0,
-    });
-    router.push("/");
+
+    router.push("/create");
   }, [loginModal, router, currentUser]);
   return (
     <div onClick={onClick}>

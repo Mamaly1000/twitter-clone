@@ -48,11 +48,12 @@ export default async function handler(
         if (post?.userId) {
           await prisma.notification.create({
             data: {
-              body: `@${currentUser.currentUser.username} liked your tweet`,
+              body: `in case you missed it @${currentUser.currentUser.username} liked your tweet`,
               postId: post.id,
               userId: post.userId,
               actionUser: currentUser.currentUser.id,
-              actionUsername: currentUser.currentUser.username || "",
+              actionUsername: currentUser.currentUser.username || "some body",
+              type: "LIKE",
             },
           });
           await prisma.user.update({
@@ -76,24 +77,29 @@ export default async function handler(
             id: postId,
           },
         });
-
-        if (post?.userId) {
-          await prisma.notification.create({
-            data: {
-              body: `@${currentUser.currentUser.username} disLiked your tweet`,
-              userId: post.userId,
-              actionUser: currentUser.currentUser.id,
-              actionUsername: currentUser.currentUser.username || "",
-            },
-          });
-          await prisma.user.update({
-            where: {
-              id: post.userId,
-            },
-            data: {
-              hasNotification: true,
-            },
-          });
+        try {
+          if (post?.userId) {
+            await prisma.notification.create({
+              data: {
+                body: `in case you missed it @${currentUser.currentUser.username} disLiked your tweet`,
+                userId: post.userId,
+                actionUser: currentUser.currentUser.id,
+                actionUsername: currentUser.currentUser.username || "some body",
+                type: "DISLIKE",
+                postId: post.id,
+              },
+            });
+            await prisma.user.update({
+              where: {
+                id: post.userId,
+              },
+              data: {
+                hasNotification: true,
+              },
+            });
+          }
+        } catch (error) {
+          console.log("error in creating notif while dislike tweet");
         }
       } catch (error) {
         console.log("error in saving notification while disLiking", error);

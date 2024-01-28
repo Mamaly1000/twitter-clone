@@ -39,8 +39,8 @@ const TweetCard = ({
   );
 
   const goToPost = useCallback(() => {
-    router.push(`/posts/${post.id}`);
-  }, [router, post.id]);
+    router.push(`/posts/${post.parentId ? post.parentId : post.id}`);
+  }, [router, post.id, post.parentId]);
 
   const onLike = useCallback(
     async (ev: any) => {
@@ -78,11 +78,19 @@ const TweetCard = ({
   }, [post.createdAt]);
 
   return (
-    <div
+    <article
       onClick={goToPost}
-      className="min-w-full border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition-all group"
+      className="min-w-full border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition-all group flex items-center justify-center flex-col gap-1"
     >
-      <div className="flex flex-row items-start gap-3">
+      {post.parentId && post.parentUsername && (
+        <p
+          className="min-w-full p-2 text-neutral-300 text-sm"
+          dangerouslySetInnerHTML={{
+            __html: formatString(`replied to the @${post.parentUsername}`),
+          }}
+        ></p>
+      )}
+      <div className="min-w-full flex flex-row items-start gap-3">
         <Avatar userId={post.user.id} />
         <div>
           <div className="flex flex-row items-center gap-2">
@@ -198,7 +206,7 @@ const TweetCard = ({
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

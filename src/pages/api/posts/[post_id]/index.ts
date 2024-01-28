@@ -20,22 +20,44 @@ export default async function handler(
         id: postId,
       },
       include: {
-        comments: {
-          include: {
-            user: true,
-          },
-          orderBy: { createdAt: "desc" },
-        },
         user: true,
         repost: {
           include: {
-            user: true,
+            user: {
+              select: {
+                username: true,
+                name: true,
+                email: true,
+                id: true,
+              },
+            },
           },
         },
       },
     });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    const postsComments = await prisma.comment.findMany({
+      where: {
+        parentId: post.id,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+            id: true,
+            username: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-    return res.status(200).json(post);
+    return res.status(200).json({ ...post, comments: postsComments });
   } catch (error) {
     return res
       .status(500)

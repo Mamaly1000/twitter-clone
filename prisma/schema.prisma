@@ -24,7 +24,7 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   followingIds    String[] @db.ObjectId
-  followerIds String[] @db.ObjectId
+  followerIds     String[] @db.ObjectId
   hasNotification Boolean?
 
   posts         Post[]
@@ -42,6 +42,9 @@ model Post {
   likedIds           String[] @db.ObjectId
   image              String?
   repostId String? @db.ObjectId
+  parentId String? @db.ObjectId 
+parentUsername String?
+
   repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
@@ -56,10 +59,12 @@ model Comment {
   updatedAt          DateTime @updatedAt
   userId             String @db.ObjectId
   postId             String @db.ObjectId
-likingIds String[] @db.ObjectId
+  likingIds String[] @db.ObjectId
+parentId String @db.ObjectId
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+   
 }
 
 model Notification {
@@ -68,9 +73,10 @@ model Notification {
   userId             String @db.ObjectId
   actionUser         String @db.ObjectId
   actionUsername     String
+  type String
   createdAt          DateTime @default(now())
   postId             String? @db.ObjectId
-  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User @relation(fields: [actionUser], references: [id], onDelete: Cascade)
   post               Post? @relation(fields: [postId], references: [id], onDelete:Cascade)
 }
 

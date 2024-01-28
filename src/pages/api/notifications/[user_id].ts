@@ -16,22 +16,68 @@ export default async function handler(
       return res.status(404).json({ message: "invalid user id" });
     }
 
-    const notifs = await prisma.notification.findMany({
+    const userData = await prisma.user.findUnique({
       where: {
-        userId: user_id,
+        id: user_id,
       },
-      orderBy: {
-        createdAt: "desc",
+      select: {
+        id: true,
+        notifications: {
+          select: {
+            userId: true,
+          },
+        },
       },
-      take: 30,
+    });
+    if (!userData) {
+      return res.status(401).json({ message: "unAuthorized" });
+    }
+    const notifications = await prisma.notification.findMany({
+      where: {
+        userId: userData.id,
+      },
       include: {
         user: {
           select: {
-            name: true,
-            username: true,
             id: true,
+            username: true,
+            email: true,
+            followingIds: true,
+            name: true,
+            createdAt: true,
           },
         },
+        post: {
+          include: {
+            user: {
+              select: {
+                name: true,
+                username: true,
+                createdAt: true,
+                id: true,
+                email: true,
+                followingIds: true,
+              },
+            },
+            repost: {
+              include: {
+                user: {
+                  select: {
+                    name: true,
+                    username: true,
+                    createdAt: true,
+                    id: true,
+                    email: true,
+                    followingIds: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
@@ -44,7 +90,7 @@ export default async function handler(
       },
     });
 
-    return res.status(200).json(notifs);
+    return res.status(200).json(notifications);
   } catch (error) {
     return res
       .status(500)

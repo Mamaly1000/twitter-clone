@@ -18,11 +18,20 @@ export default async function handler(
       return res.status(401).json({ message: "not signed in!" });
     }
     const { body } = req.body;
+    const newPost = await prisma.post.create({
+      data: {
+        body,
+        parentId: post_id as string,
+        userId: currentUser.currentUser.id,
+        parentUsername: currentUser.currentUser.username,
+      },
+    });
     const comment = await prisma.comment.create({
       data: {
         userId: currentUser.currentUser.id,
-        postId: post_id as string,
+        postId: newPost.id,
         body,
+        parentId: post_id as string,
       },
     });
 
@@ -36,11 +45,12 @@ export default async function handler(
       if (post?.userId) {
         await prisma.notification.create({
           data: {
-            body: `@${currentUser.currentUser.username} replied on your tweet`,
+            body: `in case you missed it @${currentUser.currentUser.username} replied on your tweet`,
             userId: post.userId,
             postId: post.id,
             actionUser: currentUser.currentUser.id,
-            actionUsername: currentUser.currentUser.username || "",
+            actionUsername: currentUser.currentUser.username || "some body",
+            type: "COMMENT",
           },
         });
         await prisma.user.update({

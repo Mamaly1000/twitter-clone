@@ -1,11 +1,20 @@
 import useUserByUsername from "@/hooks/useUserByUsername";
-import { Notification } from "@prisma/client";
+import { Notification, Post, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 import Avatar from "../shared/Avatar";
+import { formatString } from "@/libs/wordDetector";
+import NotifImage from "../shared/NotifImage";
+import { BiCalendar } from "react-icons/bi";
+import { BsClock, BsWatch } from "react-icons/bs";
+import { twMerge } from "tailwind-merge";
 
-const NotifCard = ({ notif }: { notif: Notification }) => {
+const NotifCard = ({
+  notif,
+}: {
+  notif: Notification & { user: User; post: Post & { user: User } };
+}) => {
   const router = useRouter();
   const createdAt = useMemo(() => {
     if (!notif?.createdAt) {
@@ -22,27 +31,70 @@ const NotifCard = ({ notif }: { notif: Notification }) => {
         )
       }
       key={notif.id}
-      className="flex flex-row items-center justify-between p-6 gap-4 border-b-[1px] border-neutral-800 min-w-full cursor-pointer hover:opacity-80 transition-all"
+      className=" flex flex-row items-start justify-start p-6 gap-4 border-b-[1px] border-neutral-800 min-w-full cursor-pointer hover:opacity-80 transition-all"
     >
-      <div className="flex items-center justify-start gap-3 text-[12px] md:text-[15px]">
-        <Avatar userId={notif.actionUser} />
-        <p className="text-white">
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push(`/users/${notif.actionUser}`);
-            }}
-            className="text-sky-300 font-bold"
-          >
-            {notif.body.split(" ").find((word) => word.includes("@"))}{" "}
-          </span>
-          {notif.body
-            .split(" ")
-            .filter((word) => !word.includes("@"))
-            .join(" ")}
-        </p>
-      </div>
-      <span className="text-neutral-500 text-sm">{createdAt}</span>
+      <NotifImage type={notif.type} />
+      <section className="flex w-[calc(100%-60px)]  items-start justify-between gap-3  flex-wrap">
+        <div className="flex flex-col items-center justify-start gap-3 text-[12px] md:text-[15px]">
+          <div className="w-full flex flex-col md:flex-row items-start justify-start gap-2">
+            <Avatar userId={notif.actionUser} />
+            <div className="flex items-start justify-start flex-col text-white">
+              <p className="flex items-center justify-start gap-1 flex-wrap text-lg capitalize">
+                {notif.user.name}
+                <span className="text-neutral-300 text-[12px] hover:underline">
+                  @{notif.user.username}
+                </span>
+              </p>
+              <p className="text-[12px] text-neutral-300">{notif.user.email}</p>
+            </div>
+          </div>
+          <div className="flex flex-col items-start justify-start">
+            <p
+              className="text-neutral-300 capitalize text-[15px] "
+              dangerouslySetInnerHTML={{ __html: formatString(notif.body) }}
+            ></p>
+            {notif.post && (
+              <div
+                className={twMerge(
+                  notif.type === "LIKE" || notif.type === "DISLIKE"
+                    ? "p-3 rounded-lg mt-2 ms-2 min-w-full flex flex-col text-start justify-start border-[1px] border-neutral-800"
+                    : ""
+                )}
+              >
+                {!!(notif.type === "LIKE" || notif.type === "DISLIKE") && (
+                  <div className="w-full flex flex-col md:flex-row items-start justify-start gap-2 pt-2 pb-1">
+                    <Avatar
+                      className="w-[35px] h-[35px]  max-w-[35px] min-w-[35px] min-h-[35px] max-h-[35px] "
+                      userId={notif.post.userId}
+                    />
+                    <div className="flex items-start justify-start flex-col text-sm text-white">
+                      <p className="flex items-center justify-start gap-1 flex-wrap capitalize">
+                        {notif.post.user.name}
+                        <span className="text-neutral-300 text-[10px] hover:underline">
+                          @{notif.post.user.username}
+                        </span>
+                      </p>
+                      <p className="text-[11px] text-neutral-300">
+                        {notif.post.user.email}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                <p
+                  className="text-neutral-200 min-w-full text-sm "
+                  dangerouslySetInnerHTML={{
+                    __html: formatString(notif.post.body),
+                  }}
+                ></p>
+              </div>
+            )}
+          </div>
+        </div>
+        <span className="text-neutral-500 text-sm flex items-center justify-center gap-1">
+          <BsClock size={15} />
+          {createdAt} ago
+        </span>
+      </section>
     </div>
   );
 };

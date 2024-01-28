@@ -1,6 +1,7 @@
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
+import { without } from "lodash";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -30,18 +31,21 @@ export default async function handler(
       return res.status(404).json({ message: "User not found!" });
     }
 
-    let followingIds = [...(user.followingIds || [])];
+    let followingIds = currentUser.currentUser.followingIds;
+    let followerIds = user.followerIds;
 
     if (req.method === "DELETE") {
-      followingIds = followingIds.filter((id) => id !== userId);
+      followingIds = without(followingIds, userId);
+      followerIds = without(user.followerIds, currentUser.currentUser.id);
       try {
         if (userId) {
           await prisma.notification.create({
             data: {
-              body: `@${currentUser.currentUser.username} unFollowed you on tweeter`,
-              userId: userId,
               actionUser: currentUser.currentUser.id,
-              actionUsername: currentUser.currentUser.username || "",
+              userId: userId,
+              actionUsername: currentUser.currentUser.username || "somebody",
+              body: `in case you missed; @${currentUser.currentUser.username} unfollows you.`,
+              type: "UNFOLLOW",
             },
           });
           await prisma.user.update({
@@ -57,16 +61,19 @@ export default async function handler(
         console.log("error in saving notification while liking", error);
       }
     }
+
     if (req.method === "POST") {
       followingIds.push(userId);
+      followerIds.push(currentUser.currentUser.id);
       try {
         if (userId) {
           await prisma.notification.create({
             data: {
-              body: `@${currentUser.currentUser.username} followed you on tweeter`,
-              userId: userId,
               actionUser: currentUser.currentUser.id,
-              actionUsername: currentUser.currentUser.username || "",
+              userId: userId,
+              actionUsername: currentUser.currentUser.username || "somebody",
+              body: `in case you missed; @${currentUser.currentUser.username} follows you.`,
+              type: "FOLLOW",
             },
           });
           await prisma.user.update({
@@ -82,6 +89,14 @@ export default async function handler(
         console.log("error in saving notification while liking", error);
       }
     }
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        followerIds,
+      },
+    });
     const updatedUser = await prisma.user.update({
       where: {
         id: currentUser.currentUser.id,

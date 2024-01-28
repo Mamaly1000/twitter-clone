@@ -7,13 +7,13 @@ export function formatString(str: string) {
   // Replace links with anchor tags
   const stringWithLinks = str.replace(
     linkPattern,
-    '<a href="$&" class="text-sky-500">$&</a>'
+    '<a href="$&" class="text-sky-500 font-semibold">$&</a>'
   );
 
   // Replace usernames with spans
   const stringWithUsernames = stringWithLinks.replace(
     usernamePattern,
-    '<span class="text-sky-500">@$1</span>'
+    '<span class="text-sky-500 font-semibold">@$1</span>'
   );
 
   // Replace hashtags with spans

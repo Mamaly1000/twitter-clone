@@ -5,6 +5,7 @@ import useUser from "./useUser";
 import { User } from "@prisma/client";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { includes } from "lodash";
 
 const useFollow = (userId: string) => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
@@ -15,6 +16,11 @@ const useFollow = (userId: string) => {
   const isFollowing = useMemo(() => {
     const list = (currentUser as User)?.followingIds || [];
     return list.includes(userId);
+  }, [currentUser, userId]);
+
+  const isFollower = useMemo(() => {
+    const list = (currentUser as User)?.followerIds || [];
+    return includes(list, userId);
   }, [currentUser, userId]);
 
   const toggleFollow = useCallback(async () => {
