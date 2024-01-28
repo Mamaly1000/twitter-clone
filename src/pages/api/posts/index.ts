@@ -94,7 +94,7 @@ export default async function handler(
         });
       }
 
-      const totalPosts = await prisma.post.count();
+      const totalPosts = await prisma.post.count({});
       const maxPages = Math.ceil(totalPosts / limit);
 
       let posts = await prisma.post.findMany({
@@ -134,6 +134,11 @@ export default async function handler(
                   username: true,
                   name: true,
                   email: true,
+                },
+              },
+              posts: {
+                select: {
+                  createdAt: true,
                 },
               },
             },

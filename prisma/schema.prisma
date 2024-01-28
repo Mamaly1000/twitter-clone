@@ -42,12 +42,13 @@ model Post {
   likedIds           String[] @db.ObjectId
   image              String?
   repostId String? @db.ObjectId
-  parentId String? @db.ObjectId 
-parentUsername String?
-commentIds String[] @db.ObjectId
+  parentId String? @db.ObjectId  
+  parentUsername String?
+  commentIds String[] @db.ObjectId
+  repostIds String[] @db.ObjectId
+
   repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
   comments          Comment[]
   notifications Notification[]
 }

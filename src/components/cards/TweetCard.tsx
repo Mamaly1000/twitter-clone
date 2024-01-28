@@ -12,6 +12,7 @@ import { BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
+import { includes } from "lodash";
 
 const TweetCard = ({
   post,
@@ -23,7 +24,7 @@ const TweetCard = ({
   post: Post & {
     user?: any;
     comments?: any[];
-    repost?: Repost & { user?: User };
+    repost?: Repost & { user?: User; post: Post };
   };
 }) => {
   const router = useRouter();
@@ -77,6 +78,11 @@ const TweetCard = ({
     [repostModal, loginModal, currentUser]
   );
 
+  const isReposted = useMemo(() => {
+    const list = [...(post.repostIds || [])];
+    return includes(list, userId);
+  }, [post.repostIds, userId]);
+
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
 
   const createdAt = useMemo(() => {
@@ -89,6 +95,13 @@ const TweetCard = ({
 
     return formatDistanceToNowStrict(new Date(post.createdAt));
   }, [post.createdAt]);
+
+  const repostCreateAt = useMemo(() => {
+    if (!post!.repost?.post?.createdAt || !post?.repost) {
+      return null;
+    }
+    return formatDistanceToNowStrict(new Date(post.repost.post.createdAt));
+  }, [post?.repost?.post?.createdAt]);
 
   return (
     <article
@@ -200,7 +213,7 @@ const TweetCard = ({
               )}
             >
               <p
-                className={twMerge(isComment ? "text-lg capitalize" : "")}
+                className={twMerge(isComment ? "text-lg capitalize" : "",post.repostId?"":"mb-3")}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
               ></p>
               {!!post.repost && !!post.repost.user && (
@@ -211,45 +224,56 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="min-w-full flex flex-col items-start justify-start p-2 rounded-md border-[1px] border-neutral-900  drop-shadow-2xl text-neutral-500 group-hover:border-white"
+                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-900  drop-shadow-2xl text-neutral-500  hover:border-neutral-600 mb-3 gap-3"
                 >
-                  <div className="min-w-full flex items-center justify-start gap-2">
-                    <Avatar userId={post.repost.userId} hasBorder />
+                  <Avatar
+                    className="min-w-[40px] max-h-[40px] min-h-[40px] max-w-[40px]"
+                    userId={post.repost.userId}
+                    hasBorder
+                  />
+                  <div className="min-w-full flex items-start justify-start flex-col gap-2">
+                    <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1">
+                      <p
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/users/${post.repost?.userId}`);
+                        }}
+                        className="text-white hover:underline"
+                      >
+                        {post.repost.user.name}
+                      </p>
+                      <p
+                        className="text-neutral-500 cursor-pointer hover:underline hidden md:block  "
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/users/${post.repost?.userId}`);
+                        }}
+                      >
+                        @{post.repost.user.username}
+                      </p>
+                      <span className="text-neutral-400">{repostCreateAt}</span>
+                    </div>
                     <p
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/users/${post.repost?.userId}`);
+                      dangerouslySetInnerHTML={{
+                        __html: formatString(post.repost.body),
                       }}
-                      className="text-white hover:underline"
-                    >
-                      {post.repost.user.name}
-                    </p>
-                    <p
-                      className="text-neutral-500 cursor-pointer hover:underline hidden md:block  "
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/users/${post.repost?.userId}`);
-                      }}
-                    >
-                      @{post.repost.user.username}
-                    </p>
+                      className="text-left min-w-full max-w-full overflow-hidden line-clamp-2 capitalize text-white mt-2  "
+                    ></p>
                   </div>
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: formatString(post.repost.body),
-                    }}
-                    className="text-left min-w-full text-[13px] capitalize text-white"
-                  ></p>
                 </div>
               )}
-              <span className="min-w-full text-neutral-500   text-nowrap">
-                {createdAt}
-              </span>
+              {isComment && (
+                <span className="min-w-full text-neutral-500   text-nowrap">
+                  {createdAt}
+                </span>
+              )}
             </div>
             {isComment && (
               <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-800 py-3">
                 <span className="flex items-center justify-center gap-1">
-                  <span className="text-white">2</span>
+                  <span className="text-white">
+                    {post.repostIds.length || 0}
+                  </span>
                   retweets
                 </span>
                 <span className="flex items-center justify-center gap-1">
@@ -293,7 +317,10 @@ const TweetCard = ({
               </div>
               <div
                 onClick={onRepost}
-                className="hover:text-sky-400 text-neutral-500 "
+                className={twMerge(
+                  "hover:text-sky-400  ",
+                  isReposted ? "text-sky-400" : "text-neutral-500"
+                )}
               >
                 <BiRepost size={20} />
               </div>

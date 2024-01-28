@@ -18,6 +18,8 @@ import usePost from "@/hooks/usePost";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { includes } from "lodash";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { useLoginModal } from "@/hooks/useLoginModal";
+import { useRepostModal } from "@/hooks/useRepostModal";
 
 const CommentCard = ({
   comment,
@@ -37,8 +39,12 @@ const CommentCard = ({
   const router = useRouter();
   const { mutate: postMutate } = usePost(postId);
   const { mutate: userMutate } = useCurrentUser();
+
   const [scrollHeight, setHeight] = useState(50);
   const commentRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
+
+  const loginModal = useLoginModal();
+  const repostModal = useRepostModal();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -93,6 +99,23 @@ const CommentCard = ({
     return includes(list, userId);
   }, [comment.post.likedIds, userId]);
 
+  const onRepost = useCallback(
+    (e: any) => {
+      e.stopPropagation();
+      if (!userId) {
+        loginModal.onOpen();
+      }
+
+      if (comment.postId) repostModal.onOpen(comment.postId);
+    },
+    [repostModal, loginModal, userId, comment.postId]
+  );
+
+  const isReposted = useMemo(() => {
+    const list = [...(comment.post.repostIds || [])];
+    return includes(list, userId);
+  }, [comment.post.repostIds, userId]);
+
   useEffect(() => {
     const handleResize = () => {
       if (commentRef) {
@@ -115,6 +138,10 @@ const CommentCard = ({
         i === 0 ? "pt-4 pb-1" : "py-1",
         lastIndex === i && "pb-3"
       )}
+      onClick={(e) => {
+        e.stopPropagation();
+        router.push(`/posts/${comment.postId}`);
+      }}
     >
       <div className="flex flex-row items-start gap-3">
         <div className="w-fit flex items-center justify-start gap-2 flex-col">
@@ -191,8 +218,11 @@ const CommentCard = ({
               <p>{comment.post.likedIds.length}</p>
             </div>
             <div
-              // onClick={onRepost}
-              className="hover:text-sky-400 text-neutral-500 "
+              onClick={onRepost}
+              className={twMerge(
+                "hover:text-sky-400 text-neutral-500 ",
+                isReposted && "text-sky-400"
+              )}
             >
               <BiRepost size={20} />
             </div>

@@ -31,6 +31,14 @@ export default async function handler(
                 id: true,
               },
             },
+            posts: {
+              select: {
+                createdAt: true,
+              },
+              where: {
+                repostId: postId,
+              },
+            },
           },
         },
       },

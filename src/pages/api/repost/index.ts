@@ -34,12 +34,23 @@ export default async function handler(
         return res.status(404).json({ message: "Invalid user or tweet id!" });
       }
 
+      const selectedPost = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+      if (!selectedPost) {
+        return res.status(404).json({
+          message: "The Post you are trying to Repost does not exist.",
+        });
+      }
+
       const newRepost = await prisma.repost.create({
         data: {
           quoto: quote || null,
           userId,
           body: tweetContent,
-          postId,
+          postId: selectedPost.id,
         },
       });
       const newPost = await prisma.post.create({
@@ -49,7 +60,16 @@ export default async function handler(
           repostId: newRepost.id,
         },
       });
-      
+      let repostIds = [...selectedPost.repostIds, newRepost.id];
+      await prisma.post.update({
+        where: {
+          id: selectedPost.id,
+        },
+        data: {
+          repostIds: repostIds,
+        },
+      });
+
       try {
         if (currentUser.currentUser.id) {
           await prisma.notification.createMany({
@@ -57,15 +77,17 @@ export default async function handler(
               ...currentUser.currentUser.followingIds.map((followedId) => ({
                 actionUser: currentUser.currentUser.id,
                 actionUsername: currentUser.currentUser.username || "",
-                body: `@${currentUser.currentUser.username} reposted a tweet.`,
+                body: `in case you missed @${currentUser.currentUser.username} retweets.`,
                 userId: followedId,
                 postId: newPost.id,
+                type: "REPOST",
               })),
               {
-                body: `@${currentUser.currentUser.username} reposted your tweet.`,
+                body: `in case you missed @${currentUser.currentUser.username} retweets.`,
                 userId: userId,
                 postId: newPost.id,
                 actionUser: currentUser.currentUser.id,
+                type: "REPOST",
                 actionUsername: currentUser.currentUser.username || "",
               },
             ],
@@ -95,4 +117,3 @@ export default async function handler(
     return res.status(500).json({ message: "error in getting reposts" });
   }
 }
-

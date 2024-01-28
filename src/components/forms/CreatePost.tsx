@@ -78,6 +78,9 @@ const CreatePost = ({
             mutatePost();
             toast.success(res.data.message);
             form.reset();
+            setHashtags([])
+            setMentions([])
+            
             if (mainPage) {
               if (mainPage && !!postId) {
                 router.push(`/posts/${res.data.comment.parentId}`);
