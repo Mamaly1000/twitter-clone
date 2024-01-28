@@ -1,4 +1,3 @@
-import useUserByUsername from "@/hooks/useUserByUsername";
 import { Notification, Post, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
@@ -6,8 +5,7 @@ import React, { useMemo } from "react";
 import Avatar from "../shared/Avatar";
 import { formatString } from "@/libs/wordDetector";
 import NotifImage from "../shared/NotifImage";
-import { BiCalendar } from "react-icons/bi";
-import { BsClock, BsWatch } from "react-icons/bs";
+import { BsClock } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
 
 const NotifCard = ({

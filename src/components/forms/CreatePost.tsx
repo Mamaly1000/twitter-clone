@@ -79,7 +79,9 @@ const CreatePost = ({
             toast.success(res.data.message);
             form.reset();
             if (mainPage) {
-              router.push("/");
+              if (mainPage && !!postId) {
+                router.push(`/posts/${res.data.comment.parentId}`);
+              } else router.push("/");
             }
           });
       } catch (error) {

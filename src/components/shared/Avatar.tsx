@@ -32,7 +32,9 @@ const Avatar = ({
       className={twMerge(
         "rounded-full hover:opacity-90 transition-all cursor-pointer relative ",
         hasBorder ? "border-4 border-black" : "",
-        isLarge ? "min-h-32 min-w-32" : "min-h-12 min-w-12",
+        isLarge
+          ? "min-h-32 min-w-32 max-h-32 max-w-32"
+          : "min-h-12 max-h-12 min-w-12 max-w-12",
         className
       )}
     >

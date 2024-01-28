@@ -18,12 +18,25 @@ export default async function handler(
       return res.status(401).json({ message: "not signed in!" });
     }
     const { body } = req.body;
+    const currentPost = await prisma.post.findUnique({
+      where: {
+        id: post_id as string,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!currentPost) {
+      return res.status(404).send("Not Found");
+    }
+
     const newPost = await prisma.post.create({
       data: {
         body,
-        parentId: post_id as string,
+        parentId: currentPost.id,
         userId: currentUser.currentUser.id,
-        parentUsername: currentUser.currentUser.username,
+        parentUsername: currentPost.user.username,
       },
     });
     const comment = await prisma.comment.create({
@@ -32,6 +45,17 @@ export default async function handler(
         postId: newPost.id,
         body,
         parentId: post_id as string,
+      },
+    });
+
+    const allCommentIds = [...currentPost.commentIds, comment.id];
+
+    await prisma.post.update({
+      where: {
+        id: comment.parentId,
+      },
+      data: {
+        commentIds: allCommentIds,
       },
     });
 

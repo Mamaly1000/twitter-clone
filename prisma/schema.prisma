@@ -44,7 +44,7 @@ model Post {
   repostId String? @db.ObjectId
   parentId String? @db.ObjectId 
 parentUsername String?
-
+commentIds String[] @db.ObjectId
   repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
@@ -60,8 +60,7 @@ model Comment {
   userId             String @db.ObjectId
   postId             String @db.ObjectId
   likingIds String[] @db.ObjectId
-parentId String @db.ObjectId
-
+  parentId String @db.ObjectId 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
    

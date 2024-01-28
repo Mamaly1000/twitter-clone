@@ -51,6 +51,16 @@ export default async function handler(
             username: true,
           },
         },
+        post: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
