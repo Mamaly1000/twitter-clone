@@ -13,6 +13,7 @@ import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
 import { includes } from "lodash";
+import { FiShare } from "react-icons/fi";
 
 const TweetCard = ({
   post,
@@ -114,7 +115,7 @@ const TweetCard = ({
       <div
         className={twMerge(
           "flex flex-col items-start justify-start min-w-full",
-          isComment ? "px-5 pt-5  gap-4" : "gap-2"
+          isComment ? "px-5 pt-5  gap-4" : " "
         )}
       >
         {post.parentId && post.parentUsername && (
@@ -124,18 +125,18 @@ const TweetCard = ({
               goToParentPost();
             }}
             className={twMerge(
-              "min-w-fit flex items-center justify-start  text-neutral-300 peer",
-              isComment ? "ms-10 capitalize" : ""
+              "min-w-fit flex items-center justify-start text-[#687684]",
+              isComment ? "ms-10 capitalize" : "ms-10"
             )}
           >
             <LiaReplySolid
               className="peer-hover:scale-110"
-              size={isComment ? 15 : 13}
+              size={isComment ? 15 : 12}
             />
             <p
               className={twMerge(
-                "min-w-fit p-2 text-neutral-300 hover:scale-110 hover:underline",
-                isComment ? "text-[15px]" : "text-[13px]"
+                "min-w-fit p-2 hover:text-sky-500",
+                "text-[14px]"
               )}
               dangerouslySetInnerHTML={{
                 __html: formatString(`replied to the @${post.parentUsername}`),
@@ -145,12 +146,15 @@ const TweetCard = ({
         )}
         <div
           className={twMerge(
-            "min-w-full flex items-start gap-3",
+            "min-w-full flex items-start justify-start gap-3",
             isComment ? "flex-col" : "flex-row"
           )}
         >
           <div className="flex items-start justify-start gap-4">
-            <Avatar userId={post.user.id} />
+            <Avatar
+              className="w-[55px] h-[55px] min-w-[55px] max-h-[55px] max-w-[55px] min-h-[55px] "
+              userId={post.user.id}
+            />
             {!!isComment && (
               <div className="flex flex-col items-start justify-start capitalize">
                 <p
@@ -173,24 +177,19 @@ const TweetCard = ({
               </div>
             )}
           </div>
-          <div className="w-full">
+          <div className={twMerge(isComment?"w-full":"w-auto")}>
             {!!!isComment && (
-              <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row text-[16px] items-center gap-[6px]">
                 <p
                   onClick={goToUser}
-                  className="
-            text-white 
-            font-semibold 
-            cursor-pointer 
-            hover:underline text-nowrap
-        "
+                  className=" text-white capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap "
                 >
                   {post.user.name}
                 </p>
                 <span
                   onClick={goToUser}
                   className="
-            text-neutral-500
+            text-[#687684]
             cursor-pointer
             hover:underline
             hidden
@@ -200,20 +199,26 @@ const TweetCard = ({
                   @{post.user.username}
                 </span>
                 {!!!isComment && (
-                  <span className="text-neutral-500 text-sm text-nowrap">
-                    {createdAt}
+                  <span className="text-[#687684] text-nowrap">
+                    {" "}
+                    · {createdAt}
                   </span>
                 )}
               </div>
             )}
             <div
               className={twMerge(
-                "text-white flex flex-col items-start justify-start gap-3 w-full",
+                "text-[#D9D9D9] flex flex-col items-start justify-start gap-3 w-full",
                 isComment ? "mt-4 mb-3" : "mt-1"
               )}
             >
               <p
-                className={twMerge(isComment ? "text-lg capitalize" : "",post.repostId?"":"mb-3")}
+                className={twMerge(
+                  isComment
+                    ? "text-lg capitalize"
+                    : "text-[16px] text-inherit font-light leading-[-.3px] capitalize",
+                  post.repostId ? "" : "mb-3"
+                )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
               ></p>
               {!!post.repost && !!post.repost.user && (
@@ -224,7 +229,7 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-900  drop-shadow-2xl text-neutral-500  hover:border-neutral-600 mb-3 gap-3"
+                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-900  drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3"
                 >
                   <Avatar
                     className="min-w-[40px] max-h-[40px] min-h-[40px] max-w-[40px]"
@@ -232,18 +237,18 @@ const TweetCard = ({
                     hasBorder
                   />
                   <div className="min-w-full flex items-start justify-start flex-col gap-2">
-                    <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1">
+                    <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1 text-[13px]">
                       <p
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/users/${post.repost?.userId}`);
                         }}
-                        className="text-white hover:underline"
+                        className="text-white capitalize font-bold hover:text-sky-500"
                       >
                         {post.repost.user.name}
                       </p>
                       <p
-                        className="text-neutral-500 cursor-pointer hover:underline hidden md:block  "
+                        className=" cursor-pointer hover:underline hidden md:block  "
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/users/${post.repost?.userId}`);
@@ -251,13 +256,13 @@ const TweetCard = ({
                       >
                         @{post.repost.user.username}
                       </p>
-                      <span className="text-neutral-400">{repostCreateAt}</span>
+                      <span className=" ">{repostCreateAt}</span>
                     </div>
                     <p
                       dangerouslySetInnerHTML={{
                         __html: formatString(post.repost.body),
                       }}
-                      className="text-left min-w-full max-w-full overflow-hidden line-clamp-2 capitalize text-white mt-2  "
+                      className="text-[13px] leading-[-.3px] capitalize text-[#D9D9D9]"
                     ></p>
                   </div>
                 </div>
@@ -292,7 +297,7 @@ const TweetCard = ({
             )}
             <div
               className={twMerge(
-                "flex flex-row items-center gap-10",
+                "flex flex-row items-center gap-10 text-[#687684]",
                 isComment
                   ? "min-w-full justify-evenly py-3 border-t-[1px] border-t-neutral-800"
                   : ""
@@ -303,26 +308,35 @@ const TweetCard = ({
                   e.stopPropagation();
                   router.push(`/reply/${post.id}`);
                 }}
-                className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500"
+                className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
               >
                 <AiOutlineMessage size={20} />
                 {!isComment && <p>{post.commentIds.length || 0}</p>}
               </div>
               <div
                 onClick={onLike}
-                className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition-all hover:text-red-500"
+                className="flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500"
               >
                 <LikeIcon color={hasLiked ? "red" : ""} size={20} />
                 {!isComment && <p>{post.likedIds.length}</p>}
               </div>
               <div
                 onClick={onRepost}
-                className={twMerge(
-                  "hover:text-sky-400  ",
-                  isReposted ? "text-sky-400" : "text-neutral-500"
-                )}
+                className={twMerge("hover:text-sky-400  ")}
               >
                 <BiRepost size={20} />
+              </div>{" "}
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.share({
+                    title: post.user.name + " tweet; " + post.body,
+                    url: `/posts/${post.id}`,
+                  });
+                }}
+                className={twMerge("hover:text-sky-400  ")}
+              >
+                <FiShare size={18} />
               </div>
             </div>
           </div>
