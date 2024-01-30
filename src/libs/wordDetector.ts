@@ -13,7 +13,7 @@ export function formatString(str: string) {
   // Replace usernames with spans
   const stringWithUsernames = stringWithLinks.replace(
     usernamePattern,
-    '<span class="text-sky-500 font-semibold">@$1</span>'
+    '<span class="text-sky-500 font-semibold mx-1">@$1</span>'
   );
 
   // Replace hashtags with spans

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useCurrentUser from "./useCurrentUser";
 import { useLoginModal } from "./useLoginModal";
 import useUser from "./useUser";
@@ -10,7 +10,7 @@ import { includes } from "lodash";
 const useFollow = (userId: string) => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
   const { mutate: mutateFetchedUser } = useUser(userId);
-
+  const [isLoading, setLoading] = useState(false);
   const loginModal = useLoginModal();
 
   const isFollowing = useMemo(() => {
@@ -28,6 +28,7 @@ const useFollow = (userId: string) => {
       return loginModal.onOpen();
     }
     try {
+      setLoading(true);
       let req;
       if (isFollowing) {
         req = () => axios.delete("/api/follow", { data: { userId } });
@@ -41,6 +42,8 @@ const useFollow = (userId: string) => {
       });
     } catch (error) {
       toast.error("something went wrong!");
+    } finally {
+      setLoading(false);
     }
   }, [
     currentUser,
@@ -51,7 +54,7 @@ const useFollow = (userId: string) => {
     mutateFetchedUser,
   ]);
 
-  return { isFollowing, toggleFollow };
+  return { isFollowing, toggleFollow, isLoading };
 };
 
 export default useFollow;

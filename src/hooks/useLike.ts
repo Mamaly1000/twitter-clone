@@ -15,8 +15,11 @@ const useLike = ({ postId, userId }: { postId: string; userId?: string }) => {
   const loginModal = useLoginModal();
 
   const hasLiked = useMemo(() => {
-    const list = (post as Post)?.likedIds || [];
-    return list.includes(currentUser?.id);
+    if (currentUser) {
+      const list = (post as Post)?.likedIds || [];
+      return list.includes(currentUser!.id);
+    }
+    return false;
   }, [post, currentUser]);
 
   const toggleLike = useCallback(async () => {

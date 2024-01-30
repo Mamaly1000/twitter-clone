@@ -5,7 +5,7 @@ interface ButtonProps {
   secondary?: boolean;
   fullWidth?: boolean;
   large?: boolean;
-  onClick?: () => void;
+  onClick?: (e: any) => void;
   disabled?: boolean;
   outline?: boolean;
   type?: "submit" | "reset" | "button" | undefined;
@@ -29,16 +29,16 @@ const Button = ({
         ` 
     disabled:opacity-70
     disabled:cursor-not-allowed
-    rounded-full
+    rounded-[50px]
     font-semibold
     hover:opacity-80
     transition
     border-2`,
         fullWidth ? "w-full" : "w-fit",
         secondary
-          ? "bg-white text-black border-black"
+          ? "text-white bg-black border-[#566370]"
           : "bg-sky-500 text-white border-sky-500",
-        large ? "text-xl px-5 py-3" : "text-md px-4 py-2",
+        large ? "text-xl px-5 py-3" : "text-md px-[24px] py-[4px]",
         outline ? "bg-transparent border-white text-white" : ""
       )}
     >

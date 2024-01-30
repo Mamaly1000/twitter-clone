@@ -60,11 +60,11 @@ const Modal = ({
       bg-opacity-70
     "
       >
-        <div className="relative w-full lg:w-3/6 my-6 mx-auto lg:max-w-3xl h-full lg:h-auto">
+        <div className="absolute w-full lg:w-3/6 my-6 mx-auto lg:max-w-3xl h-full overflow-y-auto max-h-screen lg:h-auto">
           {/*content*/}
           <div
             className="
-        h-full
+      h-fit max-h-screen md:max-h-[90vh]
         lg:h-auto
         border-0 
         rounded-lg 
@@ -75,7 +75,7 @@ const Modal = ({
         w-full 
         bg-black 
         outline-none 
-        focus:outline-none
+        focus:outline-none  
         "
           >
             {/*header*/}
@@ -104,7 +104,9 @@ const Modal = ({
               </button>
             </div>
             {/*body*/}
-            <div className="relative p-10 flex-auto">{body}</div>
+            <div className="relative p-10 flex-auto md:max-h-[75vh] h-fit max-h-full overflow-y-auto ">
+              {body}
+            </div>
             {/*footer*/}
             <div className="flex flex-col gap-2 p-10">
               {!!actionLabel && (

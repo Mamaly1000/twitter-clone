@@ -25,12 +25,16 @@ model User {
   updatedAt       DateTime @updatedAt
   followingIds    String[] @db.ObjectId
   followerIds     String[] @db.ObjectId
-  hasNotification Boolean?
+  hasNotification Boolean? 
+  profileFieldsIds String[] @db.ObjectId
+
+  profileFields Field[] 
 
   posts         Post[]
   reposts Repost[]
   comments      Comment[]
   notifications Notification[]
+  coverimages CoverImage[]
 }
 
 model Post {
@@ -90,4 +94,19 @@ model Repost{
   updatedAt DateTime @updatedAt   
   user User @relation(fields: [userId],references: [id],onDelete:Cascade)  
   posts Post[]
+}
+
+model Field {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId 
+  value String
+  type  String
+  userId String @db.ObjectId
+  user  User    @relation(fields: [userId], references: [id])
+}
+
+model CoverImage{
+   id              String @id @default(auto()) @map("_id") @db.ObjectId
+   imageUrl String
+   userId String @db.ObjectId @unique
+   user User @relation(fields: [userId], references: [id])
 }

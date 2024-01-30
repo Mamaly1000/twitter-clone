@@ -5,7 +5,9 @@ import { BiArrowBack } from "react-icons/bi";
 const Header = ({
   label,
   displayArrow = false,
+  subHeader,
 }: {
+  subHeader?: string;
   displayArrow?: boolean;
   label: string;
 }) => {
@@ -23,7 +25,10 @@ const Header = ({
             className="cursor-pointer hover:opacity-70 transition"
           />
         )}
-        <h1 className="text-white text-xl font-semibold capitalize">{label}</h1>
+        <h1 className="text-white text-xl font-semibold capitalize flex flex-col items-start justify-start ">
+          {label}
+          {!!subHeader && <p className="text-[12px] text-[#72767A] ">{subHeader}</p>}
+        </h1>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import { twMerge } from "tailwind-merge";
 interface InputProps {
   placeholder?: string;
   value?: string;
@@ -7,7 +8,8 @@ interface InputProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   name: string;
-  register: any;
+  register?: any;
+  className?: string;
 }
 const Input = ({
   onChange,
@@ -18,9 +20,10 @@ const Input = ({
   value,
   name,
   register,
+  className,
 }: InputProps) => {
   return (
-    <div className="w-full">
+    <div className={twMerge("w-full", className)}>
       {label && (
         <p className="text-xl text-white font-semibold mb-2">{label}</p>
       )}
@@ -32,22 +35,7 @@ const Input = ({
         value={value}
         placeholder={placeholder}
         type={type}
-        className="
-      w-full
-      p-4 
-      text-lg 
-      bg-black 
-      border-2
-      border-neutral-800 
-      rounded-md
-      outline-none
-      text-white
-      focus:border-sky-500
-      focus:border-2
-      transition
-      disabled:bg-neutral-900
-      disabled:opacity-70
-      disabled:cursor-not-allowed
+        className="w-full p-4 text-lg bg-black border-2 border-neutral-800 rounded-md outline-none text-white focus:border-sky-500 focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed
     "
       />
     </div>

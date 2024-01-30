@@ -24,7 +24,7 @@ const UserHero = ({ id }: { id: string }) => {
             />
           )}
           <div className="absolute -bottom-16 left-4">
-            <Avatar userId={id} isLarge hasBorder />
+            <Avatar className="border-[3px] border-black " userId={id} isLarge hasBorder />
           </div>
         </div>
       </div>

@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 import Input from "../inputs/Input";
 import useUser from "@/hooks/useUser";
 import ImageUpload from "../inputs/ImageUpload";
+import FieldGenerator from "../inputs/FieldGenerator";
+import TextArea from "../inputs/TextArea";
 
 const editSchema = z.object({
   name: z
@@ -32,8 +34,16 @@ const editSchema = z.object({
 const EditModal = () => {
   const { data } = useCurrentUser();
   const { mutate } = useUser(data?.id);
-  const [isLoading, setLoading] = useState(false);
   const { isOpen, onClose } = useEditModal();
+
+  const [isLoading, setLoading] = useState(false);
+  const [profileFields, setProfileFields] = useState<
+    {
+      value: string;
+      type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
+    }[]
+  >([]);
+
   const form = useForm({
     resolver: zodResolver(editSchema),
     defaultValues: {
@@ -72,11 +82,13 @@ const EditModal = () => {
             bio: !!values.bio ? values.bio : null,
             coverImage: !!values.coverImage ? values.coverImage : null,
             profileImage: !!values.profileImage ? values.profileImage : null,
+            profileFields,
           })
           .then((res) => {
             mutate();
             toast.success(res.data.message);
             form.reset();
+            setProfileFields([]);
             onClose();
           });
       } catch (error) {
@@ -93,7 +105,9 @@ const EditModal = () => {
       <ImageUpload
         value={form.watch("profileImage")}
         disabled={isLoading}
-        onChange={(image) => form.setValue("profileImage", image)}
+        onChange={(image) => {
+          form.setValue("profileImage", image);
+        }}
         label="Upload profile image"
       />
       <ImageUpload
@@ -118,13 +132,19 @@ const EditModal = () => {
         placeholder="Username"
         disabled={isLoading}
       />
-      <Input
+      <TextArea
         register={form.register("bio")}
         name="bio"
         onChange={(e) => form.setValue("bio", e.target.value)}
         value={form.watch("bio")}
         placeholder="Bio"
         disabled={isLoading}
+      />
+      <FieldGenerator
+        value={profileFields}
+        onChange={(fields) => {
+          setProfileFields(fields);
+        }}
       />
     </div>
   );

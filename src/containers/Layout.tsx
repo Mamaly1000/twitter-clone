@@ -2,10 +2,12 @@ import React, { ReactNode } from "react";
 import SideBar from "./SideBar";
 import FollowBar from "./FollowBar";
 import BottomBar from "./BottomBar";
+import { twMerge } from "tailwind-merge";
+import { inter } from "@/pages/_app";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="h-screen bg-black ">
+    <div className={twMerge("h-screen bg-black ", inter.className)}>
       <div
         className="container h-full max-xl: xl:px-30
      max-w-full "

@@ -81,7 +81,7 @@ const RepostModal = () => {
             value={quote}
           />
           {!!post && !!currentUser && (
-            <TweetCard post={post} userId={currentUser} />
+            <TweetCard post={post} userId={currentUser!.id} />
           )}
           <Button disabled={isLoading} fullWidth type="submit">
             Repost
