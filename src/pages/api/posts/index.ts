@@ -11,12 +11,16 @@ export default async function handler(
   }
   try {
     if (req.method === "GET") {
+      const currentUser = await serverAuth(req, res);
       const userId = req.query.user_id as string;
       let limit = +(req.query.limit || 10) as number;
       const page = +(!!req.query.page ? req.query.page : 1) as number;
 
       const skip = (+page - 1) * +limit;
 
+      if (!currentUser) {
+        throw new Error("Unauthorized User");
+      }
       if (userId || typeof userId === "string") {
         const totalPosts = await prisma.post.count({ where: { id: userId } });
         const maxPages = Math.ceil(totalPosts / limit);
@@ -37,19 +41,6 @@ export default async function handler(
                 followingIds: true,
                 hasNotification: true,
                 id: true,
-              },
-            },
-            comments: {
-              select: {
-                body: true,
-                createdAt: true,
-                id: true,
-                userId: true,
-                user: {
-                  select: {
-                    id: true,
-                  },
-                },
               },
             },
             repost: {
@@ -112,20 +103,7 @@ export default async function handler(
               hasNotification: true,
               id: true,
             },
-          },
-          comments: {
-            select: {
-              body: true,
-              createdAt: true,
-              id: true,
-              userId: true,
-              user: {
-                select: {
-                  id: true,
-                },
-              },
-            },
-          },
+          }, 
           repost: {
             include: {
               user: {

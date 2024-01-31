@@ -23,7 +23,7 @@ const usePosts = (id?: string) => {
     currentPage: 1,
     hasNext: true,
     hasPrev: false,
-    nextPage: 2,
+    nextPage: null,
     prevPage: null,
     totalItems: 0,
     maxPages: 0,
@@ -73,7 +73,7 @@ const usePosts = (id?: string) => {
     }
   };
   const prevPage = async () => {
-    setLoading(true); 
+    setLoading(true);
     if (pagination.hasPrev && pagination.prevPage) {
       const newurl = !!id
         ? `/api/posts?page=${
@@ -125,7 +125,7 @@ const usePosts = (id?: string) => {
   }, [router, setPagination, data]);
 
   return {
-    posts: (data?.posts || []) as Post[],
+    posts: (data?.posts || []) as Array<Post>,
     error,
     isLoading: isLoading || postsLoading,
     mutate,

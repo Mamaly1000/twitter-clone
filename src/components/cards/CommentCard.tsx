@@ -147,7 +147,7 @@ const CommentCard = ({
         <div className="w-fit flex items-center justify-start gap-2 flex-col">
           <Avatar userId={comment.user.id} />
           <hr
-            className="w-[1.5px] rounded-md bg-neutral-300 bg-opacity-50 border-none transition-all"
+            className="w-[2px] rounded-md bg-neutral-300 bg-opacity-50 border-none transition-all"
             style={{
               minHeight: lastIndex === i ? scrollHeight - 20 : scrollHeight,
             }}

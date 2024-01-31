@@ -3,17 +3,24 @@ import { useLoginModal } from "@/hooks/useLoginModal";
 import { Post, Repost, User } from "@prisma/client";
 import { format, formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useCallback, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import Avatar from "../shared/Avatar";
 import useLike from "@/hooks/useLike";
 import { useRepostModal } from "@/hooks/useRepostModal";
-import { BiRepost } from "react-icons/bi";
+import { BiDotsVertical, BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
-import { includes } from "lodash";
+import { filter, intersection, isEmpty } from "lodash";
 import { FiShare } from "react-icons/fi";
+import MutualReplies from "../lists/MutualReplies";
 
 const TweetCard = ({
   post,
@@ -24,13 +31,15 @@ const TweetCard = ({
   userId?: string;
   post: Post & {
     user?: any;
-    comments?: any[];
     repost?: Repost & { user?: User; post: Post };
   };
 }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const repostModal = useRepostModal();
+
+  const [scrollHeight, setHeight] = useState(20);
+  const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
   const { data: currentUser } = useCurrentUser();
 
@@ -79,11 +88,6 @@ const TweetCard = ({
     [repostModal, loginModal, currentUser]
   );
 
-  const isReposted = useMemo(() => {
-    const list = [...(post.repostIds || [])];
-    return includes(list, userId);
-  }, [post.repostIds, userId]);
-
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
 
   const createdAt = useMemo(() => {
@@ -103,6 +107,34 @@ const TweetCard = ({
     }
     return formatDistanceToNowStrict(new Date(post.repost.post.createdAt));
   }, [post?.repost?.post?.createdAt]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (tweetRef) {
+        setHeight(tweetRef.current!.offsetHeight);
+      }
+    };
+    if (tweetRef) {
+      setHeight(tweetRef.current!.offsetHeight);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [scrollHeight, window, tweetRef]);
+
+  const mutualReplies = useMemo(() => {
+    if (!post.commentIds) {
+      return null;
+    }
+    const list = intersection(
+      post.commentIds,
+      currentUser.mutualReplies.map((u) => u.id)
+    );
+    return list.length > 0
+      ? filter(currentUser.mutualReplies, (rep) =>
+          post.commentIds.includes(rep.id)
+        )
+      : [];
+  }, [post.commentIds, currentUser?.followingIds]);
 
   return (
     <article
@@ -150,9 +182,17 @@ const TweetCard = ({
             isComment ? "flex-col" : "flex-row"
           )}
         >
-          <div className="flex items-start justify-start gap-4">
+          <div
+            className={twMerge(
+              "flex ",
+              isComment
+                ? "flex-row items-start justify-start gap-4"
+                : "flex-col items-center justify-center gap-1"
+            )}
+          >
             <Avatar
-              className="w-[55px] h-[55px] min-w-[55px] max-h-[55px] max-w-[55px] min-h-[55px] "
+              className="w-[55px] h-[55px] min-w-[55px] max-h-[55px] max-w-[55px] min-h-[55px] border-neutral-300 border-[1px] border-opacity-50"
+              hasBorder
               userId={post.user.id}
             />
             {!!isComment && (
@@ -176,8 +216,22 @@ const TweetCard = ({
                 )}
               </div>
             )}
+            {!!!isComment && !isEmpty(mutualReplies) && (
+              <>
+                <hr
+                  className="w-[2px] rounded-md bg-neutral-300 bg-opacity-50 border-none transition-all"
+                  style={{ minHeight: scrollHeight - 50 }}
+                />
+                <span className="flex flex-col text-neutral-300 text-opacity-50 text-lg gap-1 ">
+                  <BiDotsVertical />
+                </span>
+              </>
+            )}
           </div>
-          <div className={twMerge(isComment?"w-full":"w-auto")}>
+          <div
+            ref={tweetRef}
+            className={twMerge(isComment ? "w-full" : "w-auto max-h-fit")}
+          >
             {!!!isComment && (
               <div className="flex flex-row text-[16px] items-center gap-[6px]">
                 <p
@@ -188,13 +242,7 @@ const TweetCard = ({
                 </p>
                 <span
                   onClick={goToUser}
-                  className="
-            text-[#687684]
-            cursor-pointer
-            hover:underline
-            hidden
-            md:block text-nowrap
-        "
+                  className="text-[#687684] cursor-pointer hover:underline hidden md:block text-nowrap "
                 >
                   @{post.user.username}
                 </span>
@@ -216,7 +264,7 @@ const TweetCard = ({
                 className={twMerge(
                   isComment
                     ? "text-lg capitalize"
-                    : "text-[16px] text-inherit font-light leading-[-.3px] capitalize",
+                    : "text-[14px] text-inherit font-light leading-[-.3px] capitalize",
                   post.repostId ? "" : "mb-3"
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
@@ -262,7 +310,7 @@ const TweetCard = ({
                       dangerouslySetInnerHTML={{
                         __html: formatString(post.repost.body),
                       }}
-                      className="text-[13px] leading-[-.3px] capitalize text-[#D9D9D9]"
+                      className="text-[14px] leading-[-.3px] capitalize font-light text-[#D9D9D9]"
                     ></p>
                   </div>
                 </div>
@@ -297,7 +345,7 @@ const TweetCard = ({
             )}
             <div
               className={twMerge(
-                "flex flex-row items-center gap-10 text-[#687684]",
+                "flex flex-row items-center text-[12px] gap-10 text-[#687684]",
                 isComment
                   ? "min-w-full justify-evenly py-3 border-t-[1px] border-t-neutral-800"
                   : ""
@@ -310,21 +358,25 @@ const TweetCard = ({
                 }}
                 className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
               >
-                <AiOutlineMessage size={20} />
-                {!isComment && <p>{post.commentIds.length || 0}</p>}
+                <AiOutlineMessage size={15} />
+                {!isComment && (
+                  <p className="text-[12px]">{post.commentIds.length || 0}</p>
+                )}
               </div>
               <div
                 onClick={onLike}
                 className="flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500"
               >
-                <LikeIcon color={hasLiked ? "red" : ""} size={20} />
-                {!isComment && <p>{post.likedIds.length}</p>}
+                <LikeIcon color={hasLiked ? "red" : ""} size={15} />
+                {!isComment && (
+                  <p className="text-[12px]">{post.likedIds.length}</p>
+                )}
               </div>
               <div
                 onClick={onRepost}
                 className={twMerge("hover:text-sky-400  ")}
               >
-                <BiRepost size={20} />
+                <BiRepost size={15} />
               </div>{" "}
               <div
                 onClick={(e) => {
@@ -336,12 +388,15 @@ const TweetCard = ({
                 }}
                 className={twMerge("hover:text-sky-400  ")}
               >
-                <FiShare size={18} />
+                <FiShare size={15} />
               </div>
             </div>
           </div>
         </div>
       </div>
+      {!isComment && !isEmpty(mutualReplies) && (
+        <MutualReplies replies={mutualReplies || []} />
+      )}
     </article>
   );
 };

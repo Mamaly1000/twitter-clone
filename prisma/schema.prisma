@@ -53,7 +53,7 @@ model Post {
 
   repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
-  comments          Comment[]
+  comments Comment[]  
   notifications Notification[]
 }
 
