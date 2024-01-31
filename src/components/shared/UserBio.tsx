@@ -79,6 +79,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
               <FieldValue
                 size={15}
                 f={f}
+                key={f.id}
                 className="flex flex-row items-center gap-2 text-[#72767A]  "
               />
             ))}
