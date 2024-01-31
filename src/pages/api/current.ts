@@ -22,7 +22,7 @@ export default async function handler(
         userId: {
           in: currentUser.currentUser.followingIds,
         },
-      }, 
+      },
       select: {
         id: true,
         createdAt: true,
@@ -33,6 +33,14 @@ export default async function handler(
             id: true,
             name: true,
             username: true,
+          },
+        },
+        post: {
+          select: {
+            commentIds: true,
+            likedIds: true,
+            user: { select: { name: true } },
+            body: true,
           },
         },
       },

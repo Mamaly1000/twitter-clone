@@ -65,7 +65,7 @@ const ImageUpload = ({
         })}
       >
         <input {...getInputProps()} />
-        {files.length > 0 && base64 ? (
+        {files.length > 0 ||base64 ? (
           <div className="flex items-center justify-center flex-col gap-2">
             <Image
               src={base64}
@@ -79,29 +79,43 @@ const ImageUpload = ({
           <p className="text-white">{label}</p>
         )}
       </div>
-      {files.length > 0 && (
-        <button
-          className="px-3 capitalize disabled:cursor-not-allowed disabled:opacity-50 py-2 rounded-md text-white border-white border-[1px] flex items-center justify-center gap-2"
-          onClick={async () => {
-            const hasImageChanged = isBase64Image(base64);
-            if (hasImageChanged) {
-              const imgRes = await startUpload(files);
-              if (imgRes && imgRes[0].url) {
-                onChange(imgRes[0].url);
+      <div className="flex items-center justify-start gap-2">
+        {files.length > 0 && (
+          <button
+            className="px-3 capitalize disabled:cursor-not-allowed disabled:opacity-50 py-2 rounded-md text-white border-white border-[1px] flex items-center justify-center gap-2"
+            onClick={async () => {
+              const hasImageChanged = isBase64Image(base64);
+              if (hasImageChanged) {
+                const imgRes = await startUpload(files);
+                if (imgRes && imgRes[0].url) {
+                  onChange(imgRes[0].url);
+                }
               }
-            }
-          }}
-          disabled={isUploading}
-        >
-          {!isUploading ? "upload" : "uploading"}{" "}
-          {!!isUploading && (
-            <Loader
-              className="max-h-[30px] max-w-[30px] min-h-[30px] min-w-[30px]"
-              size={10}
-            />
-          )}
-        </button>
-      )}
+            }}
+            disabled={isUploading}
+          >
+            {!isUploading ? "upload" : "uploading"}{" "}
+            {!!isUploading && (
+              <Loader
+                className="max-h-[30px] max-w-[30px] min-h-[30px] min-w-[30px]"
+                size={10}
+              />
+            )}
+          </button>
+        )}
+        {base64 && (
+          <button
+            className="px-3 capitalize disabled:cursor-not-allowed disabled:opacity-50 py-2 rounded-md text-white border-white border-[1px] flex items-center justify-center gap-2"
+            onClick={async () => {
+              onChange(base64);
+              toast.success("picture saved");
+            }}
+            disabled={isUploading}
+          >
+            embed file
+          </button>
+        )}
+      </div>
     </div>
   );
 };

@@ -140,14 +140,14 @@ const TweetCard = ({
     <article
       onClick={goToPost}
       className={twMerge(
-        "min-w-full border-b-[1px] border-neutral-800  cursor-pointer hover:bg-neutral-900 transition-all group flex items-center justify-center flex-col gap-1",
-        isComment ? "p-0" : "p-5"
+        "min-w-full border-b-[1px] border-neutral-800  cursor-pointer hover:bg-neutral-900 transition-all group flex items-center justify-center flex-col p-0 "
       )}
     >
       <div
         className={twMerge(
           "flex flex-col items-start justify-start min-w-full",
-          isComment ? "px-5 pt-5  gap-4" : " "
+          isComment ? "px-5 pt-5  gap-4" : " pt-5 px-5",
+          !isComment && isEmpty(mutualReplies) ? "pb-5" : "pb-0"
         )}
       >
         {post.parentId && post.parentUsername && (
@@ -191,7 +191,10 @@ const TweetCard = ({
             )}
           >
             <Avatar
-              className="w-[55px] h-[55px] min-w-[55px] max-h-[55px] max-w-[55px] min-h-[55px] border-neutral-300 border-[1px] border-opacity-50"
+              className={twMerge(
+                "w-[55px] h-[55px] min-w-[55px] max-h-[55px] max-w-[55px] min-h-[55px]  border-[2px] border-opacity-50",
+                !isEmpty(mutualReplies) && !isComment && "border-neutral-300"
+              )}
               hasBorder
               userId={post.user.id}
             />
@@ -217,15 +220,10 @@ const TweetCard = ({
               </div>
             )}
             {!!!isComment && !isEmpty(mutualReplies) && (
-              <>
-                <hr
-                  className="w-[2px] rounded-md bg-neutral-300 bg-opacity-50 border-none transition-all"
-                  style={{ minHeight: scrollHeight - 50 }}
-                />
-                <span className="flex flex-col text-neutral-300 text-opacity-50 text-lg gap-1 ">
-                  <BiDotsVertical />
-                </span>
-              </>
+              <hr
+                className="w-[2px]   bg-neutral-300 bg-opacity-50 border-none transition-all"
+                style={{ minHeight: scrollHeight - 20 }}
+              />
             )}
           </div>
           <div
@@ -395,7 +393,10 @@ const TweetCard = ({
         </div>
       </div>
       {!isComment && !isEmpty(mutualReplies) && (
-        <MutualReplies replies={mutualReplies || []} />
+        <MutualReplies
+          replies={mutualReplies || []}
+          currentUser={currentUser}
+        />
       )}
     </article>
   );

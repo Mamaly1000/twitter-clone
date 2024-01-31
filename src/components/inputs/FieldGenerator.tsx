@@ -46,7 +46,9 @@ export const ProfileFieldsTypes: {
 const FieldGenerator = ({
   onChange,
   value,
+  disabled = false,
 }: {
+  disabled?: boolean;
   value: {
     value: string;
     type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
@@ -70,7 +72,17 @@ const FieldGenerator = ({
   });
 
   return (
-    <div className="min-w-full flex flex-col items-start justify-start gap-3 p-3 capitalize text-neutral-200 text-[15px] border-[1px] border-neutral-800 rounded-md">
+    <div
+      className={twMerge(
+        "min-w-full flex flex-col items-start justify-start gap-3 p-3 capitalize text-neutral-200 text-[15px] border-[1px] border-neutral-800 rounded-md transition-all",
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      )}
+      onClick={(e) => {
+        if (disabled) {
+          e.preventDefault();
+        }
+      }}
+    >
       <div className="min-w-full flex flex-col items-start justify-start gap-2">
         <div className="min-w-full flex flex-row items-center capitalize justify-start gap-2 ">
           <span className="text-[14px] capitalize text-neutral-200">
@@ -84,14 +96,19 @@ const FieldGenerator = ({
                     "px-2 py-1 rounded-md border-[1px]  hover:scale-105 transition-all ",
                     t.type === activeField?.type
                       ? "border-sky-400 text-sky-400"
-                      : "border-white text-white"
+                      : "border-white text-white",
+                    disabled ? "cursor-not-allowed" : ""
                   )}
                   key={t.type}
-                  onClick={() => {
-                    setActivefield({
-                      type: t.type,
-                      value: location?.value ? location.value : "",
-                    });
+                  onClick={(e) => {
+                    if (disabled) {
+                      e.preventDefault();
+                    } else {
+                      setActivefield({
+                        type: t.type,
+                        value: location?.value ? location.value : "",
+                      });
+                    }
                   }}
                 >
                   {t.label}
@@ -187,7 +204,10 @@ const FieldGenerator = ({
         </div>
         <div className="min-w-full flex flex-col items-start justify-start gap-1 mt-2">
           {value.map((f) => (
-            <div key={uuidv4()} className="min-w-full flex items-center justify-between gap-2">
+            <div
+              key={uuidv4()}
+              className="min-w-full flex items-center justify-between gap-2"
+            >
               <div className="flex items-center justify-start gap-1 text-[13px] text-neutral-300">
                 <FieldIcon type={f.type} />
                 <span className="flex px-1 cursor-default flex-row items-center justify-start text-white hover:text-sky-400 gap-2   line-clamp-1">

@@ -12,10 +12,18 @@ const useCurrentUser = () => {
           name: string | null;
           username: string | null;
         };
+        post: {
+          user: {
+            name: string | null;
+          };
+          body: string;
+          likedIds: string[];
+          commentIds: string[];
+        };
         id: string;
-        postId: string;
-        body: string;
         createdAt: Date;
+        body: string;
+        postId: string;
       }[];
     },
 

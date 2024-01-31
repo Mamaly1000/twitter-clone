@@ -91,9 +91,15 @@ const EditModal = () => {
             setProfileFields([]);
             onClose();
           });
-      } catch (error) {
+      } catch (error: any) {
+        if (error.message) {
+          toast.error(error.message);
+        } else if (error.response.data) {
+          toast.error(error.response.data);
+        } else {
+          toast.error("something went wrong!");
+        }
         console.log(error);
-        toast.error("something went wrong!");
       } finally {
         setLoading(false);
       }
@@ -141,6 +147,7 @@ const EditModal = () => {
         disabled={isLoading}
       />
       <FieldGenerator
+        disabled={isLoading}
         value={profileFields}
         onChange={(fields) => {
           setProfileFields(fields);
@@ -156,6 +163,7 @@ const EditModal = () => {
       onClose={onClose}
       onSubmit={onSubmit}
       body={bodyContent}
+      disabled={isLoading}
     />
   );
 };
