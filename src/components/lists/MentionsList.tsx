@@ -47,12 +47,12 @@ const MentionsList = ({
   }, [mentions, users]);
 
   return (
-    <div className="min-w-full flex flex-col items-center justify-start gap-3 capitalize">
-      <div className="min-w-full flex flex-row items-center justify-start gap-3 capitalize">
+    <div className="min-w-full max-w-full overflow-hidden flex flex-col items-center justify-start gap-3 capitalize">
+      <div className="min-w-full max-w-full overflow-hidden flex flex-wrap items-center justify-start gap-3 capitalize">
         <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
           mentions :
         </h4>
-        <div className="min-w-full flex items-start justify-start flex-wrap gap-2">
+        <div className="min-w-fit flex items-start justify-start flex-wrap gap-2">
           {mentions.map((m) => (
             <span
               key={m.id}
@@ -72,11 +72,11 @@ const MentionsList = ({
           ))}
         </div>{" "}
       </div>
-      <div className="min-w-full flex flex-row items-center justify-start gap-3 capitalize">
+      <div className="min-w-full max-w-full overflow-hidden flex flex-wrap items-center justify-start gap-3 capitalize">
         <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
           valid mentions :
         </h4>
-        <div className="min-w-full flex items-start justify-start flex-wrap gap-2">
+        <div className="min-w-fit flex items-start justify-start flex-wrap gap-2">
           {usersByIds.map(
             (user) =>
               !!user && (

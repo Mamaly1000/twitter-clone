@@ -39,7 +39,7 @@ const Button = ({
           ? "text-white bg-black border-[#566370]"
           : "bg-sky-500 text-white border-sky-500",
         large ? "text-xl px-5 py-3" : "text-md px-[24px] py-[4px]",
-        outline ? "bg-transparent border-white text-white" : ""
+        outline ? "bg-black border-[#566370] text-white" : ""
       )}
     >
       {children}

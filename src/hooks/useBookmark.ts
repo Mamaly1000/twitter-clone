@@ -30,10 +30,10 @@ const useBookmark = (id?: string) => {
   }, [id, currentUserMutate, postMutate, bookmarksMutate]);
 
   const isBookmarked = useMemo(() => {
-    if (!id) {
+    if (!id || !user) {
       return false;
     }
-    return includes(user.bookmarksIds, id);
+    return includes(user?.bookmarksIds, id);
   }, [user, id]);
 
   const BookmarkIcon = isBookmarked ? FaBookmark : FaRegBookmark;

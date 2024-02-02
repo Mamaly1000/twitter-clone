@@ -18,8 +18,7 @@ import usePost from "@/hooks/usePost";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { includes } from "lodash";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { useLoginModal } from "@/hooks/useLoginModal";
-import { useRepostModal } from "@/hooks/useRepostModal";
+import { useLoginModal } from "@/hooks/useLoginModal"; 
 
 const CommentCard = ({
   comment,
@@ -44,7 +43,6 @@ const CommentCard = ({
   const commentRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
   const loginModal = useLoginModal();
-  const repostModal = useRepostModal();
 
   const [isLoading, setLoading] = useState(false);
 
@@ -106,15 +104,10 @@ const CommentCard = ({
         loginModal.onOpen();
       }
 
-      if (comment.postId) repostModal.onOpen(comment.postId);
+      if (comment.postId) router.push(`/repost/${comment.postId}`);
     },
-    [repostModal, loginModal, userId, comment.postId]
+    [loginModal, userId, comment.postId]
   );
-
-  const isReposted = useMemo(() => {
-    const list = [...(comment.post.repostIds || [])];
-    return includes(list, userId);
-  }, [comment.post.repostIds, userId]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -219,10 +212,7 @@ const CommentCard = ({
             </div>
             <div
               onClick={onRepost}
-              className={twMerge(
-                "hover:text-sky-400 text-neutral-500 ",
-                isReposted && "text-sky-400"
-              )}
+              className={twMerge("hover:text-sky-400 text-neutral-500 ")}
             >
               <BiRepost size={20} />
             </div>

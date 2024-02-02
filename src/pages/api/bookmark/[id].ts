@@ -73,6 +73,29 @@ export default async function handler(
       });
     }
 
+    try {
+      await prisma.notification.create({
+        data: {
+          body: `in case you missed ${currentUser.currentUser.username} bookmarked your tweet;`,
+          actionUsername: currentUser.currentUser.username || "some body",
+          type: "BOOKMARK",
+          userId: TargetPost.userId,
+          actionUser: currentUser.currentUser.id,
+          postId: TargetPost.id,
+        },
+      });
+      await prisma.user.update({
+        where: {
+          id: TargetPost.userId,
+        },
+        data: {
+          hasNotification: true,
+        },
+      });
+    } catch (error) {
+      console.log("error in bookmark notification", error);
+    }
+
     return res.status(200).json({
       message: isBookmarked ? "unBookmarked" : "Bookmarked",
     });

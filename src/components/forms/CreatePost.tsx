@@ -4,7 +4,7 @@ import usePosts from "@/hooks/usePosts";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -15,6 +15,10 @@ import { formatString } from "@/libs/wordDetector";
 import { getHashtags, getMentions } from "@/libs/getMentions";
 import { useRouter } from "next/router";
 import MentionsList from "../lists/MentionsList";
+import useUserLocation from "@/hooks/useUserLocation";
+import CountrySelect from "../inputs/Select";
+import { IoAlertCircle } from "react-icons/io5";
+import { SingleCountryType } from "@/hooks/useCountry";
 
 const createPostSchema = z.object({
   body: z
@@ -43,7 +47,15 @@ const CreatePost = ({
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
-  const { data: currentUser } = useCurrentUser();
+  const [userLocation, setUserlocation] = useState<SingleCountryType>({
+    city: "",
+    label: "",
+    region: "",
+    value: "",
+  });
+
+  const { data: currentUser, mutate: currentUserMutate } = useCurrentUser();
+  const { location } = useUserLocation(currentUser.id);
   const { mutate: mutatePosts } = usePosts();
   const { mutate: mutatePost } = usePost(postId as string);
   const [isLoading, setLoading] = useState(false);
@@ -73,17 +85,20 @@ const CreatePost = ({
             await axios
               .post(`/api/repost`, {
                 quote: values.body,
-                userId: (post as Post).userId,
-                tweetContent: (post as Post).body,
-                postId: post.id,
+                postId: postId,
+                hashtags,
+                mentions: values.mentionIds,
+                location,
               })
               .then((res) => {
                 toast.success(res.data.message);
-                postsMutate();
-                setQuote("");
-                userMutate();
-                postMutate();
-                repostModal.onClose();
+                currentUserMutate();
+                mutatePosts();
+                mutatePost();
+                form.reset();
+                setHashtags([]);
+                setMentions([]);
+                router.push(`/posts/${res.data.repostId}`);
               });
           } else {
             toast.error("please wait!");
@@ -91,76 +106,79 @@ const CreatePost = ({
         } catch (error: any) {
           if (error.response.data.message) {
             toast.error(error.response.data.message);
-          } else {
-            toast.error("something went wrong!");
           }
         } finally {
           setLoading(false);
         }
-      }
-      try {
-        setLoading(true);
-        let url = isComment ? `/api/comments?post_id=${postId}` : "/api/posts";
-        await axios
-          .post(url, {
-            body: values.body,
-            hashtags,
-            mentions: values.mentionIds,
-          })
-          .then((res: any) => {
-            mutatePosts();
-            mutatePost();
-            toast.success(res.data.message);
-            form.reset();
-            setHashtags([]);
-            setMentions([]);
+      } else {
+        try {
+          setLoading(true);
+          let url = isComment
+            ? `/api/comments?post_id=${postId}`
+            : "/api/posts";
+          await axios
+            .post(url, {
+              body: values.body,
+              hashtags,
+              mentions: values.mentionIds,
+              location,
+            })
+            .then((res: any) => {
+              mutatePosts();
+              mutatePost();
+              toast.success(res.data.message);
+              form.reset();
+              setHashtags([]);
+              setMentions([]);
 
-            if (mainPage) {
-              if (mainPage && !!postId) {
-                router.push(`/posts/${res.data.comment.parentId}`);
-              } else router.push("/");
-            }
-          });
-      } catch (error) {
-        console.log(error);
-        toast.error("something went wrong!");
-      } finally {
-        setLoading(false);
+              if (mainPage) {
+                if (mainPage && !!postId) {
+                  router.push(`/posts/${res.data.comment.parentId}`);
+                } else router.push("/");
+              }
+            });
+        } catch (error) {
+          console.log(error);
+          toast.error("something went wrong!");
+        } finally {
+          setLoading(false);
+        }
       }
     }
   );
 
   return (
-    <div className="border-b-[1px] border-neutral-800 px-5 py-2">
+    <div className="border-b-[1px] border-neutral-800 px-5 py-2 ">
       {currentUser ? (
-        <div className="flex flex-row gap-4 text-white">
-          <div>
-            <Avatar userId={currentUser?.id} />
-          </div>
-          <div className="max-w-full overflow-hidden w-full flex items-start justify-start gap-3 flex-col pb-2">
-            {mainPage && (
-              <p
-                className="min-w-full p-2  text-left to-emerald-50 text-white font-semibold"
-                dangerouslySetInnerHTML={{
-                  __html: formatString(form.watch("body")),
+        <div className="flex flex-col justify-start items-start gap-4 text-white">
+          <div className="min-w-full max-w-full flex items-start justify-start gap-4">
+            <div>
+              <Avatar userId={currentUser?.id} />
+            </div>
+            <div className="max-w-full overflow-hidden w-full flex items-start justify-start gap-3 flex-col pb-2">
+              {mainPage && (
+                <p
+                  className="min-w-full p-2  text-left to-emerald-50 text-white font-semibold"
+                  dangerouslySetInnerHTML={{
+                    __html: formatString(form.watch("body")),
+                  }}
+                ></p>
+              )}
+              <textarea
+                disabled={isLoading}
+                aria-placeholder={placeholder}
+                onChange={(event) => {
+                  form.setValue("body", event.target.value);
+                  setMentions(
+                    getMentions(event.target.value).map((mention) => {
+                      return { id: "", username: mention };
+                    })
+                  );
+                  setHashtags(getHashtags(event.target.value));
                 }}
-              ></p>
-            )}
-            <textarea
-              disabled={isLoading}
-              aria-placeholder={placeholder}
-              onChange={(event) => {
-                form.setValue("body", event.target.value);
-                setMentions(
-                  getMentions(event.target.value).map((mention) => {
-                    return { id: "", username: mention };
-                  })
-                );
-                setHashtags(getHashtags(event.target.value));
-              }}
-              maxLength={100}
-              value={form.watch("body")}
-              className="
+                maxLength={100}
+                value={form.watch("body")}
+                className="
             disabled:opacity-80
             peer
             resize-none 
@@ -173,27 +191,30 @@ const CreatePost = ({
             placeholder-neutral-500 
             text-white max-w-full overflow-hidden
           "
-              placeholder={placeholder}
-            ></textarea>
-            <hr
-              className="
+                placeholder={placeholder}
+              ></textarea>
+              <hr
+                className="
             opacity-0 
             peer-focus:opacity-100 
             h-[1px] 
             w-full 
             border-neutral-800 
             transition"
-            />
-            <div className="mt-4 flex flex-row justify-end w-full ">
-              <Button
-                disabled={isLoading || !(form.watch("body").length > 5)}
-                onClick={onSubmit}
-              >
-                Tweet
-              </Button>
+              />
+              <div className="mt-4 flex flex-row justify-end w-full ">
+                <Button
+                  disabled={isLoading || !(form.watch("body").length > 5)}
+                  onClick={onSubmit}
+                >
+                  Tweet
+                </Button>
+              </div>
             </div>
-            {mainPage && hashtags.length > 0 && (
-              <div className="min-w-full flex flex-row items-center justify-start gap-3 capitalize">
+          </div>
+          {mainPage && hashtags.length > 0 && (
+            <>
+              <div className="min-w-full max-w-full overflow-hidden flex flex-row items-center justify-start gap-3 capitalize">
                 <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
                   hashTags :
                 </h4>
@@ -208,17 +229,33 @@ const CreatePost = ({
                   ))}
                 </div>
               </div>
-            )}
-            {mainPage && mentions.length > 0 && (
-              <MentionsList
-                mentions={mentions}
-                onChange={(val) => {
-                  const ids = val.map((v) => v.id) as never[];
-                  form.setValue("mentionIds", ids);
-                }}
-              />
-            )}
-          </div>
+              {!!!location && (
+                <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-3">
+                  <p className="min-w-full text-start text-sm text-wrap text-red-400">
+                    <IoAlertCircle /> notice : there is not location in your
+                    profile section so for using hashtags you need to define a
+                    location for them .
+                  </p>
+                  <CountrySelect
+                    value={userLocation}
+                    onChange={(val) => {
+                      setUserlocation(val);
+                    }}
+                    className="min-w-full max-w-full"
+                  />
+                </div>
+              )}
+            </>
+          )}
+          {mainPage && mentions.length > 0 && (
+            <MentionsList
+              mentions={mentions}
+              onChange={(val) => {
+                const ids = val.map((v) => v.id) as never[];
+                form.setValue("mentionIds", ids);
+              }}
+            />
+          )}
         </div>
       ) : (
         <div className="py-8">

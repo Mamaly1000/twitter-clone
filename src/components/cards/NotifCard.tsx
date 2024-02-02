@@ -32,8 +32,8 @@ const NotifCard = ({
       className=" flex flex-row items-start justify-start p-6 gap-4 border-b-[1px] border-neutral-800 min-w-full cursor-pointer hover:opacity-80 transition-all"
     >
       <NotifImage type={notif.type} />
-      <section className="flex w-[calc(100%-60px)]  items-start justify-between gap-3  flex-wrap">
-        <div className="flex flex-col items-center justify-start gap-3 text-[12px] md:text-[15px]">
+      <section className="flex max-w-[calc(100%-60px)] min-w-[calc(100%-60px)]  items-start justify-between gap-3   md:flex-row flex-col">
+        <div className="flex flex-col items-center justify-start gap-3 text-[12px] md:text-[15px]  md:max-w-[calc(100%-200px)]  ">
           <div className="w-full flex flex-col md:flex-row items-start justify-start gap-2">
             <Avatar userId={notif.actionUser} />
             <div className="flex items-start justify-start flex-col text-white">
@@ -88,7 +88,7 @@ const NotifCard = ({
             )}
           </div>
         </div>
-        <span className="text-neutral-500 text-sm flex items-center justify-center gap-1">
+        <span className="text-neutral-500 text-sm min-w-fit flex items-center justify-center gap-1">
           <BsClock size={15} />
           {createdAt} ago
         </span>

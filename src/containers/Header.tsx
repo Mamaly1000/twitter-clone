@@ -25,7 +25,7 @@ const Header = ({
             className="cursor-pointer hover:opacity-70 transition"
           />
         )}
-        <h1 className="text-white text-xl font-semibold capitalize flex flex-col items-start justify-start ">
+        <h1 className="text-white text-xl font-semibold capitalize flex flex-col items-start justify-start leading-[20px]">
           {label}
           {!!subHeader && <p className="text-[12px] text-[#72767A] ">{subHeader}</p>}
         </h1>

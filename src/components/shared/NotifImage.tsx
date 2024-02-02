@@ -6,6 +6,7 @@ import mention from "../../../public/images/icons8-mention-64.png";
 import { AiFillDislike, AiFillLike, AiOutlineRetweet } from "react-icons/ai";
 import { SlUserFollow, SlUserUnfollow } from "react-icons/sl";
 import comment from "../../../public/images/icons8-chat-message-96.png";
+import { MdBookmarks } from "react-icons/md";
 
 const NotifImage = ({ type }: { type: String }) => {
   return (
@@ -36,7 +37,7 @@ const NotifImage = ({ type }: { type: String }) => {
           alt="tweet icon"
         />
       )}
-
+      {type === "BOOKMARK" && <MdBookmarks className="w-[25px] h-[25px] md:w-[30px] md:h-[30px]"  />}
       {type === "COMMENT" && (
         <Image
           fill

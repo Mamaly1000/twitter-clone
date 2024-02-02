@@ -42,10 +42,10 @@ const UserCard = ({
       onClick={goToUser}
       className="min-w-full max-w-full border-b-[1px] border-b-neutral-800 p-3 flex justify-between items-start gap-2 hover:bg-neutral-800 hover:bg-opacity-60 cursor-pointer"
     >
-      <section className="flex max-w-[70%] gap-2 items-start justify-start">
+      <section className="flex max-w-[65%] overflow-hidden gap-2 items-start justify-start">
         <Avatar userId={user.id} />
-        <div className="flex flex-col items-start justify-start gap-1">
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-1 justify-start capitalize">
+        <div className="flex flex-col items-start justify-start gap-1 w-[calc(100%-50px)]">
+          <div className="flex flex-wrap  max-w-full items-center gap-1 justify-start capitalize">
             <p
               onClick={goToUser}
               className=" text-white font-semibold cursor-pointer hover:underline text-nowrap  "
@@ -58,14 +58,14 @@ const UserCard = ({
             >
               @{user.username}
             </span>
-            <span className="text-neutral-500 flex items-center justify-center gap-1 sm:ms-2 text-sm text-nowrap">
+            <span className="text-neutral-500 flex items-center justify-center gap-1 sm:ms-2 text-sm text-nowrap whitespace-nowrap ">
               <BiCalendar size={14} />
               joined on {createdAt}
             </span>
           </div>
           {!!user.bio && (
             <p
-              className="text-[15px] hidden sm:block leading-normal line-clamp-3 capitalize text-neutral-200 w-full font-light"
+              className="text-[15px] hidden sm:flex leading-normal line-clamp-3 capitalize whitespace-pre-wrap justify-start items-start text-neutral-200 w-full max-w-full font-light"
               dangerouslySetInnerHTML={{ __html: formatString(user.bio || "") }}
             ></p>
           )}

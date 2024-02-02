@@ -17,7 +17,7 @@ const RepostPage = () => {
   }
   return (
     <div>
-      <Header label="reply to a tweet" displayArrow />
+      <Header label="retweet the tweet" displayArrow />
       <TweetCard post={post} isComment userId={user.id} />
       <CreatePost
         isRepost

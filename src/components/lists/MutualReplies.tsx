@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { User } from "@prisma/client";
 import { useLoginModal } from "@/hooks/useLoginModal";
-import { useRepostModal } from "@/hooks/useRepostModal";
 import useLike from "@/hooks/useLike";
 import { FiShare } from "react-icons/fi";
 import { BiRepost } from "react-icons/bi";
@@ -45,7 +44,6 @@ const MutualReplies = ({
   });
 
   const loginModal = useLoginModal();
-  const repostModal = useRepostModal();
 
   const onLike = useCallback(
     async (ev: any) => {
@@ -67,9 +65,9 @@ const MutualReplies = ({
         loginModal.onOpen();
       }
 
-      if (replies[0].postId) repostModal.onOpen(replies[0].postId);
+      if (replies[0].postId) router.push(`/repost/${replies[0].postId}`);
     },
-    [repostModal, loginModal, currentUser]
+    [loginModal, currentUser]
   );
 
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
@@ -175,9 +173,9 @@ const MutualReplies = ({
                 `replied by @${replies[0].user.username}, @${
                   replies[1].user.username
                 }, ${
-                  (replies.length - 2) > 0 &&
-                  `, and ${(replies.length - 2)} ${
-                    (replies.length - 2) > 2 ? "others" : "more"
+                  replies.length - 2 > 0 &&
+                  `, and ${replies.length - 2} ${
+                    replies.length - 2 > 2 ? "others" : "more"
                   }`
                 }`
               ),

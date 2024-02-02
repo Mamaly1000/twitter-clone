@@ -50,8 +50,8 @@ model Post {
   parentUsername String?
   commentIds String[] @db.ObjectId
   repostIds String[] @db.ObjectId
-bookmarkedIds String[] @db.ObjectId
 
+  bookmarkedIds String[] @db.ObjectId 
   repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
   comments Comment[]  
@@ -112,3 +112,12 @@ model CoverImage{
    user User @relation(fields: [userId], references: [id])
 }
  
+ model Hashtag{
+   id              String @id @default(auto()) @map("_id") @db.ObjectId
+   name String 
+   location String @unique
+   userIds String[] @db.ObjectId
+   postIds String[] @db.ObjectId
+   createdAt          DateTime @default(now())
+   updatedAt          DateTime @updatedAt
+ }

@@ -12,8 +12,7 @@ import React, {
 } from "react";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import Avatar from "../shared/Avatar";
-import useLike from "@/hooks/useLike";
-import { useRepostModal } from "@/hooks/useRepostModal";
+import useLike from "@/hooks/useLike"; 
 import { BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
@@ -21,8 +20,7 @@ import { twMerge } from "tailwind-merge";
 import { filter, intersection, isEmpty } from "lodash";
 import { FiShare } from "react-icons/fi";
 import MutualReplies from "../lists/MutualReplies";
-import useBookmark from "@/hooks/useBookmark";
-import { CiBookmark } from "react-icons/ci";
+import useBookmark from "@/hooks/useBookmark"; 
 
 const TweetCard = ({
   post,
@@ -37,8 +35,7 @@ const TweetCard = ({
   };
 }) => {
   const router = useRouter();
-  const loginModal = useLoginModal();
-  const repostModal = useRepostModal();
+  const loginModal = useLoginModal(); 
 
   const [scrollHeight, setHeight] = useState(20);
   const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
@@ -82,13 +79,13 @@ const TweetCard = ({
   const onRepost = useCallback(
     (e: any) => {
       e.stopPropagation();
-      if (!currentUser) {
+      if (!currentUser || !post) {
         loginModal.onOpen();
       }
 
-      if (post?.id) repostModal.onOpen(post?.id);
+      if (post?.id) router.push(`/repost/${post.id}`);
     },
-    [repostModal, loginModal, currentUser]
+    [loginModal, currentUser, post]
   );
 
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
@@ -125,7 +122,7 @@ const TweetCard = ({
   }, [scrollHeight, window, tweetRef]);
 
   const mutualReplies = useMemo(() => {
-    if (!post.commentIds) {
+    if (!post.commentIds || !currentUser) {
       return null;
     }
     const list = intersection(

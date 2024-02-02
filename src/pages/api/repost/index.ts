@@ -2,7 +2,7 @@ import prisma from "@/libs/prisma";
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { includes } from "lodash";
+import { difference, includes, without } from "lodash";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,11 +29,11 @@ export default async function handler(
       return res.status(200).json(reposts);
     }
     if (req.method === "POST") {
-      const { quote, userId, tweetContent, postId } = req.body;
-      if (!userId || !tweetContent || !postId) {
+      const { quote, postId, hashtags, mentions } = req.body;
+      if (!postId) {
         return res.status(404).json({ message: "Invalid user or tweet id!" });
       }
-
+      // find the target post
       const selectedPost = await prisma.post.findUnique({
         where: {
           id: postId,
@@ -44,15 +44,16 @@ export default async function handler(
           message: "The Post you are trying to Repost does not exist.",
         });
       }
-
+      // create a new repost with target post id and userId
       const newRepost = await prisma.repost.create({
         data: {
           quoto: quote || null,
-          userId,
-          body: tweetContent,
+          userId: selectedPost.userId,
+          body: selectedPost.body,
           postId: selectedPost.id,
         },
       });
+      // create the new post by current user
       const newPost = await prisma.post.create({
         data: {
           body: quote || "",
@@ -60,6 +61,7 @@ export default async function handler(
           repostId: newRepost.id,
         },
       });
+      // update repostids array in the target post
       let repostIds = [...selectedPost.repostIds, newRepost.id];
       await prisma.post.update({
         where: {
@@ -69,35 +71,76 @@ export default async function handler(
           repostIds: repostIds,
         },
       });
-
+      // repost notifications
       try {
+        let mentionedUsers: string[] = mentions || [];
+        let myFollowers = difference(
+          currentUser.currentUser.followerIds,
+          mentionedUsers
+        );
         if (currentUser.currentUser.id) {
           await prisma.notification.createMany({
-            data: [
-              ...currentUser.currentUser.followingIds.map((followedId) => ({
-                actionUser: currentUser.currentUser.id,
-                actionUsername: currentUser.currentUser.username || "",
-                body: `in case you missed @${currentUser.currentUser.username} retweets.`,
-                userId: followedId,
-                postId: newPost.id,
-                type: "REPOST",
-              })),
-              {
-                body: `in case you missed @${currentUser.currentUser.username} retweets.`,
-                userId: userId,
-                postId: newPost.id,
-                actionUser: currentUser.currentUser.id,
-                type: "REPOST",
-                actionUsername: currentUser.currentUser.username || "",
-              },
-            ],
+            data:
+              mentionedUsers.length > 0
+                ? [
+                    ...myFollowers.map((followedId) => ({
+                      actionUser: currentUser.currentUser.id,
+                      actionUsername: currentUser.currentUser.username || "",
+                      body: `in case you missed @${currentUser.currentUser.username} retweets.`,
+                      userId: followedId,
+                      postId: newPost.id,
+                      type: "REPOST",
+                    })),
+                    ...mentionedUsers.map((id) => ({
+                      actionUser: currentUser.currentUser.id,
+                      actionUsername: currentUser.currentUser.username || "",
+                      body: `in case you missed @${currentUser.currentUser.username} mentioned you in a retweets.`,
+                      userId: id,
+                      postId: newPost.id,
+                      type: "MENTION",
+                    })),
+                    {
+                      body: `in case you missed @${currentUser.currentUser.username} retweets your tweet.`,
+                      userId: selectedPost.userId,
+                      postId: newPost.id,
+                      actionUser: currentUser.currentUser.id,
+                      type: "REPOST",
+                      actionUsername: currentUser.currentUser.username || "",
+                    },
+                  ]
+                : [
+                    ...myFollowers.map((followedId) => ({
+                      actionUser: currentUser.currentUser.id,
+                      actionUsername: currentUser.currentUser.username || "",
+                      body: `in case you missed @${currentUser.currentUser.username} retweets.`,
+                      userId: followedId,
+                      postId: newPost.id,
+                      type: "REPOST",
+                    })),
+                    {
+                      body: `in case you missed @${currentUser.currentUser.username} retweets your tweet.`,
+                      userId: selectedPost.userId,
+                      postId: newPost.id,
+                      actionUser: currentUser.currentUser.id,
+                      type: "REPOST",
+                      actionUsername: currentUser.currentUser.username || "",
+                    },
+                  ],
           });
+          let mentionIds = includes(mentionedUsers, selectedPost.userId)
+            ? without(mentionedUsers, selectedPost.userId)
+            : mentionedUsers;
+          let followersIds = includes(
+            currentUser.currentUser.followerIds,
+            selectedPost.userId
+          )
+            ? currentUser.currentUser.followerIds
+            : [...currentUser.currentUser.followerIds, selectedPost.userId];
+          let notifIds = [mentionIds, followersIds].flat();
           await prisma.user.updateMany({
             where: {
               id: {
-                in: includes(currentUser.currentUser.followingIds, userId)
-                  ? currentUser.currentUser.followingIds
-                  : [...currentUser.currentUser.followingIds, userId],
+                in: notifIds,
               },
             },
             data: {
@@ -106,11 +149,12 @@ export default async function handler(
           });
         }
       } catch (error) {
-        console.log("error in saving notification while liking", error);
+        console.log("error in saving notification while reposting", error);
       }
 
       return res.status(200).json({
         message: "repost created",
+        repostId: newPost.id,
       });
     }
   } catch (error) {

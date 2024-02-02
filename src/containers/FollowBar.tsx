@@ -7,7 +7,7 @@ const FollowBar = () => {
   const { users } = useUsers();
   return (
     <div className="px-6 py-4 hidden xl:block">
-      <div className="bg-neutral-800 rounded-xl p-4">
+      <div className="bg-[#6E767D] rounded-xl p-4">
         <h2 className="text-white text-xl font-semibold">Who to follow</h2>
         <UsersList   users={users} />
       </div>
