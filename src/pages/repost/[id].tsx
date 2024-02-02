@@ -4,30 +4,29 @@ import Loader from "@/components/shared/Loader";
 import Header from "@/containers/Header";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import usePost from "@/hooks/usePost";
-import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React from "react";
 
-const ReplyPage = () => {
+const RepostPage = () => {
   const router = useRouter();
   const postId = router.query.id as string;
-  const { data: user } = useCurrentUser();
-  const { post } = usePost(postId);
-  if (!post || !user || !postId) {
-    return <Loader message="post is not available" />;
+  const { data: user, isLoading: userLoading } = useCurrentUser();
+  const { post, isLoading } = usePost(postId);
+  if (userLoading || isLoading || !user || !post) {
+    return <Loader message="preparing tweet repost." />;
   }
   return (
-    <>
+    <div>
       <Header label="reply to a tweet" displayArrow />
-      <TweetCard post={post} isComment userId={(user as User).id} />
+      <TweetCard post={post} isComment userId={user.id} />
       <CreatePost
-        isComment
+        isRepost
         postId={post.id}
         mainPage
-        placeholder="tweet your reply"
+        placeholder="write your quote... (optional)"
       />
-    </>
+    </div>
   );
 };
 
-export default ReplyPage;
+export default RepostPage;

@@ -21,7 +21,7 @@ const MutualFollowers = ({
                 key={f.id}
                 userId={f.id}
                 className={twMerge(
-                  "min-w-[30px] max-w-[30px] min-h-[30px] max-h-[30px] h-[30px] w-[30px] md:min-w-[18px] md:max-w-[18px] md:min-h-[18px] md:max-h-[18px] md:h-[18px] md:w-[18px] absolute drop-shadow-2xl ",
+                  "min-w-[30px] max-w-[30px] min-h-[30px] max-h-[30px] h-[30px] w-[30px] md:min-w-[18px] md:max-w-[18px] md:min-h-[18px] md:max-h-[18px] md:h-[18px] md:w-[18px] absolute drop-shadow-2xl border-[1px] border-black ",
                   i === 1 && `start-4 md:start-2 z-20`,
                   i === 2 && "start-8 md:start-4 z-30"
                 )}

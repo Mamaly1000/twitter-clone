@@ -10,7 +10,11 @@ const RepliesFeed = ({ id }: { id?: string }) => {
     return <Loader message="Loading Replies" />;
   }
   if (replies?.length === 0) {
-    <div className="text-neutral-600 text-center p-6 text-xl">No Replies</div>;
+    return (
+      <p className="min-w-full flex items-center justify-center min-h-[300px] text-neutral-300 text-sm capitalize">
+        no replied tweets...
+      </p>
+    );
   }
   return (
     <section className="flex flex-col items-start justify-start gap-0 min-w-full">

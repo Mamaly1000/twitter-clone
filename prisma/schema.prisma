@@ -27,14 +27,14 @@ model User {
   followerIds     String[] @db.ObjectId
   hasNotification Boolean? 
   profileFieldsIds String[] @db.ObjectId
-
+  bookmarksIds String[] @db.ObjectId
   profileFields Field[] 
 
   posts         Post[]
   reposts Repost[]
   comments      Comment[]
   notifications Notification[]
-  coverimages CoverImage[]
+  coverimages CoverImage[] 
 }
 
 model Post {
@@ -50,11 +50,12 @@ model Post {
   parentUsername String?
   commentIds String[] @db.ObjectId
   repostIds String[] @db.ObjectId
+bookmarkedIds String[] @db.ObjectId
 
   repost Repost? @relation(fields: [repostId],references: [id] , onDelete: Cascade) 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade) 
   comments Comment[]  
-  notifications Notification[]
+  notifications Notification[] 
 }
 
 model Comment {
@@ -110,3 +111,4 @@ model CoverImage{
    userId String @db.ObjectId @unique
    user User @relation(fields: [userId], references: [id])
 }
+ 

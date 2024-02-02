@@ -74,7 +74,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
               __html: formatString(fetchedUser?.bio || ""),
             }}
           ></p>
-          <div className="w-[80%] mt-5 sm:max-w-[50%] flex flex-wrap items-start justify-start gap-x-3 gap-y-2 text-[12px] md:text-[16px]">
+          <div className="w-[80%] mt-5 sm:max-w-[70%] flex flex-wrap items-start justify-start gap-x-3 gap-y-2 text-[12px] md:text-[16px]">
             {fetchedUser.profileFields.map((f) => (
               <FieldValue
                 size={15}

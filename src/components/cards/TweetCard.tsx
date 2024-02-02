@@ -14,13 +14,15 @@ import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import Avatar from "../shared/Avatar";
 import useLike from "@/hooks/useLike";
 import { useRepostModal } from "@/hooks/useRepostModal";
-import { BiDotsVertical, BiRepost } from "react-icons/bi";
+import { BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
 import { filter, intersection, isEmpty } from "lodash";
 import { FiShare } from "react-icons/fi";
 import MutualReplies from "../lists/MutualReplies";
+import useBookmark from "@/hooks/useBookmark";
+import { CiBookmark } from "react-icons/ci";
 
 const TweetCard = ({
   post,
@@ -42,6 +44,7 @@ const TweetCard = ({
   const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
   const { data: currentUser } = useCurrentUser();
+  const { toggleBookmark, BookmarkIcon } = useBookmark(post.id);
 
   const { hasLiked, toggleLike } = useLike({ postId: post.id, userId });
 
@@ -333,11 +336,21 @@ const TweetCard = ({
                   </span>
                   comments
                 </span>
+              </div>
+            )}
+            {isComment && (
+              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-800 py-3">
                 <span className="flex items-center justify-center gap-1">
                   <span className="text-white">
                     {post.likedIds.length || 0}
                   </span>
                   likes
+                </span>{" "}
+                <span className="flex items-center justify-center gap-1">
+                  <span className="text-white">
+                    {post.bookmarkedIds.length || 0}
+                  </span>
+                  bookmarks
                 </span>
               </div>
             )}
@@ -376,6 +389,15 @@ const TweetCard = ({
               >
                 <BiRepost size={15} />
               </div>{" "}
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleBookmark();
+                }}
+                className={twMerge("hover:text-sky-400  ")}
+              >
+                <BookmarkIcon />
+              </div>
               <div
                 onClick={(e) => {
                   e.stopPropagation();

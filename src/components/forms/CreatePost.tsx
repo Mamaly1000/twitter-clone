@@ -30,7 +30,9 @@ const CreatePost = ({
   isComment = false,
   postId,
   mainPage = false,
+  isRepost = false,
 }: {
+  isRepost?: boolean;
   mainPage?: boolean;
   postId?: string;
   isComment?: boolean;
@@ -64,6 +66,38 @@ const CreatePost = ({
 
   const onSubmit = form.handleSubmit(
     async (values: z.infer<typeof createPostSchema>) => {
+      if (isRepost) {
+        try {
+          setLoading(true);
+          if (currentUser) {
+            await axios
+              .post(`/api/repost`, {
+                quote: values.body,
+                userId: (post as Post).userId,
+                tweetContent: (post as Post).body,
+                postId: post.id,
+              })
+              .then((res) => {
+                toast.success(res.data.message);
+                postsMutate();
+                setQuote("");
+                userMutate();
+                postMutate();
+                repostModal.onClose();
+              });
+          } else {
+            toast.error("please wait!");
+          }
+        } catch (error: any) {
+          if (error.response.data.message) {
+            toast.error(error.response.data.message);
+          } else {
+            toast.error("something went wrong!");
+          }
+        } finally {
+          setLoading(false);
+        }
+      }
       try {
         setLoading(true);
         let url = isComment ? `/api/comments?post_id=${postId}` : "/api/posts";
@@ -78,9 +112,9 @@ const CreatePost = ({
             mutatePost();
             toast.success(res.data.message);
             form.reset();
-            setHashtags([])
-            setMentions([])
-            
+            setHashtags([]);
+            setMentions([]);
+
             if (mainPage) {
               if (mainPage && !!postId) {
                 router.push(`/posts/${res.data.comment.parentId}`);

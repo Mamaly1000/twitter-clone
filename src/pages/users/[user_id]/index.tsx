@@ -1,3 +1,4 @@
+import BookmarksFeed from "@/components/lists/BookmarksFeed";
 import FollowingsFeed from "@/components/lists/FollowingsFeed";
 import LikedPostFeed from "@/components/lists/LikedPostFeed";
 import PostFeed from "@/components/lists/PostFeed ";
@@ -72,9 +73,7 @@ const UserPage = () => {
         </div>
       </TabContent>{" "}
       <TabContent display={profileTab.label === "bookmarks"}>
-        <div className="min-w-full flex items-center justify-center min-h-[300px] text-white capitalize font-bold text-lg">
-          comming soon...
-        </div>
+        <BookmarksFeed userId={userId} />
       </TabContent>
       <TabContent display={profileTab.label === "replies"}>
         <RepliesFeed id={userId} />
