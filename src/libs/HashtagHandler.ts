@@ -1,5 +1,5 @@
 import prisma from "@/libs/prisma";
-import { filter } from "lodash";
+import { filter, uniq } from "lodash";
 
 const HashtagHandler = async (
   userId: string,
@@ -29,50 +29,64 @@ const HashtagHandler = async (
       }
       if (availableHashtags.length > 0) {
         // update available hashtags
-        const availbleHashtagsNames = availableHashtags.map((h) => h.name);
+        const availbleHashtagsNames = availableHashtags.map((h) =>
+          h.name.toLowerCase()
+        );
         const unAvailableHashtags = filter(
           hashtags,
-          (h) => !availbleHashtagsNames.includes(h)
+          (h) => !availbleHashtagsNames.includes(h.toLowerCase())
         );
-        const updatedAvailableHashtags = await prisma.hashtag.updateMany({
-          where: {
-            AND: [
-              { name: { in: availbleHashtagsNames } },
-              { location: location },
-            ],
-          },
-          data: availableHashtags.map((h) => ({
-            name: h.name,
-            location: h.location,
-            userIds: Array.from(new Set([...h.userIds, userId])),
-            postIds: Array.from(new Set([...h.postIds, postId])),
-          })),
-        });
-        const createUnavailableHashtags = await prisma.hashtag.createMany({
-          data: unAvailableHashtags.map((h) => ({
-            name: h,
-            location: location,
-            userIds: [userId],
-            postIds: [postId],
-          })),
-        });
-        if (!updatedAvailableHashtags) {
-          console.log("error in updating available hashtags");
+        // update Available Hashtags
+        if (availbleHashtagsNames) {
+          availableHashtags.forEach(async (h) => {
+            await prisma.hashtag
+              .update({
+                where: {
+                  id: h.id,
+                },
+                data: {
+                  userIds: uniq([...h.userIds, userId]),
+                  postIds: uniq([...h.postIds, postId]),
+                  count: uniq([...h.postIds, postId]).length,
+                },
+              })
+              .catch((reason) => {
+                console.log(`Error in updating the ${h.name} hashtag`, reason);
+              });
+          });
         }
-        if (!createUnavailableHashtags) {
-          console.log("error in creating unavailable hashtags");
+        // create Unavailable Hashtags
+        if (unAvailableHashtags.length > 0) {
+          await prisma.hashtag
+            .createMany({
+              data: unAvailableHashtags.map((h) => ({
+                name: h.toLowerCase(),
+                location: location.toLowerCase(),
+                userIds: [userId],
+                postIds: [postId],
+                count: 1,
+              })),
+            })
+            .catch((reason) => {
+              console.log("error in creating unavailable hashtags", reason);
+            });
         }
       }
       if (availableHashtags.length === 0) {
         // create hashtags
-        const createHashtags = await prisma.hashtag.createMany({
-          data: hashtags.map((h) => ({
-            location: location,
-            name: h,
-            userIds: [userId],
-            postIds: [postId],
-          })),
-        });
+        await prisma.hashtag
+          .createMany({
+            data: hashtags.map((h) => ({
+              location: location,
+              name: h,
+              userIds: [userId],
+              postIds: [postId],
+              count: 1,
+            })),
+          })
+          .catch((reason) => {
+            console.log("error in creating hashtags", reason);
+          });
       }
     }
   } catch (error) {

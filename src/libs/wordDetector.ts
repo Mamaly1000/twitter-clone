@@ -24,3 +24,8 @@ export function formatString(str: string) {
 
   return stringWithTags;
 }
+export function formatNumbersWithCommas(inputString: string) {
+  return inputString.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, function (match) {
+    return match + ",";
+  });
+}

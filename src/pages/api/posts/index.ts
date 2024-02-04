@@ -2,6 +2,7 @@ import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
 import { difference, without } from "lodash";
+import HashtagHandler from "@/libs/HashtagHandler";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -147,18 +148,36 @@ export default async function handler(
       if (!user) {
         return res.status(401).json({ message: "not singed in!" });
       }
+      const userLocation = await prisma.field.findFirst({
+        where: {
+          userId: user.currentUser.id,
+          type: "LOCATION",
+        },
+      });
       const { body, hashtags, mentions } = req.body;
       const newPost = await prisma.post.create({
         data: { body: body, userId: user.currentUser.id },
       });
+      // handle hashtags
+      try {
+        if (hashtags && userLocation) {
+          await HashtagHandler(
+            user.currentUser.id,
+            newPost.id,
+            userLocation.value.toLowerCase(),
+            hashtags || []
+          );
+        }
+      } catch (error) {
+        console.log("error in handling hashtags", error);
+      }
+      // handle notifications
       try {
         let mentionedUsers: string[] = mentions || [];
         let myFollowers = difference(
           user.currentUser.followerIds,
           mentionedUsers
         );
-        // todo => hashtags functionality
-        let hashtahs = hashtags || [];
 
         await prisma.notification.createMany({
           data:

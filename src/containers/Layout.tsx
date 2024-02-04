@@ -12,9 +12,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
         className="container h-full max-xl: xl:px-30
      max-w-full "
       >
-        <div className="grid grid-cols-4 h-full relative z-10">
+        <div className="grid grid-cols-12 h-full relative z-10">
           <SideBar />
-          <div className="col-span-4 pb-[70px] sm:pb-[100px] lg:pb-0 lg:col-span-3 xl:col-span-2 border-x-[1px] border-neutral-800">
+          <div className="col-span-12 pb-[70px] sm:pb-[100px] lg:pb-0 lg:col-span-9 xl:col-span-7 border-x-[1px] border-neutral-800">
             {children}
           </div>
           <FollowBar />

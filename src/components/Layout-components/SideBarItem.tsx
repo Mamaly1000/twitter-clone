@@ -51,7 +51,7 @@ const SideBarItem = ({
         lg:hidden
       "
       >
-        <Icon size={28} color="white" />
+        <Icon size={24} color="white" />
         {alert ? (
           <BsDot className="text-sky-500 absolute -top-4 left-0" size={70} />
         ) : null}
@@ -59,22 +59,23 @@ const SideBarItem = ({
       <div
         className="
         relative
+        min-w-full
         hidden 
         lg:flex 
         items-row 
         gap-4 
-        p-4 
-        rounded-full 
+        px-4 py-3  transition-all
+        rounded-md 
         hover:bg-slate-300 
         hover:bg-opacity-10 
         cursor-pointer
         items-center
       "
       >
-        <Icon size={24} color="white" />
+        <Icon size={20} />
         <p
           className={twMerge(
-            "hidden lg:block text-white text-xl",
+            "hidden lg:block font-bold capitalize",
             labelClassName
           )}
         >

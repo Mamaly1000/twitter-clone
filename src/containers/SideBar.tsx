@@ -1,47 +1,48 @@
 import SideBarItem from "@/components/Layout-components/SideBarItem";
 import SideBarLogo from "@/components/shared/SideBarLogo";
 import React from "react";
-import { BsBellFill, BsHouseFill } from "react-icons/bs";
-import { BiLogOut } from "react-icons/bi";
-import { FaUser } from "react-icons/fa";
+import { BiLogOut, BiSolidHomeCircle } from "react-icons/bi";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButton";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { signOut } from "next-auth/react";
-import { User } from "@prisma/client";
-import UsersList from "@/components/lists/UsersList";
-import useUsers from "@/hooks/useUsers";
+import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
+import { User } from "@prisma/client"; 
 const SideBar = () => {
-  const { data: currentUser } = useCurrentUser();
-  const { users } = useUsers();
+  const { data: currentUser } = useCurrentUser(); 
   const items = [
     {
-      icon: BsHouseFill,
+      icon: BiSolidHomeCircle,
       label: "Home",
       href: "/",
     },
     {
-      icon: BsBellFill,
+      icon: HiOutlineHashtag,
+      label: "explore",
+      href: "/explore",
+    },
+    {
+      icon: IoMdNotificationsOutline,
       label: "Notifications",
       href: `/notifications/${currentUser?.id}`,
       auth: true,
       alert: (currentUser as User)?.hasNotification || false,
     },
     {
-      icon: FaUser,
+      icon: HiOutlineUser,
       label: "Profile",
       href: `/users/${currentUser?.id}`,
       auth: true,
     },
   ];
   return (
-    <section className="hidden lg:block  col-span-1 h-full pr-4 md:pr-6 lg:pr-3">
-      <div className="flex flex-col items-end ">
-        <div className="space-y-2 *:transition-all lg:w-[230px] ">
+    <section className="hidden lg:block  lg:col-span-3 xl:col-span-2 h-full  ">
+      <div className="flex flex-col items-end min-w-full   ">
+        <div className="space-y-2   transition-all min-w-full flex items-start justify-start flex-col px-4  text-[19px] text-[#D9D9D9]">
           <SideBarLogo />
           {items.map((item) => (
             <SideBarItem key={item.href} item={item as any} />
           ))}
-
           {currentUser && (
             <SideBarItem
               item={{
@@ -51,10 +52,7 @@ const SideBar = () => {
               }}
             />
           )}
-          <SideBarTweetButton />
-          <section className="hidden lg:block xl:hidden">
-            <UsersList title="Who to follow" users={users} />
-          </section>
+          <SideBarTweetButton className="lg:min-w-full text-[17px]" />
         </div>
       </div>
     </section>

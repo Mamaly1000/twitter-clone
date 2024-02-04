@@ -3,6 +3,7 @@ import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { difference, includes, without } from "lodash";
+import HashtagHandler from "@/libs/HashtagHandler";
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,6 +34,13 @@ export default async function handler(
       if (!postId) {
         return res.status(404).json({ message: "Invalid user or tweet id!" });
       }
+      // find the user location
+      const userLocation = await prisma.field.findFirst({
+        where: {
+          userId: currentUser.currentUser.id,
+          type: "LOCATION",
+        },
+      });
       // find the target post
       const selectedPost = await prisma.post.findUnique({
         where: {
@@ -71,6 +79,19 @@ export default async function handler(
           repostIds: repostIds,
         },
       });
+      // handle hashtags
+      try {
+        if (hashtags && userLocation) {
+          await HashtagHandler(
+            currentUser.currentUser.id,
+            newPost.id,
+            userLocation.value.toLowerCase(),
+            hashtags || []
+          );
+        }
+      } catch (error) {
+        console.log("error in handling hashtags", error);
+      }
       // repost notifications
       try {
         let mentionedUsers: string[] = mentions || [];

@@ -9,6 +9,7 @@ interface ButtonProps {
   disabled?: boolean;
   outline?: boolean;
   type?: "submit" | "reset" | "button" | undefined;
+  className?: string;
 }
 const Button = ({
   children,
@@ -19,6 +20,7 @@ const Button = ({
   disabled = false,
   outline = false,
   type,
+  className,
 }: ButtonProps) => {
   return (
     <button
@@ -39,7 +41,8 @@ const Button = ({
           ? "text-white bg-black border-[#566370]"
           : "bg-sky-500 text-white border-sky-500",
         large ? "text-xl px-5 py-3" : "text-md px-[24px] py-[4px]",
-        outline ? "bg-black border-[#566370] text-white" : ""
+        outline ? "bg-black border-[#566370] text-white" : "",
+        className
       )}
     >
       {children}

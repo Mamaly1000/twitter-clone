@@ -161,8 +161,7 @@ const CreatePost = ({
                     })
                   );
                   setHashtags(getHashtags(event.target.value));
-                }}
-                maxLength={100}
+                }} 
                 value={form.watch("body")}
                 className="disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px]   placeholder-neutral-500 text-white max-w-full overflow-hidden "
                 placeholder={placeholder}

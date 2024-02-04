@@ -1,6 +1,8 @@
 import prisma from "@/libs/prisma";
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
+import HashtagHandler from "../../../libs/HashtagHandler";
+import { includes } from "lodash";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -17,7 +19,13 @@ export default async function handler(
     if (!currentUser) {
       return res.status(401).json({ message: "not signed in!" });
     }
-    const { body } = req.body;
+    const userLocation = await prisma.field.findFirst({
+      where: {
+        userId: currentUser.currentUser.id,
+        type: "LOCATION",
+      },
+    });
+    const { body, hashtags, mentions } = req.body;
     const currentPost = await prisma.post.findUnique({
       where: {
         id: post_id as string,
@@ -58,7 +66,20 @@ export default async function handler(
         commentIds: allCommentIds,
       },
     });
-
+    // handle hashtags
+    try {
+      if (hashtags && userLocation) {
+        await HashtagHandler(
+          currentUser.currentUser.id,
+          newPost.id,
+          userLocation.value.toLowerCase(),
+          hashtags || []
+        );
+      }
+    } catch (error) {
+      console.log("error in handling hashtags", error);
+    }
+    // handle post notification
     try {
       const post = await prisma.post.findUnique({
         where: {
@@ -67,19 +88,33 @@ export default async function handler(
       });
 
       if (post?.userId) {
-        await prisma.notification.create({
-          data: {
-            body: `in case you missed it @${currentUser.currentUser.username} replied on your tweet`,
-            userId: post.userId,
-            postId: post.id,
-            actionUser: currentUser.currentUser.id,
-            actionUsername: currentUser.currentUser.username || "some body",
-            type: "COMMENT",
-          },
+        let mentionedUsers: string[] = mentions || [];
+        const mentionAndUserComment = includes(mentionedUsers, post.userId);
+        await prisma.notification.createMany({
+          data: [
+            ...mentionedUsers.map((id) => ({
+              body: `in case you missed it @${currentUser.currentUser.username} mentioned you on its reply`,
+              userId: post.userId,
+              postId: post.id,
+              actionUser: currentUser.currentUser.id,
+              actionUsername: currentUser.currentUser.username || "some body",
+              type: "MENTION",
+            })),
+            {
+              body: mentionAndUserComment
+                ? `in case you missed it @${currentUser.currentUser.username} replied and mentioned you on your tweet`
+                : `in case you missed it @${currentUser.currentUser.username} replied on your tweet`,
+              userId: post.userId,
+              postId: post.id,
+              actionUser: currentUser.currentUser.id,
+              actionUsername: currentUser.currentUser.username || "some body",
+              type: mentionAndUserComment ? "MENTION" : "COMMENT",
+            },
+          ],
         });
-        await prisma.user.update({
+        await prisma.user.updateMany({
           where: {
-            id: post.userId,
+            id: { in: [...mentionedUsers, post.userId] },
           },
           data: {
             hasNotification: true,

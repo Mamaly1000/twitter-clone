@@ -17,41 +17,20 @@ const SideBarTweetButton = ({ className }: { className?: string }) => {
     router.push("/create");
   }, [loginModal, router, currentUser]);
   return (
-    <div onClick={onClick}>
+    <div className="lg:min-w-full" onClick={onClick}>
       <div
         className={twMerge(
-          `
-    mt-6
-    lg:hidden 
-    rounded-full 
-    h-14
-    w-14
-    p-4
-    flex
-    items-center
-    justify-center 
-    bg-sky-500 
-    hover:bg-opacity-80 
-    transition 
-    cursor-pointer
-  `,
+          `mt-6 lg:hidden rounded-full h-14 w-14 p-4 flex items-center justify-center bg-sky-500 hover:bg-opacity-80 transition-all cursor-pointer`,
           className
         )}
       >
         <FaFeather size={24} color="white" />
       </div>
       <div
-        className="
-    mt-6
-    hidden 
-    lg:block 
-    px-4
-    py-2
-    rounded-full
-    bg-sky-500
-    hover:bg-opacity-90 
-    cursor-pointer
-  "
+        className={twMerge(
+          "mt-6 hidden lg:block px-4 py-2 rounded-full bg-sky-500 hover:bg-opacity-90 cursor-pointer lg:min-w-full ",
+          className
+        )}
       >
         <p
           className="

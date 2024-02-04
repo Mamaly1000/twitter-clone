@@ -115,9 +115,10 @@ model CoverImage{
  model Hashtag{
    id              String @id @default(auto()) @map("_id") @db.ObjectId
    name String 
-   location String @unique
+   location String 
    userIds String[] @db.ObjectId
    postIds String[] @db.ObjectId
+   count Int? @default(0)
    createdAt          DateTime @default(now())
    updatedAt          DateTime @updatedAt
  }
