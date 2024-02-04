@@ -2,6 +2,7 @@ import { Hashtag } from "@prisma/client";
 import { isEmpty } from "lodash";
 import React from "react";
 import HashtagCard from "../cards/HashtagCard";
+import Link from "next/link";
 
 const TrendHashtags = ({ hashtags }: { hashtags: Hashtag[] }) => {
   if (isEmpty(hashtags)) {
@@ -15,6 +16,12 @@ const TrendHashtags = ({ hashtags }: { hashtags: Hashtag[] }) => {
           <HashtagCard hashtag={h} key={h.id} />
         ))}
       </div>
+      <Link
+        href={"/hashtags"}
+        className="text-sky-500 text-[15px] font-bold hover:text-opacity-60"
+      >
+        show more
+      </Link>
     </div>
   );
 };

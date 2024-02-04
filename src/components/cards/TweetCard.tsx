@@ -262,7 +262,7 @@ const TweetCard = ({
                 className={twMerge(
                   isComment
                     ? "text-lg capitalize"
-                    : "text-[14px] text-inherit font-light leading-[-.3px] capitalize",
+                    : "text-[14px] text-inherit font-light leading-[-.3px] capitalize max-w-[90%] md:max-w-[70%]",
                   post.repostId ? "" : "mb-3"
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
@@ -275,7 +275,7 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-900  drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3"
+                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800  drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3"
                 >
                   <Avatar
                     className="min-w-[40px] max-h-[40px] min-h-[40px] max-w-[40px]"
@@ -308,7 +308,7 @@ const TweetCard = ({
                       dangerouslySetInnerHTML={{
                         __html: formatString(post.repost.body),
                       }}
-                      className="text-[14px] leading-[-.3px] capitalize font-light text-[#D9D9D9]"
+                      className="text-[14px] leading-[-.3px] capitalize font-light text-[#D9D9D9] max-w-[90%] md:max-w-[70%]"
                     ></p>
                   </div>
                 </div>
