@@ -9,6 +9,8 @@ import { useRegisterModal } from "@/hooks/useRegisterModal";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import CountrySelect from "../inputs/Select";
+import { SingleCountryType } from "@/hooks/useCountry";
 const registerSchema = z.object({
   email: z.string().email("not valid email").min(1, "minimum character is 1"),
   password: z
@@ -26,6 +28,9 @@ const registerSchema = z.object({
       required_error: "please enter your username!",
     })
     .min(3, "minimum character is 3"),
+  location: z.string({
+    required_error: "you need to select your location",
+  }),
 });
 
 const RegisterModal = () => {
@@ -38,7 +43,15 @@ const RegisterModal = () => {
       password: "",
       name: "",
       username: "",
+      location: "",
     },
+  });
+
+  const [location, setLocation] = useState<SingleCountryType>({
+    city: "",
+    label: "",
+    region: "",
+    value: "",
   });
   const [isLoading, setLoading] = useState(false);
 
@@ -106,6 +119,16 @@ const RegisterModal = () => {
         onChange={(e) => form.setValue("email", e.target.value)}
         value={form.watch("email")}
         disabled={isLoading}
+      />
+      <CountrySelect
+        className="min-w-full max-w-full"
+        onChange={(val) => {
+          setLocation(val);
+          if (val?.value) {
+            form.setValue("location", val.value);
+          }
+        }}
+        value={location}
       />
       <Input
         register={form.register("password", { required: true })}

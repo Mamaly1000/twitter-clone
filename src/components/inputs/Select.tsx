@@ -33,7 +33,9 @@ const CountrySelect = ({
         }}
         formatOptionLabel={(data) => {
           return (
-            data && (
+            !!data.value &&
+            !!data.city &&
+            !!data.label && (
               <div className="flex flex-row px-1 items-center justify-start text-white hover:text-sky-400 gap-2 min-w-full max-w-full line-clamp-1">
                 <span className="text-nowrap flex items-center justify-center gap-1 text-inherit">
                   <FaEarthAsia size={12} />

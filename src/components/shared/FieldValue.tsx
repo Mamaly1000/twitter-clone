@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { twMerge } from "tailwind-merge";
 import FieldIcon from "./FieldIcon";
 import { format } from "date-fns";
 import Link from "next/link";
+import useCountry from "@/hooks/useCountry";
 
 const FieldValue = ({
   className,
@@ -13,6 +14,14 @@ const FieldValue = ({
   className?: string;
   size: number;
 }) => {
+  const { getByValue } = useCountry();
+  const location = useMemo(() => {
+    if (f.type === "LOCATION") {
+      const currentLocation = getByValue(f.value);
+      return `${currentLocation?.label}, ${currentLocation?.region}, ${currentLocation?.city}`;
+    }
+    return null;
+  }, [f.type]);
   return (
     <div
       className={twMerge(
@@ -27,10 +36,14 @@ const FieldValue = ({
         style={{ fontSize: "inherit" }}
       >
         {f.type === "BIRTHDAY" && format(new Date(f.value), "dd-MMMM-yyyy")}
-        {f.type === "LOCATION" && f.value}
+        {f.type === "LOCATION" && location}
         {f.type === "JOB" && f.value}
         {f.type === "LINK" && (
-          <Link className="underline text-sky-500" href={f.value} target="_blank">
+          <Link
+            className="underline text-sky-500"
+            href={f.value}
+            target="_blank"
+          >
             {f.value}
           </Link>
         )}

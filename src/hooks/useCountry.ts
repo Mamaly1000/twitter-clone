@@ -14,7 +14,10 @@ const formattedCountries: SingleCountryType[] = countries.map((c) => ({
 const useCountry = () => {
   const getAll = () => formattedCountries;
   const getByValue = (value: string) => {
-    return formattedCountries.find((c) => c.value === value);
+    if (value)
+      return formattedCountries.find(
+        (c) => c.value.toLowerCase() === value?.toLowerCase()
+      );
   };
   return { getAll, getByValue };
 };

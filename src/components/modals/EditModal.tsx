@@ -14,6 +14,10 @@ import useUser from "@/hooks/useUser";
 import ImageUpload from "../inputs/ImageUpload";
 import FieldGenerator from "../inputs/FieldGenerator";
 import TextArea from "../inputs/TextArea";
+import useUserLocation from "@/hooks/useUserLocation";
+import CountrySelect from "../inputs/Select";
+import useCountry, { SingleCountryType } from "@/hooks/useCountry";
+import useUserFields from "@/hooks/useUserFields";
 
 const editSchema = z.object({
   name: z
@@ -29,18 +33,28 @@ const editSchema = z.object({
   bio: z.string().default("").nullable(),
   profileImage: z.string().default("").nullable(),
   coverImage: z.string().default("").nullable(),
+  location: z.string(),
 });
 
 const EditModal = () => {
+  const { getByValue } = useCountry();
   const { data } = useCurrentUser();
+  const { location: userLocation } = useUserLocation(data?.id);
+  const { fields } = useUserFields(data?.id);
   const { mutate } = useUser(data?.id);
   const { isOpen, onClose } = useEditModal();
 
   const [isLoading, setLoading] = useState(false);
+  const [location, setLocation] = useState<SingleCountryType>({
+    city: "",
+    label: "",
+    region: "",
+    value: "",
+  });
   const [profileFields, setProfileFields] = useState<
     {
       value: string;
-      type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
+      type: "LINK" | "BIRTHDAY" | "JOB";
     }[]
   >([]);
 
@@ -52,6 +66,7 @@ const EditModal = () => {
       bio: "",
       profileImage: "",
       coverImage: "",
+      location: "",
     },
   });
 
@@ -68,9 +83,29 @@ const EditModal = () => {
         profileImage: user.profileImage || "",
         name: user.name,
         username: user.username,
+        location: userLocation || "",
       });
     }
-  }, [data]);
+  }, [data, userLocation]);
+
+  useEffect(() => {
+    if (userLocation) {
+      setLocation(getByValue(userLocation)!);
+    }
+  }, [userLocation]);
+
+  useEffect(() => {
+    if (fields && fields.length > 0) {
+      setProfileFields(
+        fields
+          .filter((f) => !(f.type === "LOCATION"))
+          .map((f) => ({
+            type: f.type as any,
+            value: f.value,
+          }))
+      );
+    }
+  }, [fields]);
 
   const onSubmit = form.handleSubmit(
     async (values: z.infer<typeof editSchema>) => {
@@ -88,6 +123,12 @@ const EditModal = () => {
             mutate();
             toast.success(res.data.message);
             form.reset();
+            setLocation({
+              city: "",
+              label: "",
+              region: "",
+              value: "",
+            });
             setProfileFields([]);
             onClose();
           });
@@ -145,6 +186,16 @@ const EditModal = () => {
         value={form.watch("bio")}
         placeholder="Bio"
         disabled={isLoading}
+      />
+      <CountrySelect
+        onChange={(val) => {
+          setLocation(val);
+          if (val?.value) {
+            form.setValue("location", val.value);
+          }
+        }}
+        className="min-w-full max-w-full"
+        value={location}
       />
       <FieldGenerator
         disabled={isLoading}

@@ -18,8 +18,15 @@ export default async function handler(
       return res.status(401).json({ message: "Not Signed in" });
     }
 
-    const { name, username, bio, profileImage, coverImage, profileFields } =
-      req.body;
+    const {
+      name,
+      username,
+      bio,
+      profileImage,
+      coverImage,
+      profileFields,
+      location,
+    } = req.body;
 
     if (!!!name || !!!username) {
       return res
@@ -40,15 +47,39 @@ export default async function handler(
       },
     });
 
+    // updating current user location
     try {
-      // creating new profile fields
-      await prisma.field.createMany({
-        data: profileFields.map((f: any) => ({
-          type: f.type,
-          value: f.value,
+      const currentUserLocation = await prisma.field.findFirst({
+        where: {
           userId: updatedUser.id,
-        })),
+          type: "LOCATION",
+        },
       });
+      if (location && currentUserLocation) {
+        await prisma.field.update({
+          where: {
+            id: currentUserLocation.id,
+          },
+          data: {
+            value: (location as string).toLowerCase(),
+          },
+        });
+      }
+      if (location && !currentUserLocation) {
+        await prisma.field.create({
+          data: {
+            value: (location as string).toLowerCase(),
+            type: "LOCATION",
+            userId: currentUser.currentUser.id,
+          },
+        });
+      }
+    } catch (error) {
+      console.log("error in updating user location");
+    }
+
+    // handling user fields
+    try {
       // deleting existed profile fields
       await prisma.field.deleteMany({
         where: {
@@ -57,7 +88,14 @@ export default async function handler(
           },
         },
       });
-
+      // creating new profile fields
+      await prisma.field.createMany({
+        data: profileFields.map((f: any) => ({
+          type: f.type,
+          value: f.value,
+          userId: updatedUser.id,
+        })),
+      });
       // finding fields which are related to user
       const updatdUserFields = await prisma.field.findMany({
         where: {

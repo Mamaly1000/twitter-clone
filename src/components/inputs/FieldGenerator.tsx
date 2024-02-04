@@ -17,19 +17,14 @@ import { format } from "date-fns";
 import { FaEarthAsia } from "react-icons/fa6";
 import Link from "next/link";
 export const ProfileFieldsTypes: {
-  type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
-  label: "link" | "location" | "birthday" | "job";
+  type: "LINK" | "BIRTHDAY" | "JOB";
+  label: "link" | "birthday" | "job";
   Icon: IconType;
 }[] = [
   {
     type: "BIRTHDAY",
     label: "birthday",
     Icon: FaBirthdayCake,
-  },
-  {
-    type: "LOCATION",
-    label: "location",
-    Icon: GrLocation,
   },
   {
     type: "JOB",
@@ -51,18 +46,18 @@ const FieldGenerator = ({
   disabled?: boolean;
   value: {
     value: string;
-    type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
+    type: "LINK" | "BIRTHDAY" | "JOB";
   }[];
   onChange: (
     fields: {
       value: string;
-      type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
+      type: "LINK" | "BIRTHDAY" | "JOB";
     }[]
   ) => void;
 }) => {
   const [activeField, setActivefield] = useState<null | {
     value: string;
-    type: "LINK" | "LOCATION" | "BIRTHDAY" | "JOB";
+    type: "LINK" | "BIRTHDAY" | "JOB";
   }>(null);
   const [location, setLocation] = useState<SingleCountryType>({
     city: "",
@@ -135,26 +130,7 @@ const FieldGenerator = ({
                   />
                 </div>
               )}
-              {activeField.type === "LOCATION" && (
-                <CountrySelect
-                  onChange={(val) => {
-                    if (val?.city && val?.label && val?.region) {
-                      onChange([
-                        ...value,
-                        {
-                          ...activeField,
-                          value: `${val.label}, ${val.region}, ${val.city}`,
-                        },
-                      ]);
-                      setActivefield(null);
-                    }
 
-                    setLocation(val);
-                  }}
-                  value={location}
-                  className="min-w-full max-w-full"
-                />
-              )}
               {activeField.type === "BIRTHDAY" && (
                 <CustomCalendar
                   onChange={(date) => {
@@ -169,36 +145,35 @@ const FieldGenerator = ({
                   }}
                 />
               )}
-              {activeField.type !== "LOCATION" &&
-                activeField.type !== "BIRTHDAY" && (
-                  <div className="flex items-center justify-start gap-2">
-                    <button
-                      onClick={() => {
+              {activeField.type !== "BIRTHDAY" && (
+                <div className="flex items-center justify-start gap-2">
+                  <button
+                    onClick={() => {
+                      setActivefield(null);
+                    }}
+                    className="text-red-400  w-[45px] h-[45px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
+                  >
+                    <BiTrash size={25} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (activeField.value.length > 0) {
+                        onChange([
+                          ...value,
+                          {
+                            type: activeField.type,
+                            value: activeField.value,
+                          },
+                        ]);
                         setActivefield(null);
-                      }}
-                      className="text-red-400  w-[45px] h-[45px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
-                    >
-                      <BiTrash size={25} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (activeField.value.length > 0) {
-                          onChange([
-                            ...value,
-                            {
-                              type: activeField.type,
-                              value: activeField.value,
-                            },
-                          ]);
-                          setActivefield(null);
-                        }
-                      }}
-                      className="text-green-400 w-[45px] h-[45px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
-                    >
-                      <GrAdd size={25} />
-                    </button>
-                  </div>
-                )}
+                      }
+                    }}
+                    className="text-green-400 w-[45px] h-[45px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
+                  >
+                    <GrAdd size={25} />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -213,7 +188,6 @@ const FieldGenerator = ({
                 <span className="flex px-1 cursor-default flex-row items-center justify-start text-white hover:text-sky-400 gap-2   line-clamp-1">
                   {f.type === "BIRTHDAY" &&
                     format(new Date(f.value), "dd-MMMM-yyyy")}
-                  {f.type === "LOCATION" && f.value}
                   {f.type === "JOB" && f.value}
                   {f.type === "LINK" && (
                     <Link className="underline" href={f.value} target="_blank">

@@ -4,7 +4,7 @@ import usePosts from "@/hooks/usePosts";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -15,10 +15,6 @@ import { formatString } from "@/libs/wordDetector";
 import { getHashtags, getMentions } from "@/libs/getMentions";
 import { useRouter } from "next/router";
 import MentionsList from "../lists/MentionsList";
-import useUserLocation from "@/hooks/useUserLocation";
-import CountrySelect from "../inputs/Select";
-import { IoAlertCircle } from "react-icons/io5";
-import { SingleCountryType } from "@/hooks/useCountry";
 
 const createPostSchema = z.object({
   body: z
@@ -47,15 +43,7 @@ const CreatePost = ({
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
 
-  const [userLocation, setUserlocation] = useState<SingleCountryType>({
-    city: "",
-    label: "",
-    region: "",
-    value: "",
-  });
-
   const { data: currentUser, mutate: currentUserMutate } = useCurrentUser();
-  const { location } = useUserLocation(currentUser.id);
   const { mutate: mutatePosts } = usePosts();
   const { mutate: mutatePost } = usePost(postId as string);
   const [isLoading, setLoading] = useState(false);
@@ -88,7 +76,6 @@ const CreatePost = ({
                 postId: postId,
                 hashtags,
                 mentions: values.mentionIds,
-                location,
               })
               .then((res) => {
                 toast.success(res.data.message);
@@ -121,7 +108,6 @@ const CreatePost = ({
               body: values.body,
               hashtags,
               mentions: values.mentionIds,
-              location,
             })
             .then((res: any) => {
               mutatePosts();
@@ -178,30 +164,10 @@ const CreatePost = ({
                 }}
                 maxLength={100}
                 value={form.watch("body")}
-                className="
-            disabled:opacity-80
-            peer
-            resize-none 
-            mt-3 
-            w-full 
-            bg-black 
-            ring-0 
-            outline-none 
-            text-[20px] 
-            placeholder-neutral-500 
-            text-white max-w-full overflow-hidden
-          "
+                className="disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px]   placeholder-neutral-500 text-white max-w-full overflow-hidden "
                 placeholder={placeholder}
               ></textarea>
-              <hr
-                className="
-            opacity-0 
-            peer-focus:opacity-100 
-            h-[1px] 
-            w-full 
-            border-neutral-800 
-            transition"
-              />
+              <hr className="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
               <div className="mt-4 flex flex-row justify-end w-full ">
                 <Button
                   disabled={isLoading || !(form.watch("body").length > 5)}
@@ -213,39 +179,21 @@ const CreatePost = ({
             </div>
           </div>
           {mainPage && hashtags.length > 0 && (
-            <>
-              <div className="min-w-full max-w-full overflow-hidden flex flex-row items-center justify-start gap-3 capitalize">
-                <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
-                  hashTags :
-                </h4>
-                <div className="min-w-full flex items-start justify-start flex-wrap gap-2">
-                  {hashtags.map((h) => (
-                    <span
-                      key={h}
-                      className="px-3 py-2 rounded-md drop-shadow-2xl border-[1px] border-sky-400 text-sky-400 text-sm font-semibold capitalize"
-                    >
-                      #{h}
-                    </span>
-                  ))}
-                </div>
+            <div className="min-w-full max-w-full overflow-hidden flex flex-row items-center justify-start gap-3 capitalize">
+              <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
+                hashTags :
+              </h4>
+              <div className="min-w-full flex items-start justify-start flex-wrap gap-2">
+                {hashtags.map((h) => (
+                  <span
+                    key={h}
+                    className="px-3 py-2 rounded-md drop-shadow-2xl border-[1px] border-sky-400 text-sky-400 text-sm font-semibold capitalize"
+                  >
+                    #{h}
+                  </span>
+                ))}
               </div>
-              {!!!location && (
-                <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-3">
-                  <p className="min-w-full text-start text-sm text-wrap text-red-400">
-                    <IoAlertCircle /> notice : there is not location in your
-                    profile section so for using hashtags you need to define a
-                    location for them .
-                  </p>
-                  <CountrySelect
-                    value={userLocation}
-                    onChange={(val) => {
-                      setUserlocation(val);
-                    }}
-                    className="min-w-full max-w-full"
-                  />
-                </div>
-              )}
-            </>
+            </div>
           )}
           {mainPage && mentions.length > 0 && (
             <MentionsList

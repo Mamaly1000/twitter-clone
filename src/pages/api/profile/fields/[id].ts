@@ -22,15 +22,16 @@ export default async function handler(
     if (!profile) {
       return res.status(404).json({ message: "user not found" });
     }
-    const location = await prisma.field.findFirst({
+    const userFields = await prisma.field.findMany({
       where: {
-        AND: [{ userId: profile.id, type: "LOCATION" }],
+        userId: profile.id,
       },
     });
-    return res.status(200).json(location);
+
+    return res.status(200).json(userFields);
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "error in getting user profile image", error });
+      .json({ message: "error in getting users followers", error });
   }
 }
