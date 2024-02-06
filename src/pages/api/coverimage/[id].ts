@@ -23,7 +23,7 @@ export default async function handler(
 
     const coverImage = await prisma.coverImage.findUnique({
       where: {
-        id: currentUser.id,
+        userId: currentUser.id,
       },
       include: {
         user: {

@@ -7,9 +7,10 @@ import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButto
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { signOut } from "next-auth/react";
 import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
-import { User } from "@prisma/client"; 
+import { PiUsersBold } from "react-icons/pi";
+import { User } from "@prisma/client";
 const SideBar = () => {
-  const { data: currentUser } = useCurrentUser(); 
+  const { data: currentUser } = useCurrentUser();
   const items = [
     {
       icon: BiSolidHomeCircle,
@@ -33,6 +34,11 @@ const SideBar = () => {
       label: "Profile",
       href: `/users/${currentUser?.id}`,
       auth: true,
+    },
+    {
+      icon: PiUsersBold,
+      label: "users",
+      href: `/users`,
     },
   ];
   return (

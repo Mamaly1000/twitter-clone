@@ -36,11 +36,54 @@ export default async function handler(
           in: targetHashtag.userIds,
         },
       },
+      select: {
+        bio: true,
+        bookmarksIds: true,
+        createdAt: true,
+        email: true,
+        followerIds: true,
+        followingIds: true,
+        id: true,
+        name: true,
+        username: true,
+      },
     });
     const posts = await prisma.post.findMany({
       where: {
         id: {
           in: targetHashtag.postIds,
+        },
+      },
+      include: {
+        repost: {
+          include: {
+            user: {
+              select: {
+                bio: true,
+                bookmarksIds: true,
+                createdAt: true,
+                email: true,
+                followerIds: true,
+                followingIds: true,
+                id: true,
+                name: true,
+                username: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            bio: true,
+            bookmarksIds: true,
+            createdAt: true,
+            email: true,
+            followerIds: true,
+            followingIds: true,
+            id: true,
+            name: true,
+            username: true,
+          },
         },
       },
     });

@@ -53,7 +53,7 @@ const HashtagCard = ({
         #{hashtag.name}
       </span>
       <p className="text-[13px] text-[#6E767D] capitalize flex items-center justify-start gap-2">
-        {formatNumbersWithCommas(`${hashtag.userIds.length} users`)} -{" "}
+        {!!main && formatNumbersWithCommas(`${hashtag.userIds.length} users`)+" - "}  
         {formatNumbersWithCommas(`${hashtag.postIds.length} tweets`)}
       </p>
     </div>

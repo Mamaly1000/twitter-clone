@@ -12,9 +12,6 @@ const HashtagsPage = () => {
   const { location } = useUserLocation(currentUser?.id);
   const { isLoading, hashtags, userHashtags } = useHashtags();
   const { getByValue } = useCountry();
-  if (isLoading || !location || !currentUser) {
-    return <Loader message="loading hashtags" />;
-  }
   const currentUserLocation = useMemo(() => {
     if (location) {
       const l = getByValue(location);
@@ -22,6 +19,10 @@ const HashtagsPage = () => {
     }
     return null;
   }, [location, getByValue]);
+  if (isLoading || !location || !currentUser) {
+    return <Loader message="loading hashtags" />;
+  }
+
   return (
     <>
       <Header label="hashtags" displayArrow />
