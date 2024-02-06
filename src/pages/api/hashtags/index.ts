@@ -12,16 +12,34 @@ export default async function handler(
   }
   try {
     const currentUser = await serverAuth(req, res);
+
     if (!currentUser) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+
+    const userLocation = await prisma.field.findFirst({
+      where: {
+        userId: currentUser.currentUser.id,
+        type: "LOCATION",
+      },
+    });
+
     const hashtags = await prisma.hashtag.findMany({
       orderBy: {
         count: "desc",
       },
-      take: 5,
     });
-    return res.status(200).json(hashtags);
+    if (!userLocation) {
+      return res.status(200).json({ data: hashtags });
+    }
+    const currentUserHashtags = await prisma.hashtag.findMany({
+      where: {
+        location: userLocation.value,
+      },
+    });
+    return res
+      .status(200)
+      .json({ hashtags, currentUserHashtags: currentUserHashtags || [] });
   } catch (error) {
     return res
       .status(500)

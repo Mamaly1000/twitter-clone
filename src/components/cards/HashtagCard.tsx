@@ -5,8 +5,15 @@ import { formatNumbersWithCommas } from "@/libs/wordDetector";
 import { Hashtag } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo } from "react";
+import { twMerge } from "tailwind-merge";
 
-const HashtagCard = ({ hashtag }: { hashtag: Hashtag }) => {
+const HashtagCard = ({
+  hashtag,
+  main = false,
+}: {
+  main?: boolean;
+  hashtag: Hashtag;
+}) => {
   const router = useRouter();
 
   const { getByValue } = useCountry();
@@ -26,13 +33,16 @@ const HashtagCard = ({ hashtag }: { hashtag: Hashtag }) => {
     if (!user) {
       loginModal.onOpen();
     }
-    router.push(`/hashtags/${hashtag.name}`);
-  }, [loginModal, user, hashtag.name, router]);
+    router.push(`/hashtags/${hashtag.id}`);
+  }, [loginModal, user, hashtag.id, router]);
 
   return (
     <div
       onClick={onClick}
-      className="min-w-full py-2 flex-col items-start justify-start gap-3  min-h-fit cursor-pointer hover:opacity-60"
+      className={twMerge(
+        "min-w-full py-2 flex flex-col items-start justify-start gap-2  min-h-fit cursor-pointer hover:opacity-60",
+        main && "px-3  border-b-[1px] border-neutral-800"
+      )}
     >
       {location && (
         <p className="text-[13px] text-[#6E767D] capitalize">
@@ -42,7 +52,8 @@ const HashtagCard = ({ hashtag }: { hashtag: Hashtag }) => {
       <span className="font-semibold uppercase text-lg leading-5 text-gray-900 dark:text-white">
         #{hashtag.name}
       </span>
-      <p className="text-[13px] text-[#6E767D] capitalize">
+      <p className="text-[13px] text-[#6E767D] capitalize flex items-center justify-start gap-2">
+        {formatNumbersWithCommas(`${hashtag.userIds.length} users`)} -{" "}
         {formatNumbersWithCommas(`${hashtag.postIds.length} tweets`)}
       </p>
     </div>
