@@ -1,16 +1,35 @@
 import { User } from "@prisma/client";
-import React from "react";
+import React, { useCallback } from "react";
 import { twMerge } from "tailwind-merge";
 import Avatar from "../shared/Avatar";
 import Button from "../inputs/Button";
 import useFollow from "@/hooks/useFollow";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import { useRouter } from "next/router";
 
-const RecommendedUserCard = ({ user }: { user: User }) => {
+const RecommendedUserCard = ({
+  user,
+  main,
+}: {
+  main?: boolean;
+  user: User;
+}) => {
+  const router = useRouter();
   const { data: currentUser } = useCurrentUser();
   const { toggleFollow, isLoading } = useFollow(user?.id);
+  const goToUser = useCallback(() => {
+    if (user.id) {
+      router.push(`/users/${user.id}`);
+    }
+  }, [user.id, router]);
   return (
-    <div className="min-w-full flex items-center justify-between gap-2">
+    <div onClick={goToUser}
+      className={twMerge(
+        "min-w-full flex items-center justify-between gap-2",
+        main &&
+          "px-3 border-b-[1px] border-neutral-800 py-2 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-60"
+      )}
+    >
       <div
         key={user.id}
         className={twMerge("flex flex-row gap-4 cursor-default ")}

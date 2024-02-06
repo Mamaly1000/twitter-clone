@@ -11,6 +11,18 @@ export default async function handler(
     return res.status(405).end();
   }
   try {
+    const { search } = req.query;
+
+    let where = {};
+    if (search && search !== "undefined") {
+      where = {
+        OR: [
+          { name: { contains: search } },
+          { location: { contains: search } },
+        ],
+      };
+    }
+
     const currentUser = await serverAuth(req, res);
 
     if (!currentUser) {
@@ -25,6 +37,7 @@ export default async function handler(
     });
 
     const hashtags = await prisma.hashtag.findMany({
+      where,
       orderBy: {
         count: "desc",
       },
@@ -36,7 +49,12 @@ export default async function handler(
       where: {
         location: userLocation.value,
       },
+      take: 5,
+      orderBy: {
+        count: "desc",
+      },
     });
+
     return res
       .status(200)
       .json({ hashtags, currentUserHashtags: currentUserHashtags || [] });

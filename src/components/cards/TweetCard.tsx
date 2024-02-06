@@ -12,7 +12,7 @@ import React, {
 } from "react";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import Avatar from "../shared/Avatar";
-import useLike from "@/hooks/useLike"; 
+import useLike from "@/hooks/useLike";
 import { BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
@@ -20,7 +20,7 @@ import { twMerge } from "tailwind-merge";
 import { filter, intersection, isEmpty } from "lodash";
 import { FiShare } from "react-icons/fi";
 import MutualReplies from "../lists/MutualReplies";
-import useBookmark from "@/hooks/useBookmark"; 
+import useBookmark from "@/hooks/useBookmark";
 
 const TweetCard = ({
   post,
@@ -35,7 +35,7 @@ const TweetCard = ({
   };
 }) => {
   const router = useRouter();
-  const loginModal = useLoginModal(); 
+  const loginModal = useLoginModal();
 
   const [scrollHeight, setHeight] = useState(20);
   const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
@@ -192,7 +192,7 @@ const TweetCard = ({
           >
             <Avatar
               className={twMerge(
-                "w-[55px] h-[55px] min-w-[55px] max-h-[55px] max-w-[55px] min-h-[55px]  border-[2px] border-opacity-50",
+                "md:w-[55px] md:h-[55px] md:min-w-[55px] md:max-h-[55px] md:max-w-[55px] md:min-h-[55px] w-[35px] h-[35px] min-w-[35px] max-h-[35px] max-w-[35px] min-h-[35px]   border-[2px] border-opacity-50",
                 !isEmpty(mutualReplies) && !isComment && "border-neutral-300"
               )}
               hasBorder
@@ -231,10 +231,10 @@ const TweetCard = ({
             className={twMerge(isComment ? "w-full" : "w-auto max-h-fit")}
           >
             {!!!isComment && (
-              <div className="flex flex-row text-[16px] items-center gap-[6px]">
+              <div className="flex flex-row text-[16px] items-center gap-[6px] line-clamp-1">
                 <p
                   onClick={goToUser}
-                  className=" text-white capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap "
+                  className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap "
                 >
                   {post.user.name}
                 </p>
@@ -275,7 +275,7 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800  drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3"
+                  className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800  drop-shadow-2xl text-[#687684]  hover:border-neutral-600 mb-3 gap-3"
                 >
                   <Avatar
                     className="min-w-[40px] max-h-[40px] min-h-[40px] max-w-[40px]"
@@ -308,7 +308,7 @@ const TweetCard = ({
                       dangerouslySetInnerHTML={{
                         __html: formatString(post.repost.body),
                       }}
-                      className="text-[14px] leading-[-.3px] capitalize font-light text-[#D9D9D9] max-w-[90%] md:max-w-[70%]"
+                      className="text-[14px]  leading-[-.3px] capitalize font-light text-[#D9D9D9] max-w-[80%] md:max-w-[70%]"
                     ></p>
                   </div>
                 </div>

@@ -11,12 +11,15 @@ html {
   @apply transition-all;
 }
 *::-webkit-scrollbar {
+  @apply bg-neutral-800;
   width: 5px;
   max-width: 5px;
   max-width: 5px;
-  background: #353535;
-  background-color: #353535;
+  height: 5px; 
   border-radius: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  @apply bg-sky-500 rounded-full bg-opacity-50;
 }
 .rdrDay .rdrDayNumber span {
   color: #ffffff !important;
@@ -32,6 +35,6 @@ html {
   background: rgba(255 255 255/0.1);
   @apply rounded-md;
 }
-.tab-container::-webkit-scrollbar{
-height: 5px;
+.tab-container::-webkit-scrollbar {
+  height: 5px;
 }
