@@ -9,6 +9,7 @@ import { signOut } from "next-auth/react";
 import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
 import { PiUsersBold } from "react-icons/pi";
 import { User } from "@prisma/client";
+import { twMerge } from "tailwind-merge";
 const SideBar = () => {
   const { data: currentUser } = useCurrentUser();
   const items = [
@@ -19,8 +20,8 @@ const SideBar = () => {
     },
     {
       icon: HiOutlineHashtag,
-      label: "explore",
-      href: "/explore",
+      label: "hashtags",
+      href: "/hashtags",
     },
     {
       icon: IoMdNotificationsOutline,
@@ -42,7 +43,11 @@ const SideBar = () => {
     },
   ];
   return (
-    <section className="hidden lg:block  lg:col-span-3 xl:col-span-2 h-full  ">
+    <section
+      className={twMerge(
+        "hidden lg:block  lg:col-span-3 xl:col-span-2 h-full  "
+      )}
+    >
       <div className="flex flex-col items-end min-w-full   ">
         <div className="space-y-2   transition-all min-w-full flex items-start justify-start flex-col px-4  text-[19px] text-[#D9D9D9]">
           <SideBarLogo />

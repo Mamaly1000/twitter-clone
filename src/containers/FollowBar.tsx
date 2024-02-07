@@ -10,8 +10,8 @@ const FollowBar = () => {
   const { hashtags } = useTrendHashtags();
 
   return (
-    <div className="px-6 py-4 hidden xl:flex col-span-3 items-start justify-start flex-col gap-3">
-      <div className="bg-[#202327] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3">
+    <div className="px-6 py-4 hidden xl:flex col-span-3 items-start justify-start flex-col gap-3  ">
+      <div className="bg-[#202327] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3 max-w-full  ">
         <h2 className="text-[20px] font-bold">Who to follow</h2>
         <UsersList users={users} />
         <Link

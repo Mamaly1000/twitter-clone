@@ -23,7 +23,9 @@ const UsersPage = () => {
     <>
       <Header label="users" displayArrow />
       <UsersSearchInput />
-      <UsersCardFeed users={followers as any} title="your followers" />
+      {!router.query.search && (
+        <UsersCardFeed users={followers as any} title="your followers" />
+      )}{" "}
       <UsersList main title="people" users={users} />
       {router.query.search && <EmptyState resetUrl="users" />}
     </>

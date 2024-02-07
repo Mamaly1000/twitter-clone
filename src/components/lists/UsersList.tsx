@@ -19,15 +19,20 @@ const UsersList = ({
     );
   }
   return (
-    <section className="flex flex-col items-start justify-start gap-3 min-w-full">
+    <section className="flex flex-col items-start justify-start gap-3 min-w-full max-w-full min-h-fit ">
       {!!title && (
         <h5 className="min-w-full text-left capitalize text-white font-semibold text-2xl mt-10 px-3">
           {title}
         </h5>
       )}
-      <div className={twMerge("flex flex-col mt-4 min-w-full", main ?"gap-0": "gap-6 ")}>
+      <div
+        className={twMerge(
+          "flex flex-col mt-4 min-w-full max-w-full",
+          main ? "gap-0" : "gap-2 "
+        )}
+      >
         {users.map((user) => (
-          <RecommendedUserCard main key={user.id} user={user} />
+          <RecommendedUserCard main={main} key={user.id} user={user} />
         ))}
       </div>
     </section>

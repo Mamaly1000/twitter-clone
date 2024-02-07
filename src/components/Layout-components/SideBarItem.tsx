@@ -15,10 +15,14 @@ interface Props {
     onClick?: () => void;
   };
   labelClassName?: string;
+  className?: string;
+  isActive?: boolean;
 }
 const SideBarItem = ({
   item: { label, icon: Icon, href, alert, onClick, auth = false },
   labelClassName,
+  className,
+  isActive,
 }: Props) => {
   const { data: currentUser } = useCurrentUser();
   const loginModal = useLoginModal();
@@ -34,28 +38,32 @@ const SideBarItem = ({
     }
   }, [router, href, auth, loginModal, onClick, currentUser]);
   return (
-    <div onClick={handleClick} className="flex flex-row items-center">
+    <div
+      onClick={handleClick}
+      className={twMerge("flex flex-row items-center", className)}
+    >
       <div
-        className="
-        relative
-        rounded-full 
-        h-14
-        w-14
-        flex
-        items-center
-        justify-center 
-        p-4
-        hover:bg-slate-300 
-        hover:bg-opacity-10 
-        cursor-pointer 
-        lg:hidden
-      "
+        className={twMerge(
+          "relative rounded-full h-10 w-10 md:h-14 md:w-14 flex items-center justify-center p-1 md:p-4   hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer lg:hidden active:scale-95",
+          isActive
+            ? "text-sky-500 scale-110   font-bold stroke-2"
+            : "scale-100  "
+        )}
       >
-        <Icon size={24} color="white" />
+        <Icon size={20} color={isActive ? "inherit" : "white"} />
         {alert ? (
           <BsDot className="text-sky-500 absolute -top-4 left-0" size={70} />
         ) : null}
       </div>
+      <p
+        className={twMerge(
+          "hidden md:block pe-3 lg:hidden cursor-pointer font-bold capitalize text-[14px] text-[#d9d9d9]",
+          isActive && "text-sky-500",
+          labelClassName
+        )}
+      >
+        {label}
+      </p>
       <div
         className="
         relative
@@ -73,12 +81,7 @@ const SideBarItem = ({
       "
       >
         <Icon size={20} />
-        <p
-          className={twMerge(
-            "hidden lg:block font-bold capitalize",
-            labelClassName
-          )}
-        >
+        <p className={twMerge("  font-bold capitalize", labelClassName)}>
           {label}
         </p>
         {alert ? (

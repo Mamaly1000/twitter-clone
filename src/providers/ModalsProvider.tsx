@@ -1,6 +1,7 @@
 import EditModal from "@/components/modals/EditModal";
 import LoginModal from "@/components/modals/LoginModal";
 import RegisterModal from "@/components/modals/RegisterModal";
+import MobileSideBar from "@/containers/MobileSideBar";
 import React, { useEffect, useState } from "react";
 
 const ModalsProvider = () => {
@@ -16,6 +17,7 @@ const ModalsProvider = () => {
       <LoginModal />
       <RegisterModal />
       <EditModal />
+      <MobileSideBar />
     </>
   );
 };

@@ -79,7 +79,7 @@ const FieldGenerator = ({
       }}
     >
       <div className="min-w-full flex flex-col items-start justify-start gap-2">
-        <div className="min-w-full flex flex-row items-center capitalize justify-start gap-2 ">
+        <div className="min-w-full flex flex-wrap items-center capitalize justify-start gap-3 ">
           <span className="text-[14px] capitalize text-neutral-200">
             select field type :
           </span>

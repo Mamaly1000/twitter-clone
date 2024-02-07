@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import Button from "../inputs/Button";
+import { twMerge } from "tailwind-merge";
 interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
@@ -21,13 +22,17 @@ const Modal = ({
   isOpen,
   title,
 }: ModalProps) => {
+  const [visible, setVisible] = useState(false);
+
   const handleClose = useCallback(() => {
     if (disabled) {
       return;
     }
-
-    onClose();
-  }, [onClose, disabled]);
+    setVisible(false);
+    setTimeout(() => {
+      onClose();
+    }, 150);
+  }, [onClose, disabled, setVisible]);
 
   const handleSubmit = useCallback(() => {
     if (disabled) {
@@ -38,6 +43,10 @@ const Modal = ({
     }
   }, [onSubmit, disabled]);
 
+  useEffect(() => {
+    setVisible(!!isOpen);
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
@@ -45,50 +54,26 @@ const Modal = ({
   return (
     <>
       <div
-        className="
-      justify-center 
-      items-center 
-      flex 
-      overflow-x-hidden 
-      overflow-y-auto 
-      fixed 
-      inset-0 
-      z-50 
-      outline-none 
-      focus:outline-none
-      bg-neutral-800
-      bg-opacity-70
-    "
+        className={twMerge(
+          "justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-neutral-800 transition-all",
+          visible ? "bg-opacity-70" : "bg-opacity-0"
+        )}
       >
         <div className="absolute w-full lg:w-3/6 my-6 mx-auto lg:max-w-3xl h-full overflow-y-auto max-h-screen lg:h-auto">
           {/*content*/}
           <div
-            className="
-      h-fit max-h-screen md:max-h-[90vh]
-        lg:h-auto
-        border-0 
-        rounded-lg 
-        shadow-lg 
-        relative 
-        flex 
-        flex-col 
-        w-full 
-        bg-black 
-        outline-none 
-        focus:outline-none  
-        "
+            className={twMerge(
+              "h-full max-h-screen lg:max-h-[90vh] lg:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-black outline-none focus:outline-none ",
+              visible
+                ? "scale-100 translate-y-0 md:translate-y-0 md:scale-100"
+                : "  translate-y-[1000px] md:scale-0"
+            )}
           >
             {/*header*/}
-            <div
-              className="
-          flex 
-          items-center 
-          justify-between 
-          p-10 
-          rounded-t
-          "
-            >
-              <h3 className="text-3xl font-semibold text-white">{title}</h3>
+            <div className="flex items-center justify-between p-10 rounded-t">
+              <h3 className="text-[20px] md:text-3xl font-semibold text-white">
+                {title}
+              </h3>
               <button
                 className="
               p-1 
@@ -104,7 +89,7 @@ const Modal = ({
               </button>
             </div>
             {/*body*/}
-            <div className="relative p-10 flex-auto md:max-h-[75vh] h-fit max-h-full overflow-y-auto ">
+            <div className="relative  p-2 md:p-10 flex-auto md:max-h-[75vh] h-fit max-h-full overflow-y-auto ">
               {body}
             </div>
             {/*footer*/}

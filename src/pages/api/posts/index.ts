@@ -12,80 +12,46 @@ export default async function handler(
   }
   try {
     if (req.method === "GET") {
+      const currentUser = await serverAuth(req, res);
       const userId = req.query.user_id as string;
       let limit = +(req.query.limit || 10) as number;
       const page = +(!!req.query.page ? req.query.page : 1) as number;
 
       const skip = (+page - 1) * +limit;
 
-      if (userId || typeof userId === "string") {
-        const totalPosts = await prisma.post.count({ where: { id: userId } });
-        const maxPages = Math.ceil(totalPosts / limit);
+      let where = {};
 
-        let usersPosts = await prisma.post.findMany({
-          where: {
-            userId,
-          },
-          skip: skip || 0,
-          take: limit + 1,
-          include: {
-            user: {
-              select: {
-                name: true,
-                username: true,
-                createdAt: true,
-                email: true,
-                followingIds: true,
-                hasNotification: true,
-                id: true,
-              },
-            },
-            repost: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    username: true,
-                    name: true,
-                    email: true,
-                  },
-                },
-              },
-            },
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-
-        const isNextPage = usersPosts.length > limit; // Check if there are more items than the limit
-        if (isNextPage) {
-          usersPosts.pop();
-        }
-        const hasPrev = page > 1;
-        const hasNext = isNextPage;
-        const nextPage = hasNext ? page + 1 : null;
-        const prevPage = hasPrev ? page - 1 : null;
-        const currentPage = page;
-
-        res.status(200).json({
-          posts: usersPosts,
-          pagination: {
-            hasPrev,
-            hasNext,
-            nextPage,
-            prevPage,
-            currentPage,
-            maxPages,
-            totalItems: totalPosts,
-          },
-        });
+      if (userId && typeof userId === "string" && userId !== "undefined") {
+        where = {
+          userId,
+        };
       }
-
-      const totalPosts = await prisma.post.count({});
+      if (currentUser && (!userId || userId !== "undefined")) {
+        where = {
+          OR: [
+            {
+              userId: {
+                in: currentUser.currentUser.followerIds,
+              },
+            },
+            {
+              userId: {
+                in: currentUser.currentUser.followingIds,
+              },
+            },
+            {
+              userId: currentUser.currentUser.id,
+            },
+          ],
+        };
+      }
+      const totalPosts = await prisma.post.count({
+        where,
+      });
       const maxPages = Math.ceil(totalPosts / limit);
 
       let posts = await prisma.post.findMany({
+        where,
         take: limit + 1,
         skip: skip || 0,
         orderBy: { createdAt: "desc" },
@@ -124,6 +90,7 @@ export default async function handler(
       if (isNextPage) {
         posts.pop();
       }
+
       const hasPrev = page > 1;
       const hasNext = isNextPage;
       const nextPage = hasNext ? page + 1 : null;

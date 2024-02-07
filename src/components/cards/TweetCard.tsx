@@ -231,7 +231,7 @@ const TweetCard = ({
             className={twMerge(isComment ? "w-full" : "w-auto max-h-fit")}
           >
             {!!!isComment && (
-              <div className="flex flex-row text-[16px] items-center gap-[6px] line-clamp-1">
+              <div className="flex flex-wrap text-[16px] items-center gap-[6px] line-clamp-1 ">
                 <p
                   onClick={goToUser}
                   className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap "
@@ -262,7 +262,7 @@ const TweetCard = ({
                 className={twMerge(
                   isComment
                     ? "text-lg capitalize"
-                    : "text-[14px] text-inherit font-light leading-[-.3px] capitalize max-w-[90%] md:max-w-[70%]",
+                    : "text-[13px] sm:text-[14px] text-inherit font-light leading-[-.3px] capitalize max-w-[80%] md:max-w-[70%]",
                   post.repostId ? "" : "mb-3"
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
@@ -278,9 +278,8 @@ const TweetCard = ({
                   className="min-w-full max-w-full overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800  drop-shadow-2xl text-[#687684]  hover:border-neutral-600 mb-3 gap-3"
                 >
                   <Avatar
-                    className="min-w-[40px] max-h-[40px] min-h-[40px] max-w-[40px]"
+                    className="min-w-[35px] max-h-[35px] min-h-[35px] max-w-[35px] border-[1px] border-black"
                     userId={post.repost.userId}
-                    hasBorder
                   />
                   <div className="min-w-full flex items-start justify-start flex-col gap-2">
                     <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1 text-[13px]">
@@ -308,7 +307,7 @@ const TweetCard = ({
                       dangerouslySetInnerHTML={{
                         __html: formatString(post.repost.body),
                       }}
-                      className="text-[14px]  leading-[-.3px] capitalize font-light text-[#D9D9D9] max-w-[80%] md:max-w-[70%]"
+                      className="text-[13px] sm:text-[14px]  leading-[-.3px] capitalize font-light text-[#D9D9D9] max-w-[80%] md:max-w-[70%]"
                     ></p>
                   </div>
                 </div>
@@ -353,7 +352,7 @@ const TweetCard = ({
             )}
             <div
               className={twMerge(
-                "flex flex-row items-center text-[12px] gap-10 text-[#687684]",
+                "flex flex-row items-center text-[13px] gap-5 sm:gap-10 text-[#687684]",
                 isComment
                   ? "min-w-full justify-evenly py-3 border-t-[1px] border-t-neutral-800"
                   : ""
@@ -385,7 +384,7 @@ const TweetCard = ({
                 className={twMerge("hover:text-sky-400  ")}
               >
                 <BiRepost size={15} />
-              </div>{" "}
+              </div>
               <div
                 onClick={(e) => {
                   e.stopPropagation();

@@ -31,10 +31,12 @@ const HashtagsPage = () => {
     <>
       <Header label="hashtags" displayArrow />
       <HashtagSearchInput />
-      <HashtagsFeed
-        hashtags={userHashtags}
-        title={`trends in ${currentUserLocation}`}
-      />
+      {!router.query.search && (
+        <HashtagsFeed
+          hashtags={userHashtags}
+          title={`trends in ${currentUserLocation}`}
+        />
+      )}
       <HashtagsFeed hashtags={hashtags} title="trends for you" />
       {router.query.search && <EmptyState resetUrl="hashtags" />}
     </>
