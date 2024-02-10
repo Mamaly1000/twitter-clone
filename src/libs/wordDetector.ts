@@ -29,3 +29,22 @@ export function formatNumbersWithCommas(inputString: string) {
     return match + ",";
   });
 }
+// todo => add language based direction and font to tweets
+export function getStringDirectionality(str: string) {
+  const persianRegex = /[\u0600-\u06FF]/;
+  const englishRegex = /[a-zA-Z]/;
+
+  const persianLength = str.match(persianRegex)?.length || 0;
+  const englishLength = str.match(englishRegex)?.length || 0;
+
+  if (persianLength > englishLength) {
+    return "rtl";
+  } else if (englishLength > persianLength) {
+    return "ltr";
+  } else {
+    // If the string contains both English and Persian characters with the same length,
+    // we can use a heuristic to determine the directionality based on the first character.
+    // For example, we can assume that the string is in the direction of the first character.
+    return persianRegex.test(str.charAt(0)) ? "rtl" : "ltr";
+  }
+}
