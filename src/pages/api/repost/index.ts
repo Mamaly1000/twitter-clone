@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { difference, includes, without } from "lodash";
 import HashtagHandler from "@/libs/HashtagHandler";
+import { MediaType } from "@/components/forms/UploadedImagesForm";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,7 +31,7 @@ export default async function handler(
       return res.status(200).json(reposts);
     }
     if (req.method === "POST") {
-      const { quote, postId, hashtags, mentions } = req.body;
+      const { quote, postId, hashtags, mentions, medias } = req.body;
       if (!postId) {
         return res.status(404).json({ message: "Invalid user or tweet id!" });
       }
@@ -79,6 +80,44 @@ export default async function handler(
           repostIds: repostIds,
         },
       });
+      // handling tweet media media
+      try {
+        if (medias && medias?.length > 0) {
+          const newMedias = await prisma.media
+            .createMany({
+              data: (medias as MediaType[]).map((m) => ({
+                url: m.url,
+                userId: currentUser.currentUser.id,
+                postIds: [newPost.id],
+                description: m.desc,
+              })),
+            })
+            .then(async () => {
+              return await prisma.media.findMany({
+                where: {
+                  userId: currentUser.currentUser.id,
+                  postIds: {
+                    has: newPost.id,
+                  },
+                },
+                select: {
+                  id: true,
+                },
+              });
+            });
+
+          await prisma.post.update({
+            where: {
+              id: newPost.id,
+            },
+            data: {
+              mediaIds: newMedias.map((m) => m.id),
+            },
+          });
+        }
+      } catch (error) {
+        console.log("error in creating media for the post");
+      }
       // handle hashtags
       try {
         if (hashtags && userLocation) {

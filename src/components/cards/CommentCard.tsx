@@ -18,7 +18,8 @@ import usePost from "@/hooks/usePost";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { includes } from "lodash";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { useLoginModal } from "@/hooks/useLoginModal"; 
+import { useLoginModal } from "@/hooks/useLoginModal";
+import TweetImageList from "../lists/TweetImageList";
 
 const CommentCard = ({
   comment,
@@ -190,8 +191,9 @@ const CommentCard = ({
           </div>
           <p
             dangerouslySetInnerHTML={{ __html: formatString(comment.body) }}
-            className="text-white mt-3 capitalize"
+            className="text-white my-3 capitalize"
           ></p>
+          <TweetImageList postId={comment.postId} />
           <div className={twMerge("flex flex-row items-center gap-10 mt-4")}>
             <div
               onClick={(e) => {

@@ -10,15 +10,12 @@ import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButto
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className={twMerge("h-screen bg-black ", inter.className)}>
-      <div
-        className="container h-full max-xl: xl:px-30
-     max-w-full "
-      >
+      <div className="container h-full max-xl: xl:px-30 max-w-full ">
         <div className="grid grid-cols-12 h-full relative z-10">
           <SideBar />
           <ScrollHideShowComponent
             target={{
-              className: "fixed bottom-[65px] sm:bottom-[75] end-2 lg:hidden",
+              className: "fixed bottom-[65px] sm:bottom-[75px] end-2 lg:hidden",
             }}
             targetElement={
               <SideBarTweetButton className="m-0 w-[45px] h-[45px] p-2 lg:hidden" />

@@ -1,30 +1,29 @@
-import useUser from "@/hooks/useUser";
-import { User } from "@prisma/client";
 import React from "react";
 import Avatar from "./Avatar";
 import Image from "next/image";
-import Loader from "./Loader";
+import useCoverImage from "@/hooks/useCoverImage";
 
 const UserHero = ({ id }: { id: string }) => {
-  const { user, isLoading } = useUser(id);
-  if (!user || isLoading) {
-    return <Loader message="Loading data" />;
-  }
-  const fetchedUser: User = user;
+  const { coverImage } = useCoverImage(id);
   return (
-    fetchedUser && (
+    coverImage && (
       <div>
         <div className="bg-neutral-700 h-44 relative">
-          {fetchedUser && fetchedUser.coverImage && (
+          {coverImage && (
             <Image
-              src={fetchedUser.coverImage}
+              src={coverImage.imageUrl}
               fill
               alt="Cover Image"
               style={{ objectFit: "cover" }}
             />
           )}
           <div className="absolute -bottom-16 left-4">
-            <Avatar className="border-[3px] border-black " userId={id} isLarge hasBorder />
+            <Avatar
+              className="border-[3px] border-black "
+              userId={id}
+              isLarge
+              hasBorder
+            />
           </div>
         </div>
       </div>

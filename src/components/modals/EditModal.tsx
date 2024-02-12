@@ -18,6 +18,7 @@ import useUserLocation from "@/hooks/useUserLocation";
 import CountrySelect from "../inputs/Select";
 import useCountry, { SingleCountryType } from "@/hooks/useCountry";
 import useUserFields from "@/hooks/useUserFields";
+import useCoverImage from "@/hooks/useCoverImage";
 
 const editSchema = z.object({
   name: z
@@ -37,12 +38,14 @@ const editSchema = z.object({
 });
 
 const EditModal = () => {
+  const { isOpen, onClose } = useEditModal();
   const { getByValue } = useCountry();
   const { data } = useCurrentUser();
-  const { location: userLocation } = useUserLocation(data?.id);
-  const { fields } = useUserFields(data?.id);
+  const { location: userLocation, isLoading: locationLoading } =
+    useUserLocation(data?.id);
+  const { mutate: coverimageMutate } = useCoverImage(data?.id);
+  const { fields, isLoading: fieldsLoading } = useUserFields(data?.id);
   const { mutate } = useUser(data?.id);
-  const { isOpen, onClose } = useEditModal();
 
   const [isLoading, setLoading] = useState(false);
   const [location, setLocation] = useState<SingleCountryType>({
@@ -74,16 +77,28 @@ const EditModal = () => {
     if (data) {
       const user = objectGenerator<
         User,
-        "name" | "username" | "bio" | "profileImage" | "coverImage",
+        | "name"
+        | "username"
+        | "bio"
+        | "profileImage"
+        | "coverImage"
+        | "location",
         z.infer<typeof editSchema>
-      >(data, ["name", "username", "bio", "profileImage", "coverImage"]);
+      >(data, [
+        "name",
+        "username",
+        "bio",
+        "profileImage",
+        "coverImage",
+        "location",
+      ]);
       form.reset({
         bio: user.bio || "",
         coverImage: user.coverImage || "",
         profileImage: user.profileImage || "",
         name: user.name,
         username: user.username,
-        location: userLocation || "",
+        location: userLocation?.toLowerCase() || "",
       });
     }
   }, [data, userLocation]);
@@ -123,6 +138,7 @@ const EditModal = () => {
             mutate();
             toast.success(res.data.message);
             form.reset();
+            coverimageMutate();
             setLocation({
               city: "",
               label: "",
@@ -214,7 +230,7 @@ const EditModal = () => {
       onClose={onClose}
       onSubmit={onSubmit}
       body={bodyContent}
-      disabled={isLoading}
+      disabled={isLoading || locationLoading || fieldsLoading}
     />
   );
 };

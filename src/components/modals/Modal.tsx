@@ -71,7 +71,7 @@ const Modal = ({
           >
             {/*header*/}
             <div className="flex items-center justify-between p-10 rounded-t">
-              <h3 className="text-[20px] md:text-3xl font-semibold text-white">
+              <h3 className="text-[20px] md:text-3xl font-semibold text-white capitalize">
                 {title}
               </h3>
               <button

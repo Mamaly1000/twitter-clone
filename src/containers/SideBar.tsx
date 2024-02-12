@@ -10,6 +10,7 @@ import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
 import { PiUsersBold } from "react-icons/pi";
 import { User } from "@prisma/client";
 import { twMerge } from "tailwind-merge";
+import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
 const SideBar = () => {
   const { data: currentUser } = useCurrentUser();
   const items = [
@@ -43,13 +44,18 @@ const SideBar = () => {
     },
   ];
   return (
-    <section
+    <ScrollHideShowComponent
+      target={{
+        className:
+          "space-y-2 transition-all min-w-full sticky bottom-2 flex items-start justify-start flex-col px-4  text-[19px] text-[#D9D9D9] pb-5 max-h-screen h-full overflow-auto overflow-x-hidden pb-5",
+        inVisibleClassname: "translate-y-0 top-2",
+        visibleClassname: "translate-y-0 top-2",
+      }}
       className={twMerge(
         "hidden lg:block  lg:col-span-3 xl:col-span-2 h-full  "
       )}
-    >
-      <div className="flex flex-col items-end min-w-full   ">
-        <div className="space-y-2   transition-all min-w-full flex items-start justify-start flex-col px-4  text-[19px] text-[#D9D9D9]">
+      targetElement={
+        <>
           <SideBarLogo />
           {items.map((item) => (
             <SideBarItem key={item.href} item={item as any} />
@@ -64,9 +70,9 @@ const SideBar = () => {
             />
           )}
           <SideBarTweetButton className="lg:min-w-full text-[17px]" />
-        </div>
-      </div>
-    </section>
+        </>
+      }
+    />
   );
 };
 

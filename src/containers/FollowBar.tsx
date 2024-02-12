@@ -1,8 +1,8 @@
-import UsersList from "@/components/lists/UsersList";
+import RecommentUserList from "@/components/lists/RecommendUserList";
 import TrendHashtags from "@/components/shared/TrendHashtags";
+import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
 import useRecommendedUsers from "@/hooks/useRecommendedUsers";
 import useTrendHashtags from "@/hooks/useTrendHashtags";
-import Link from "next/link";
 import React from "react";
 
 const FollowBar = () => {
@@ -10,19 +10,20 @@ const FollowBar = () => {
   const { hashtags } = useTrendHashtags();
 
   return (
-    <div className="px-6 py-4 hidden xl:flex col-span-3 items-start justify-start flex-col gap-3  ">
-      <div className="bg-[#202327] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3 max-w-full  ">
-        <h2 className="text-[20px] font-bold">Who to follow</h2>
-        <UsersList users={users} />
-        <Link
-          href={"/users"}
-          className="text-sky-500 text-[15px] font-bold hover:text-opacity-60"
-        >
-          show more
-        </Link>
-      </div>
-      <TrendHashtags hashtags={hashtags || []} />
-    </div>
+    <ScrollHideShowComponent
+      className="p-4 hidden xl:flex col-span-3 items-start justify-start flex-col gap-3  "
+      targetElement={
+        <div className="min-w-full flex flex-col gap-5 max-h-screen h-full min-h-full overflow-y-auto overflow-x-hidden">
+          <RecommentUserList users={users} />
+          <TrendHashtags hashtags={hashtags || []} />
+        </div>
+      }
+      target={{
+        className: "min-w-full flex flex-col gap-5 sticky  ",
+        inVisibleClassname: "translate-y-0 top-2",
+        visibleClassname: "translate-y-0 top-2",
+      }}
+    />
   );
 };
 

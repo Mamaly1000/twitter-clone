@@ -85,7 +85,7 @@ const MobileSideBar = () => {
           <div className=" transition-all min-w-full flex items-start justify-start flex-col text-[19px] text-[#D9D9D9]">
             {items.map((item) => (
               <SideBarItem
-                labelClassName="block text-lg"
+                labelClassName="block text-lg ms-2"
                 key={item.href}
                 item={item as any}
               />
@@ -97,7 +97,7 @@ const MobileSideBar = () => {
                   icon: BiLogOut,
                   label: "Logout",
                 }}
-                labelClassName="block"
+                labelClassName="block text-lg ms-2"
               />
             )}
           </div>

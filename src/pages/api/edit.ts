@@ -41,9 +41,13 @@ export default async function handler(
       data: {
         name,
         username,
-        bio,
-        profileImage,
-        coverImage,
+        bio: !!bio ? bio : currentUser.currentUser.bio,
+        profileImage: !!profileImage
+          ? profileImage
+          : currentUser.currentUser.profileImage,
+        coverImage: !!coverImage
+          ? coverImage
+          : currentUser.currentUser.coverImage,
       },
     });
 
@@ -55,7 +59,7 @@ export default async function handler(
           type: "LOCATION",
         },
       });
-      if (location && currentUserLocation) {
+      if (!!location && currentUserLocation) {
         await prisma.field.update({
           where: {
             id: currentUserLocation.id,
@@ -65,7 +69,7 @@ export default async function handler(
           },
         });
       }
-      if (location && !currentUserLocation) {
+      if (!!location && !currentUserLocation) {
         await prisma.field.create({
           data: {
             value: (location as string).toLowerCase(),
@@ -81,23 +85,28 @@ export default async function handler(
     // handling user fields
     try {
       // deleting existed profile fields
-      await prisma.field.deleteMany({
-        where: {
-          id: {
-            in: currentUser.currentUser.profileFieldsIds,
+      if (profileFields && profileFields.length > 0) {
+        await prisma.field.deleteMany({
+          where: {
+            id: {
+              in: currentUser.currentUser.profileFieldsIds,
+            },
+            type: {
+              not: "LOCATION",
+            },
           },
-        },
-      });
-      // creating new profile fields
-      await prisma.field.createMany({
-        data: profileFields.map((f: any) => ({
-          type: f.type,
-          value: f.value,
-          userId: updatedUser.id,
-        })),
-      });
+        });
+        // creating new profile fields
+        await prisma.field.createMany({
+          data: profileFields.map((f: any) => ({
+            type: f.type,
+            value: f.value,
+            userId: updatedUser.id,
+          })),
+        });
+      }
       // finding fields which are related to user
-      const updatdUserFields = await prisma.field.findMany({
+      const updatedUserFields = await prisma.field.findMany({
         where: {
           userId: currentUser.currentUser.id,
         },
@@ -111,7 +120,7 @@ export default async function handler(
           id: currentUser.currentUser.id,
         },
         data: {
-          profileFieldsIds: updatdUserFields.map((f) => f.id),
+          profileFieldsIds: updatedUserFields.map((f) => f.id),
         },
       });
     } catch (error) {

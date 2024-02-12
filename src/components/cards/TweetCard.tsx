@@ -21,6 +21,7 @@ import { filter, intersection, isEmpty } from "lodash";
 import { FiShare } from "react-icons/fi";
 import MutualReplies from "../lists/MutualReplies";
 import useBookmark from "@/hooks/useBookmark";
+import TweetImageList from "../lists/TweetImageList";
 
 const TweetCard = ({
   post,
@@ -192,7 +193,7 @@ const TweetCard = ({
           >
             <Avatar
               className={twMerge(
-                "md:w-[55px] md:h-[55px] md:min-w-[55px] md:max-h-[55px] md:max-w-[55px] md:min-h-[55px] w-[35px] h-[35px] min-w-[35px] max-h-[35px] max-w-[35px] min-h-[35px]   border-[2px] border-opacity-50",
+                "   border-[2px] border-opacity-50",
                 !isEmpty(mutualReplies) && !isComment && "border-neutral-300"
               )}
               hasBorder
@@ -202,7 +203,7 @@ const TweetCard = ({
               <div className="flex flex-col items-start justify-start capitalize">
                 <p
                   onClick={goToUser}
-                  className=" text-white font-semibold cursor-pointer hover:underline text-nowrap  "
+                  className=" text-[#d9d9d9] font-semibold cursor-pointer hover:underline text-nowrap  "
                 >
                   {post.user.name}
                 </p>
@@ -234,7 +235,7 @@ const TweetCard = ({
               <div className="flex flex-wrap text-[16px] items-center gap-[6px] line-clamp-1 ">
                 <p
                   onClick={goToUser}
-                  className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap "
+                  className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-[#d9d9d9]"
                 >
                   {post.user.name}
                 </p>
@@ -267,6 +268,7 @@ const TweetCard = ({
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
               ></p>
+              <TweetImageList postId={post.id} />
               {!!post.repost && !!post.repost.user && (
                 <div
                   onClick={(e) => {
@@ -288,7 +290,7 @@ const TweetCard = ({
                           e.stopPropagation();
                           router.push(`/users/${post.repost?.userId}`);
                         }}
-                        className="text-white capitalize font-bold hover:text-sky-500"
+                        className="text-[#d9d9d9] capitalize font-bold hover:text-sky-500"
                       >
                         {post.repost.user.name}
                       </p>

@@ -1,4 +1,5 @@
 import EditModal from "@/components/modals/EditModal";
+import ImageDescription from "@/components/modals/ImageDescription";
 import LoginModal from "@/components/modals/LoginModal";
 import RegisterModal from "@/components/modals/RegisterModal";
 import MobileSideBar from "@/containers/MobileSideBar";
@@ -18,6 +19,7 @@ const ModalsProvider = () => {
       <RegisterModal />
       <EditModal />
       <MobileSideBar />
+      <ImageDescription />
     </>
   );
 };

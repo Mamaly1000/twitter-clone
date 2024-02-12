@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
 import { difference, without } from "lodash";
 import HashtagHandler from "@/libs/HashtagHandler";
+import { MediaType } from "@/components/forms/UploadedImagesForm";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -26,7 +27,7 @@ export default async function handler(
           userId,
         };
       }
-      if (currentUser && (!userId || userId !== "undefined")) {
+      if (currentUser && !userId) {
         where = {
           OR: [
             {
@@ -50,7 +51,7 @@ export default async function handler(
       });
       const maxPages = Math.ceil(totalPosts / limit);
 
-      let posts = await prisma.post.findMany({
+      const posts = await prisma.post.findMany({
         where,
         take: limit + 1,
         skip: skip || 0,
@@ -82,6 +83,11 @@ export default async function handler(
                   createdAt: true,
                 },
               },
+            },
+          },
+          medias: {
+            select: {
+              url: true,
             },
           },
         },
@@ -121,10 +127,48 @@ export default async function handler(
           type: "LOCATION",
         },
       });
-      const { body, hashtags, mentions } = req.body;
+      const { body, hashtags, mentions, medias } = req.body;
       const newPost = await prisma.post.create({
         data: { body: body, userId: user.currentUser.id },
       });
+      // handling tweet media media
+      try {
+        if (medias && medias?.length > 0) {
+          const newMedias = await prisma.media
+            .createMany({
+              data: (medias as MediaType[]).map((m) => ({
+                url: m.url,
+                userId: user.currentUser.id,
+                postIds: [newPost.id],
+                description: m.desc,
+              })),
+            })
+            .then(async () => {
+              return await prisma.media.findMany({
+                where: {
+                  userId: user.currentUser.id,
+                  postIds: {
+                    has: newPost.id,
+                  },
+                },
+                select: {
+                  id: true,
+                },
+              });
+            });
+
+          await prisma.post.update({
+            where: {
+              id: newPost.id,
+            },
+            data: {
+              mediaIds: newMedias.map((m) => m.id),
+            },
+          });
+        }
+      } catch (error) {
+        console.log("error in creating media for the post");
+      }
       // handle hashtags
       try {
         if (hashtags && userLocation) {

@@ -1,13 +1,15 @@
 import useUsers from "@/hooks/useUsers";
 import { User } from "@prisma/client";
-import React, { useEffect, useMemo, useState } from "react";
-import Avatar from "../shared/Avatar";
-import { twMerge } from "tailwind-merge";
+import React, { useCallback, useEffect, useState } from "react";
+import { debounce } from "lodash";
+import Button from "../inputs/Button";
 
 const MentionsList = ({
   mentions,
   onChange,
+  onAdd,
 }: {
+  onAdd?: (val: string) => void;
   mentions: {
     id: string | undefined;
     username: String;
@@ -24,7 +26,7 @@ const MentionsList = ({
     []
   );
 
-  useMemo(() => {
+  const handleMentions = useCallback(() => {
     if (users) {
       const mentionsIds = mentions.map((mention) => ({
         id: users.find((user) =>
@@ -41,67 +43,37 @@ const MentionsList = ({
         id: string;
         username: String;
       }[];
-      setUsersByIds(foundedUsersByIds);
+      setUsersByIds(foundedUsersByIds.filter((i) => !!i));
       onChange(validMentionIds);
     }
   }, [mentions, users]);
 
+  const mentionValidator = debounce(() => {
+    handleMentions();
+  }, 5000);
+
+  useEffect(() => {
+    handleMentions();
+    return () => {
+      mentionValidator.cancel();
+    };
+  }, [mentions, users]);
+
   return (
-    <div className="min-w-full max-w-full overflow-hidden flex flex-col items-center justify-start gap-3 capitalize">
-      <div className="min-w-full max-w-full overflow-hidden flex flex-wrap items-center justify-start gap-3 capitalize">
-        <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
-          mentions :
-        </h4>
-        <div className="min-w-fit flex items-start justify-start flex-wrap gap-2">
-          {mentions.map((m) => (
-            <span
-              key={m.id}
-              className={twMerge(
-                "px-3 py-2 rounded-md drop-shadow-2xl border-[1px]  text-sm font-semibold capitalize",
-                !!!usersByIds.find(
-                  (user) =>
-                    !!user &&
-                    user?.username?.toLowerCase() === m.username.toLowerCase()
-                )?.id
-                  ? "border-red-400 text-red-400"
-                  : "border-sky-400 text-sky-400"
-              )}
-            >
-              @{m.username}
+    mentions.length > 0 && (
+      <div className="min-w-fit max-w-full border-[2px] border-neutral-900 rounded-lg px-3 py-2 overflow-hidden flex flex-wrap items-center justify-center gap-3 capitalize">
+        <div className="min-w-fit flex items-start justify-start flex-wrap gap-2 text-[12px] text-neutral-300">
+          tagged
+          {usersByIds[0] && (
+            <span className="text-[12px] text-sky-500">
+              {usersByIds[0]?.username}
             </span>
-          ))}
-        </div>{" "}
-      </div>
-      <div className="min-w-full max-w-full overflow-hidden flex flex-wrap items-center justify-start gap-3 capitalize">
-        <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
-          valid mentions :
-        </h4>
-        <div className="min-w-fit flex items-start justify-start flex-wrap gap-2">
-          {usersByIds.map(
-            (user) =>
-              !!user && (
-                <div
-                  key={user!.id}
-                  className={twMerge(
-                    "px-3 py-2 rounded-md drop-shadow-2xl text-sm font-semibold capitalize flex items-center justify-center gap-2"
-                  )}
-                >
-                  <Avatar
-                    className="border-[1px] border-sky-400 text-sky-400"
-                    userId={user!.id}
-                  />
-                  <p className="capitalize text-[15px] text-white flex flex-col items-start justify-start">
-                    {user!.name}
-                    <span className="text-[12px] text-neutral-300">
-                      @{user!.username}
-                    </span>
-                  </p>
-                </div>
-              )
           )}
+          {usersByIds.length > 1 && ` and ${usersByIds.length - 1} more...`}
+          {/* <Button className="h-10 rounded-lg " >tag more...</Button> */}
         </div>
       </div>
-    </div>
+    )
   );
 };
 

@@ -9,10 +9,14 @@ const ScrollHideShowComponent = ({
   targetElement,
   target,
 }: {
-  target: { className: string };
+  target: {
+    className: string;
+    visibleClassname?: string;
+    inVisibleClassname?: string;
+  };
   targetElement?: ReactNode;
   className?: string;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [currentScroll, setScroll] = useState(0);
@@ -38,7 +42,6 @@ const ScrollHideShowComponent = ({
       autoOpen.cancel();
     };
   }, [isVisible, currentScroll, setScroll, setIsVisible]);
- 
 
   return (
     <div className={twMerge("min-w-full max-w-full", className)}>
@@ -46,7 +49,9 @@ const ScrollHideShowComponent = ({
       <div
         className={twMerge(
           "transition-all p-0 m-0 ",
-          !isVisible ? "translate-y-[200px]" : "translate-y-0",
+          !isVisible
+            ? target.inVisibleClassname || "translate-y-[200px]"
+            : target.visibleClassname || "translate-y-0",
           target.className
         )}
       >

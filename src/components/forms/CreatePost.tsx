@@ -4,7 +4,7 @@ import usePosts from "@/hooks/usePosts";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -15,6 +15,9 @@ import { formatString } from "@/libs/wordDetector";
 import { getHashtags, getMentions } from "@/libs/getMentions";
 import { useRouter } from "next/router";
 import MentionsList from "../lists/MentionsList";
+import ImageUpload from "../inputs/ImageInput";
+import { useUploadedImages } from "@/hooks/useUploadedImages";
+import UploadedImagesForm from "./UploadedImagesForm";
 
 const createPostSchema = z.object({
   body: z
@@ -39,6 +42,7 @@ const CreatePost = ({
   placeholder?: string;
 }) => {
   const router = useRouter();
+  const Images = useUploadedImages();
 
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
@@ -60,7 +64,7 @@ const CreatePost = ({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
       body: "",
-      mentionIds: [],
+      mentionIds: [] as string[],
     },
   });
 
@@ -76,6 +80,7 @@ const CreatePost = ({
                 postId: postId,
                 hashtags,
                 mentions: values.mentionIds,
+                medias: Images.images,
               })
               .then((res) => {
                 toast.success(res.data.message);
@@ -85,10 +90,9 @@ const CreatePost = ({
                 form.reset();
                 setHashtags([]);
                 setMentions([]);
+                Images.onRemove([]);
                 router.push(`/posts/${res.data.repostId}`);
               });
-          } else {
-            toast.error("please wait!");
           }
         } catch (error: any) {
           if (error.response.data.message) {
@@ -108,6 +112,7 @@ const CreatePost = ({
               body: values.body,
               hashtags,
               mentions: values.mentionIds,
+              medias: Images.images,
             })
             .then((res: any) => {
               mutatePosts();
@@ -115,6 +120,7 @@ const CreatePost = ({
               toast.success(res.data.message);
               form.reset();
               setHashtags([]);
+              Images.onRemove([]);
               setMentions([]);
 
               if (mainPage) {
@@ -131,6 +137,19 @@ const CreatePost = ({
         }
       }
     }
+  );
+
+  const onChange = useCallback(
+    (event: any) => {
+      form.setValue("body", event.target.value);
+      setMentions(
+        getMentions(event.target.value).map((mention) => {
+          return { id: "", username: mention };
+        })
+      );
+      setHashtags(getHashtags(event.target.value));
+    },
+    [form, setMentions, getMentions, setHashtags, getHashtags]
   );
 
   return (
@@ -153,27 +172,30 @@ const CreatePost = ({
               <textarea
                 disabled={isLoading}
                 aria-placeholder={placeholder}
-                onChange={(event) => {
-                  form.setValue("body", event.target.value);
-                  setMentions(
-                    getMentions(event.target.value).map((mention) => {
-                      return { id: "", username: mention };
-                    })
-                  );
-                  setHashtags(getHashtags(event.target.value));
-                }} 
+                onChange={onChange}
                 value={form.watch("body")}
                 className="disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px]   placeholder-neutral-500 text-white max-w-full overflow-hidden "
                 placeholder={placeholder}
               ></textarea>
               <hr className="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
-              <div className="mt-4 flex flex-row justify-end w-full ">
+              <div className="mt-4 flex flex-row justify-end w-full gap-4">
                 <Button
                   disabled={isLoading || !(form.watch("body").length > 5)}
                   onClick={onSubmit}
                 >
                   Tweet
                 </Button>
+                <ImageUpload
+                  onChange={(val) => {
+                    if (Images.images.length >= 4) {
+                      toast.error("max image length is 4");
+                    } else {
+                      Images.onAdd([...Images.images, { url: val }]);
+                    }
+                  }}
+                  length={4}
+                  disable={Images.images.length >= 4 || isLoading}
+                />
               </div>
             </div>
           </div>
@@ -194,15 +216,15 @@ const CreatePost = ({
               </div>
             </div>
           )}
-          {mainPage && mentions.length > 0 && (
-            <MentionsList
-              mentions={mentions}
-              onChange={(val) => {
-                const ids = val.map((v) => v.id) as never[];
-                form.setValue("mentionIds", ids);
-              }}
-            />
-          )}
+
+          <MentionsList
+            mentions={mentions}
+            onChange={(val) => {
+              const ids = val.map((v) => v.id) as never[];
+              form.setValue("mentionIds", ids);
+            }}
+          />
+          <UploadedImagesForm />
         </div>
       ) : (
         <div className="py-8">

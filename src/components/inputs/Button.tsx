@@ -34,7 +34,7 @@ const Button = ({
     rounded-[50px]
     font-semibold
     hover:opacity-80
-    transition
+    transition hover:scale-105 active:scale-95 
     border-2`,
         fullWidth ? "w-full" : "w-fit",
         secondary

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { IconType } from "react-icons";
 import { BsDot } from "react-icons/bs";
+import { FaCircle } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 interface Props {
   item: {
@@ -52,7 +53,7 @@ const SideBarItem = ({
       >
         <Icon size={20} color={isActive ? "inherit" : "white"} />
         {alert ? (
-          <BsDot className="text-sky-500 absolute -top-4 left-0" size={70} />
+          <FaCircle className="text-sky-500 absolute top-2 right-2 md:right-3 md:top-3 max-w-[30px] max-h-[30px] " size={14} />
         ) : null}
       </div>
       <p
