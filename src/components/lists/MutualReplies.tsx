@@ -72,22 +72,22 @@ const MutualReplies = ({
 
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
   return (
-    <div className="min-w-full flex items-center justify-start ps-[30px] pb-5 pt-2 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
+    <div className="min-w-full flex items-center justify-start px-5 pb-5 pt-2 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
       {replies.length === 1 && (
         <div className="min-w-full flex items-start justify-start gap-3">
           <div className="relative flex items-center justify-center ">
             <Avatar
               userId={replies[0].user.id}
-              className="relative z-10 w-[35px] h-[35px] min-w-[35px] max-h-[35px] max-w-[35px] min-h-[35px] border-neutral-300 border-[1px] border-opacity-50"
+              className="relative z-10 border-neutral-300 border-[1px] border-opacity-50"
             />
             <hr className="w-[2px] absolute -top-2 min-h-[20px] z-0 bg-neutral-300 bg-opacity-50 border-none transition-all" />
           </div>
           <div className="w-fit flex flex-col items-start justify-start gap-2 capitalize">
-            <div className="w-fit flex items-center justify-start gap-[6px] ">
-              <p className="text-zinc-300 text-sm font-bold leading-[14px]">
+            <div className="w-fit flex flex-wrap items-center justify-start gap-[6px] ">
+              <p className="text-zinc-300 text-[13px] font-bold leading-[14px]">
                 {replies[0].user.name}
               </p>
-              <span className=" text-zinc-500 text-sm font-normal leading-[14px]">
+              <span className=" text-zinc-500 text-[13px] font-normal leading-[14px] hidden sm:block">
                 @{replies[0].user.username}
               </span>
               <span className="text-zinc-500 text-sm font-normal leading-[14px]">
@@ -172,7 +172,7 @@ const MutualReplies = ({
               __html: formatString(
                 `replied by @${replies[0].user.username}, @${
                   replies[1].user.username
-                }, ${
+                }${
                   replies.length - 2 > 0 &&
                   `, and ${replies.length - 2} ${
                     replies.length - 2 > 2 ? "others" : "more"

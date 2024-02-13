@@ -1,5 +1,5 @@
 import React from "react";
-import { ClipLoader } from "react-spinners";
+import { HashLoader } from "react-spinners";
 import { twMerge } from "tailwind-merge";
 
 const Loader = ({
@@ -18,7 +18,7 @@ const Loader = ({
         className
       )}
     >
-      <ClipLoader color="lightblue" size={size} />
+      <HashLoader color="#008FFB" size={size} />
       {message && (
         <p className="capitalize font-semibold text-center text-white">
           {message}
