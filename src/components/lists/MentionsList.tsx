@@ -53,7 +53,9 @@ const MentionsList = ({
   }, 5000);
 
   useEffect(() => {
-    handleMentions();
+    if (mentions.length > 0) {
+      handleMentions();
+    }
     return () => {
       mentionValidator.cancel();
     };

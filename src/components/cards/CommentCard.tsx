@@ -154,7 +154,7 @@ const CommentCard = ({
         </div>
         <div ref={commentRef} className="min-h-fit">
           <div className="flex flex-col  items-start justify-start">
-            <div className="flex items-center justify-start gap-1">
+            <div className=" flex-wrap items-center justify-start gap-1">
               <p
                 onClick={goToUser}
                 className="

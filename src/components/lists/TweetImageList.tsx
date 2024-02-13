@@ -1,4 +1,5 @@
 import useMedias from "@/hooks/useMedias";
+import { useStatus } from "@/hooks/useStatus";
 import Image from "next/image";
 import React from "react";
 import { twMerge } from "tailwind-merge";
@@ -11,11 +12,13 @@ const TweetImageList = ({
   postId: string;
 }) => {
   const { Medias } = useMedias(postId);
+  const statusModal = useStatus();
   return (
     Medias.length > 0 && (
       <div
         onClick={(e) => {
           e.stopPropagation();
+          statusModal.onOpen(postId);
         }}
         className={twMerge(
           "min-w-full mb-3 max-w-full h-auto grid grid-cols-2  rounded-lg overflow-hidden border-[1px] border-neutral-800 hover:border-neutral-500 items-start justify-start gap-1",

@@ -27,7 +27,9 @@ const TweetCard = ({
   post,
   userId,
   isComment = false,
+  status,
 }: {
+  status?: boolean;
   isComment?: boolean;
   userId?: string;
   post: Post & {
@@ -278,7 +280,7 @@ const TweetCard = ({
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
               ></p>
-              <TweetImageList postId={post.id} />
+              {!!!status && <TweetImageList postId={post.id} />}
               {!!post.repost && !!post.repost.user && !!post.repostId && (
                 <div
                   onClick={(e) => {
@@ -321,7 +323,10 @@ const TweetCard = ({
                       }}
                       className="text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] max-w-[80%] md:max-w-[70%]"
                     ></p>
-                    <TweetImageList className="max-w-[80%] min-w-[80%] md:max-w-[90%] md:min-w-[90%]" postId={post.repost.postId} />
+                    <TweetImageList
+                      className="max-w-[80%] min-w-[80%] md:max-w-[90%] md:min-w-[90%]"
+                      postId={post.repost.postId}
+                    />
                   </div>
                 </div>
               )}

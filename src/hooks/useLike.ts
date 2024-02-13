@@ -7,7 +7,7 @@ import { Post } from "@prisma/client";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const useLike = ({ postId, userId }: { postId: string; userId?: string }) => {
+const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {
   const { data: currentUser } = useCurrentUser();
   const { post, mutate: mutatePost } = usePost(postId);
   const { mutate: mutatePosts } = usePosts(userId);
