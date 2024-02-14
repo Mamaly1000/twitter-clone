@@ -33,7 +33,15 @@ const usePosts = (id?: string) => {
     ? `/api/posts?page=${router.query.page}&limit=${initialLimit}&user_id=${id}`
     : `/api/posts?page=${router.query.page}&limit=${initialLimit}`;
 
-  const { data, error, isLoading: postsLoading, mutate } = useSWR(url, fetcher);
+  const {
+    data,
+    error,
+    isLoading: postsLoading,
+    mutate,
+  } = useSWR(url, fetcher, {
+    errorRetryCount: 2,
+    shouldRetryOnError: false,
+  });
 
   const nextPage = async () => {
     setLoading(true);

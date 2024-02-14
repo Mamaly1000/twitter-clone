@@ -1,16 +1,16 @@
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
-import { without } from "lodash";
+import { includes, without } from "lodash";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "POST" && req.method !== "DELETE") {
+  if (req.method !== "PATCH") {
     return res.status(405).json({ message: "Method not allowed" });
   }
   try {
-    const userId = req.body.userId as string;
+    const userId = req.query.id as string;
     const currentUser = await serverAuth(req, res);
 
     if (!userId || typeof userId !== "string") {
@@ -26,17 +26,39 @@ export default async function handler(
         id: userId,
       },
     });
-
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
+    const isFollowing = includes(currentUser.currentUser.followingIds, user.id);
+    let followerIds: string[] = [];
+    let followingIds: string[] = [];
 
-    let followingIds = currentUser.currentUser.followingIds;
-    let followerIds = user.followerIds;
+    if (isFollowing) {
+      followerIds = without(currentUser.currentUser.followingIds, user.id);
+      followingIds = without(user.followerIds, currentUser.currentUser.id);
+    } else {
+      followerIds = [...user.followerIds, currentUser.currentUser.id];
+      followingIds = [...currentUser.currentUser.followingIds, user.id];
+    }
 
-    if (req.method === "DELETE") {
-      followingIds = without(followingIds, userId);
-      followerIds = without(user.followerIds, currentUser.currentUser.id);
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        followerIds,
+      },
+    });
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: currentUser.currentUser.id,
+      },
+      data: {
+        followingIds,
+      },
+    });
+
+    if (isFollowing) {
       try {
         if (userId) {
           await prisma.notification.create({
@@ -62,7 +84,7 @@ export default async function handler(
       }
     }
 
-    if (req.method === "POST") {
+    if (!isFollowing) {
       followingIds.push(userId);
       followerIds.push(currentUser.currentUser.id);
       try {
@@ -89,28 +111,11 @@ export default async function handler(
         console.log("error in saving notification while liking", error);
       }
     }
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        followerIds,
-      },
-    });
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: currentUser.currentUser.id,
-      },
-      data: {
-        followingIds: followingIds,
-      },
-    });
 
     return res.status(200).json({
-      message:
-        req.method === "DELETE"
-          ? `unfollow ${user.username}`
-          : `following ${user.username}`,
+      message: isFollowing
+        ? `unfollow ${user.username}`
+        : `following ${user.username}`,
       updatedUser,
     });
   } catch (error) {

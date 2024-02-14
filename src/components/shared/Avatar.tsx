@@ -9,7 +9,9 @@ const Avatar = ({
   isLarge = false,
   hasBorder = false,
   className,
+  repost,
 }: {
+  repost?: boolean;
   className?: string;
   userId: string;
   isLarge?: boolean;
@@ -34,8 +36,9 @@ const Avatar = ({
         hasBorder ? "border-4 border-black" : "",
         isLarge
           ? "min-h-32 min-w-32 max-h-32 max-w-32"
-          : "md:w-[55px] md:h-[55px] md:min-w-[55px] md:max-h-[55px] md:max-w-[55px] md:min-h-[55px] w-[35px] h-[35px] min-w-[35px] max-h-[35px] max-w-[35px] min-h-[35px]",
-        className
+          : "w-[40px] h-[40px] min-w-[40px] max-h-[40px] max-w-[40px] min-h-[40px] w- ",
+        className,
+        repost && "min-w-[20px] max-h-[20px] min-h-[20px] max-w-[20px]"
       )}
     >
       <Image

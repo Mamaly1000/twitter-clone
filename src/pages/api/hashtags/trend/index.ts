@@ -15,7 +15,21 @@ export default async function handler(
     if (!currentUser) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+    const userLocation = await prisma.field.findFirst({
+      where: {
+        type: "LOCATION",
+        userId: currentUser.currentUser.id,
+      },
+    });
+    let where = {};
+    if (userLocation) {
+      where = {
+        location: userLocation.value.toLowerCase() || null,
+      };
+    }
+
     const hashtags = await prisma.hashtag.findMany({
+      where,
       orderBy: {
         count: "desc",
       },

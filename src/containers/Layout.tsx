@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             targetElement={
               <SideBarTweetButton className="m-0 w-[45px] h-[45px] p-2 lg:hidden" />
             }
-            className="col-span-12   pb-[65px] sm:pb-[75px] lg:pb-0 lg:col-span-9 xl:col-span-7 border-x-[1px] border-neutral-800 relative"
+            className="col-span-12 pb-[65px] sm:pb-[75px] lg:pb-0 lg:col-span-6 border-x-[1px] border-neutral-800 relative"
           >
             {children}
           </ScrollHideShowComponent>

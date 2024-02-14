@@ -18,8 +18,8 @@ export default async function handler(
     }
     const users = await prisma.user.findMany({
       where: {
-        followerIds: {
-          hasEvery: currentUser.currentUser.followingIds,
+        id: {
+          not: currentUser.currentUser.id,
         },
         NOT: {
           followerIds: {
@@ -43,6 +43,7 @@ export default async function handler(
       },
       take: 5,
     });
+
     return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: "error in fetching users", error });

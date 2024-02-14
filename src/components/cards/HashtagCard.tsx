@@ -10,9 +10,13 @@ import { twMerge } from "tailwind-merge";
 const HashtagCard = ({
   hashtag,
   main = false,
+  hideLocation = false,
+  i,
 }: {
+  i?: number;
   main?: boolean;
   hashtag: Hashtag;
+  hideLocation?: boolean;
 }) => {
   const router = useRouter();
 
@@ -40,20 +44,21 @@ const HashtagCard = ({
     <div
       onClick={onClick}
       className={twMerge(
-        "min-w-full py-2 flex flex-col items-start justify-start gap-2  min-h-fit cursor-pointer hover:opacity-60",
+        "min-w-full py-2 flex flex-col items-start justify-start gap-1  min-h-fit cursor-pointer hover:opacity-60",
         main && "px-3  border-b-[1px] border-neutral-800"
       )}
     >
-      {location && (
+      {location && !hideLocation && (
         <p className="text-[13px] text-[#6E767D] capitalize">
-          trending in {location}
+          {i} · trending in {location}
         </p>
       )}
-      <span className="font-semibold uppercase text-lg leading-5 text-gray-900 dark:text-white">
+      <span className="font-semibold capitalize text-[15px] leading-5 text-gray-900 dark:text-white">
         #{hashtag.name}
       </span>
       <p className="text-[13px] text-[#6E767D] capitalize flex items-center justify-start gap-2">
-        {!!main && formatNumbersWithCommas(`${hashtag.userIds.length} users`)+" - "}  
+        {!!main &&
+          formatNumbersWithCommas(`${hashtag.userIds.length} users`) + " - "}
         {formatNumbersWithCommas(`${hashtag.postIds.length} tweets`)}
       </p>
     </div>

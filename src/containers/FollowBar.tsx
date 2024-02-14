@@ -1,21 +1,24 @@
 import RecommentUserList from "@/components/lists/RecommendUserList";
 import TrendHashtags from "@/components/shared/TrendHashtags";
 import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
+import useCurrentUser from "@/hooks/useCurrentUser";
 import useRecommendedUsers from "@/hooks/useRecommendedUsers";
 import useTrendHashtags from "@/hooks/useTrendHashtags";
+import useUserLocation from "@/hooks/useUserLocation";
 import React from "react";
 
 const FollowBar = () => {
   const { users } = useRecommendedUsers();
   const { hashtags } = useTrendHashtags();
-
+  const { data: user } = useCurrentUser();
+  const { location } = useUserLocation(user?.id);
   return (
     <ScrollHideShowComponent
-      className="p-4 hidden xl:flex col-span-3 items-start justify-start flex-col gap-3  "
+      className="p-4 hidden lg:flex col-span-3 items-start justify-start flex-col gap-3  pb-10"
       targetElement={
-        <div className="min-w-full flex flex-col gap-5 max-h-screen h-full min-h-full overflow-y-auto overflow-x-hidden">
+        <div className="scroll-hidden w-full xl:max-w-[90%] flex flex-col gap-5 max-h-screen h-full min-h-full overflow-y-auto overflow-x-hidden pb-5">
           <RecommentUserList users={users} />
-          <TrendHashtags hashtags={hashtags || []} />
+          <TrendHashtags userLocation={location} hashtags={hashtags || []} />
         </div>
       }
       target={{

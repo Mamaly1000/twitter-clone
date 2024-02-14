@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 
 const useBookmark = (id?: string) => {
   const router = useRouter();
-  const userId = router.query.userId;
+  const userId = router.query.user_id as string;
   const { mutate: postMutate } = usePost(id);
   const { mutate: bookmarksMutate } = useBookmarks(userId as string);
   const { data: user, mutate: currentUserMutate } = useCurrentUser();

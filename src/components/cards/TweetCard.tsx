@@ -22,6 +22,7 @@ import { FiShare } from "react-icons/fi";
 import MutualReplies from "../lists/MutualReplies";
 import useBookmark from "@/hooks/useBookmark";
 import TweetImageList from "../lists/TweetImageList";
+import { useStatus } from "@/hooks/useStatus";
 
 const TweetCard = ({
   post,
@@ -39,6 +40,7 @@ const TweetCard = ({
 }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
+  const statusModal = useStatus();
 
   const [scrollHeight, setHeight] = useState(20);
   const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
@@ -51,17 +53,20 @@ const TweetCard = ({
   const goToUser = useCallback(
     (ev: any) => {
       ev.stopPropagation();
+      statusModal.onClose();
       router.push(`/users/${post.user.id}`);
     },
     [router, post.user.id]
   );
 
   const goToPost = useCallback(() => {
+    statusModal.onClose();
     router.push(`/posts/${post.id}`);
   }, [router, post.id]);
 
   const goToParentPost = useCallback(() => {
     if (post.parentId) {
+      statusModal.onClose();
       router.push(`/posts/${post.parentId}`);
     }
   }, [router, post.parentId]);
@@ -85,8 +90,10 @@ const TweetCard = ({
       if (!currentUser || !post) {
         loginModal.onOpen();
       }
-
-      if (post?.id) router.push(`/repost/${post.id}`);
+      if (post?.id) {
+        router.push(`/repost/${post.id}`);
+        statusModal.onClose();
+      }
     },
     [loginModal, currentUser, post]
   );
@@ -145,7 +152,7 @@ const TweetCard = ({
     <article
       onClick={goToPost}
       className={twMerge(
-        "min-w-full border-b-[1px] border-neutral-800  cursor-pointer hover:bg-neutral-900 transition-all group flex items-center justify-center flex-col p-0  overflow-hidden"
+        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer hover:bg-neutral-900 transition-all group flex items-center justify-center flex-col p-0  overflow-hidden"
       )}
     >
       <div
@@ -244,7 +251,7 @@ const TweetCard = ({
             className={twMerge(isComment ? "w-full" : "w-auto max-h-fit")}
           >
             {!!!isComment && (
-              <div className="flex flex-wrap text-[16px] items-center gap-[6px] line-clamp-1 ">
+              <div className="flex flex-wrap text-[15px] items-center gap-[6px] line-clamp-1 ">
                 <p
                   onClick={goToUser}
                   className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-[#d9d9d9]"
@@ -275,7 +282,7 @@ const TweetCard = ({
                 className={twMerge(
                   isComment
                     ? "text-lg capitalize"
-                    : "text-[13px] sm:text-[14px] text-inherit font-light leading-[-.3px] capitalize max-w-[95%] md:max-w-[70%] lg:max-w-[90%]",
+                    : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize max-w-[95%] md:max-w-[70%] lg:max-w-[90%]",
                   post.repostId ? "" : "mb-3"
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
@@ -292,7 +299,8 @@ const TweetCard = ({
                   className="min-w-full max-w-[90%] overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3"
                 >
                   <Avatar
-                    className="min-w-[35px] max-h-[35px] min-h-[35px] max-w-[35px] border-[1px] border-black"
+                    repost
+                    className=" border-[1px] border-black"
                     userId={post.repost.userId}
                   />
                   <div className="min-w-full max-w-full flex items-start justify-start flex-col gap-2">
@@ -379,6 +387,7 @@ const TweetCard = ({
               <div
                 onClick={(e) => {
                   e.stopPropagation();
+                  statusModal.onClose();
                   router.push(`/reply/${post.id}`);
                 }}
                 className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"

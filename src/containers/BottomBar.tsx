@@ -38,7 +38,7 @@ const BottomBar = () => {
     },
     {
       icon: HiOutlineHashtag,
-      label: "hashtags",
+      label: "explore",
       href: "/hashtags",
       isActive: pathname?.endsWith("hashtags"),
     },

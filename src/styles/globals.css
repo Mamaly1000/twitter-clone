@@ -41,4 +41,6 @@ html {
 ::selection {
   @apply bg-none cursor-default;
 }
- 
+.scroll-hidden::-webkit-scrollbar {
+  @apply hidden;
+}

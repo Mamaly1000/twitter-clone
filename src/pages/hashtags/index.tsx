@@ -29,7 +29,7 @@ const HashtagsPage = () => {
 
   return (
     <>
-      <Header label="hashtags" displayArrow />
+      <Header label="Explore" displayArrow />
       <HashtagSearchInput />
       {!router.query.search && (
         <HashtagsFeed

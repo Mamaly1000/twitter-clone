@@ -25,7 +25,7 @@ const MobileSideBar = () => {
     },
     {
       icon: HiOutlineHashtag,
-      label: "hashtags",
+      label: "explore",
       href: "/hashtags",
     },
     {

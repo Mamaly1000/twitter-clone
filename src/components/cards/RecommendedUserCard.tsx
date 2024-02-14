@@ -7,6 +7,8 @@ import useFollow from "@/hooks/useFollow";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useRouter } from "next/router";
 import { RiUserFollowLine } from "react-icons/ri";
+import { useEditModal } from "@/hooks/useEditModal";
+import { includes } from "lodash";
 
 const RecommendedUserCard = ({
   user,
@@ -16,8 +18,9 @@ const RecommendedUserCard = ({
   user: User;
 }) => {
   const router = useRouter();
+  const editModal = useEditModal();
   const { data: currentUser } = useCurrentUser();
-  const { toggleFollow, isLoading } = useFollow(user?.id);
+  const { toggleFollow, isLoading, isFollowing } = useFollow(user?.id);
   const goToUser = useCallback(() => {
     if (user.id) {
       router.push(`/users/${user.id}`);
@@ -67,21 +70,34 @@ const RecommendedUserCard = ({
           </p>
         </div>
       </div>
-      <Button
-        disabled={isLoading}
-        className={twMerge("text-[14px] font-[500] capitalize bg-[#D9D9D9] text-[#0F1419] border-none py-2 px-3 whitespace-nowrap",scrollWidth < 260&&"w-[40px] h-[40px] rounded-full")}
-        onClick={toggleFollow}
-      >
-        {scrollWidth > 260 ? (
-          currentUser && user.followingIds.includes(currentUser?.id) ? (
-            "follow back"
-          ) : (
-            "follow"
-          )
-        ) : (
-          <RiUserFollowLine size={15}  />
-        )}
-      </Button>
+      {user?.id === currentUser.id ? (
+        <Button
+          secondary
+          onClick={(e) => {
+            e.stopPropagation();
+            editModal.onOpen();
+          }}
+          disabled={isLoading}
+        >
+          Edit
+        </Button>
+      ) : (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleFollow();
+          }}
+          secondary={!isFollowing}
+          outline={isFollowing}
+          disabled={isLoading}
+        >
+          {isFollowing
+            ? "Unfollow"
+            : includes((user as User).followingIds, currentUser?.id)
+            ? "follow back"
+            : "follow"}
+        </Button>
+      )}
     </div>
   );
 };

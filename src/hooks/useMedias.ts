@@ -4,7 +4,10 @@ import { Media } from "@prisma/client";
 
 const useMedias = (postId?: string) => {
   const url = postId ? `/api/posts/media/${postId}` : null;
-  const { data, error, isLoading, mutate } = useSWR(url, fetcher);
+  const { data, error, isLoading, mutate } = useSWR(url, fetcher, {
+    shouldRetryOnError: false,
+    errorRetryCount: 2,
+  });
   return { Medias: (data || []) as Media[], error, isLoading, mutate };
 };
 

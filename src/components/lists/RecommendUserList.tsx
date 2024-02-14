@@ -15,8 +15,10 @@ const RecommentUserList = ({
     return null;
   }
   return (
-    <div className="bg-[#202327] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3 max-w-full  ">
-      <h2 className="text-[20px] font-bold">{title || "Who to follow"}</h2>
+    <div className="bg-[#16181C] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3 max-w-full  ">
+      <h2 className="min-w-full text-left text-[20px] capitalize font-[800] leading-6 text-[#e7e9ea]">
+        {title || "Who to follow"}
+      </h2>
       <UsersList users={users} />
       <Link
         href={"/users"}

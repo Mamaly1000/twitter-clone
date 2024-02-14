@@ -62,14 +62,11 @@ const LargeUserCard = ({ user }: { user: User }) => {
           ) : (
             <Button
               disabled={followingLoading}
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleFollow();
-              }}
+              onClick={toggleFollow}
               className="bg-[#d9d9d9] text-black font-[400] text-[15px] border-none"
             >
               {isFollowing
-                ? "followed"
+                ? "following"
                 : user.followingIds.includes(currentUser?.id)
                 ? "follow back"
                 : "follow"}

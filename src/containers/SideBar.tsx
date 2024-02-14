@@ -21,7 +21,7 @@ const SideBar = () => {
     },
     {
       icon: HiOutlineHashtag,
-      label: "hashtags",
+      label: "explore",
       href: "/hashtags",
     },
     {
@@ -47,15 +47,15 @@ const SideBar = () => {
     <ScrollHideShowComponent
       target={{
         className:
-          "space-y-2 transition-all min-w-full sticky bottom-2 flex items-start justify-start flex-col px-4  text-[19px] text-[#D9D9D9] pb-5 max-h-screen h-full overflow-auto overflow-x-hidden pb-5",
+          "space-y-2 transition-all min-w-full sticky bottom-2 flex items-end justify-start flex-col px-4  text-[19px] text-[#D9D9D9] pb-5 max-h-screen h-full overflow-auto overflow-x-hidden pb-5",
         inVisibleClassname: "translate-y-0 top-2",
         visibleClassname: "translate-y-0 top-2",
       }}
       className={twMerge(
-        "hidden lg:block  lg:col-span-3 xl:col-span-2 h-full  "
+        "hidden lg:block lg:col-span-3 h-full items-start justify-end "
       )}
       targetElement={
-        <>
+        <div className="xl:max-w-[60%] flex flex-col items-start justify-end w-full" >
           <SideBarLogo />
           {items.map((item) => (
             <SideBarItem key={item.href} item={item as any} />
@@ -70,7 +70,7 @@ const SideBar = () => {
             />
           )}
           <SideBarTweetButton className="lg:min-w-full text-[17px]" />
-        </>
+        </div>
       }
     />
   );
