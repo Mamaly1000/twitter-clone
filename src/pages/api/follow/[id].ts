@@ -30,16 +30,16 @@ export default async function handler(
       return res.status(404).json({ message: "User not found!" });
     }
     const isFollowing = includes(currentUser.currentUser.followingIds, user.id);
-    let followerIds: string[] = [];
-    let followingIds: string[] = [];
+    let followerIds: string[] = user.followerIds;
+    let followingIds: string[] = currentUser.currentUser.followingIds;
 
     if (isFollowing) {
-      followerIds = without(currentUser.currentUser.followingIds, user.id);
-      followingIds = without(user.followerIds, currentUser.currentUser.id);
+      followerIds = without(user.followerIds, currentUser.currentUser.id);
+      followingIds = without(currentUser.currentUser.followingIds, user.id);
     } else {
       followerIds = [...user.followerIds, currentUser.currentUser.id];
       followingIds = [...currentUser.currentUser.followingIds, user.id];
-    }
+    } 
 
     await prisma.user.update({
       where: {
@@ -57,7 +57,6 @@ export default async function handler(
         followingIds,
       },
     });
-
     if (isFollowing) {
       try {
         if (userId) {

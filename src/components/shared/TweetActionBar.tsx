@@ -63,7 +63,7 @@ const TweetActionBar = ({
     return null;
   }
   return (
-    <div className={className}>
+    <div onClick={(e) => e.stopPropagation()} className={className}>
       <div
         onClick={(e) => {
           e.stopPropagation();

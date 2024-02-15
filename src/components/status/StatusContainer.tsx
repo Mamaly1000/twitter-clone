@@ -6,6 +6,7 @@ import TweetSidebar from "./TweetSidebar";
 import Button from "../inputs/Button";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import DraggableComponentProps from "../ui/DragComponent";
 
 const StatusContainer = () => {
   const { isOpen, postId, onClose } = useStatus();
@@ -34,6 +35,12 @@ const StatusContainer = () => {
       )}
     >
       <MediaContainer
+        className={twMerge(
+          " min-h-screen flex flex-col justify-center items-center relative z-10 transition-all duration-100",
+          collapse
+            ? "col-span-12 md:col-span-12 lg:col-span-12"
+            : "col-span-12 lg:col-span-7 2xl:col-span-9"
+        )}
         handleClose={handleClose}
         collapse={collapse}
         setCollapse={(val) => setCollapse(val)}

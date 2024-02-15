@@ -11,43 +11,38 @@ import useUsers from "./useUsers";
 
 const useFollow = (userId: string) => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
-  const { mutate: mutateFetchedUser } = useUser(userId);
+  const { user, mutate: mutateFetchedUser } = useUser(userId);
   const { mutate: recommendUsers } = useRecommendedUsers();
   const { mutate: usersMutate } = useUsers();
   const [isLoading, setLoading] = useState(false);
   const loginModal = useLoginModal();
-
-  const isFollowing = useMemo(() => {
-    const list = (currentUser as User)?.followingIds || [];
-    return list.includes(userId);
-  }, [currentUser, userId]);
 
   const toggleFollow = useCallback(
     async (e?: any) => {
       e?.stopPropagation();
       if (!currentUser) {
         return loginModal.onOpen();
-      }
-      try {
-        setLoading(true);
-        axios.patch(`/api/follow/${userId}`).then((res) => {
-          toast.success(res.data.message);
-          mutateCurrentUser();
-          mutateFetchedUser();
-          recommendUsers();
-          usersMutate();
-        });
-      } catch (error) {
-        toast.error("something went wrong!");
-      } finally {
-        setLoading(false);
+      } else {
+        try {
+          setLoading(true);
+          await axios.patch(`/api/follow/${userId}`).then((res) => {
+            toast.success(res.data.message);
+            mutateCurrentUser();
+            mutateFetchedUser();
+            recommendUsers();
+            usersMutate();
+          });
+        } catch (error) {
+          toast.error("something went wrong!");
+        } finally {
+          setLoading(false);
+        }
       }
     },
     [
       currentUser,
       loginModal,
       userId,
-      isFollowing,
       mutateCurrentUser,
       mutateFetchedUser,
       recommendUsers,
@@ -56,7 +51,12 @@ const useFollow = (userId: string) => {
       isLoading,
     ]
   );
-  console.log(isLoading);
+
+  const isFollowing = useMemo(() => {
+    const list = includes(currentUser?.followingIds, userId);
+
+    return list;
+  }, [currentUser, userId]);
 
   return { isFollowing, toggleFollow, isLoading };
 };

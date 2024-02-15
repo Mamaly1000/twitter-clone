@@ -3,15 +3,22 @@ import Image from "next/image";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Loader from "../shared/Loader";
+import { twMerge } from "tailwind-merge";
 
-const MediaSlider = ({ postId }: { postId?: string }) => {
+const MediaSlider = ({
+  postId,
+  className,
+}: {
+  className?: string;
+  postId?: string;
+}) => {
   const { Medias, isLoading } = useMedias(postId);
 
   return Medias.length === 0 || isLoading ? (
     <Loader message="loading Tweet Media" />
   ) : (
     <Swiper
-      className="min-w-[100%] max-w-[100%] md:min-w-[70%] md:max-w-[70%]  max-h-[90vh] pt-10"
+      className={twMerge("w-full h-full pt-10", className)}
       slidesPerView={1}
     >
       {Medias?.map((media) => (

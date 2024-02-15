@@ -4,9 +4,20 @@ import React from "react";
 import Loader from "../shared/Loader";
 import LargeUserCard from "../cards/LargeUserCard";
 
-const UsersCardFeed = ({ users, title }: { users: User[]; title?: string }) => {
+const UsersCardFeed = ({
+  users,
+  title,
+  isLoading = false,
+}: {
+  isLoading?: boolean;
+  users: User[];
+  title?: string;
+}) => {
   if (isEmpty(users)) {
-    return <Loader message="loading users" />;
+    return null;
+  }
+  if (isLoading) {
+    return <Loader message="loading followers" />;
   }
   return (
     <section className="min-w-full max-w-full text-[#d9d9d9] flex flex-col items-start justify-start gap-4 mt-3">

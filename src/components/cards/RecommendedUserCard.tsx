@@ -5,10 +5,10 @@ import Avatar from "../shared/Avatar";
 import Button from "../inputs/Button";
 import useFollow from "@/hooks/useFollow";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { useRouter } from "next/router";
-import { RiUserFollowLine } from "react-icons/ri";
+import { useRouter } from "next/router"; 
 import { useEditModal } from "@/hooks/useEditModal";
 import { includes } from "lodash";
+import { HiOutlineUserAdd } from "react-icons/hi";
 
 const RecommendedUserCard = ({
   user,
@@ -70,32 +70,45 @@ const RecommendedUserCard = ({
           </p>
         </div>
       </div>
-      {user?.id === currentUser.id ? (
-        <Button
-          secondary
-          onClick={(e) => {
-            e.stopPropagation();
-            editModal.onOpen();
-          }}
-          disabled={isLoading}
-        >
-          Edit
-        </Button>
+      {main ? (
+        user?.id === currentUser?.id ? (
+          <Button
+            secondary
+            onClick={(e) => {
+              e.stopPropagation();
+              editModal.onOpen();
+            }}
+            disabled={isLoading}
+          >
+            Edit
+          </Button>
+        ) : (
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFollow();
+            }}
+            secondary={!isFollowing}
+            outline={isFollowing}
+            disabled={isLoading}
+            className="text-[13px] whitespace-nowrap min-w-[120px] "
+          >
+            {isFollowing
+              ? "Unfollow"
+              : includes((user as User).followingIds, currentUser?.id)
+              ? "follow back"
+              : "follow"}
+          </Button>
+        )
       ) : (
         <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFollow();
-          }}
-          secondary={!isFollowing}
-          outline={isFollowing}
+          secondary
+          outline
+          className="w-10 h-10 rounded-full flex items-center justify-center text-[#d9d9d9]  p-1 max-w-10"
           disabled={isLoading}
+          onClick={toggleFollow}
         >
-          {isFollowing
-            ? "Unfollow"
-            : includes((user as User).followingIds, currentUser?.id)
-            ? "follow back"
-            : "follow"}
+          <HiOutlineUserAdd  />
         </Button>
       )}
     </div>

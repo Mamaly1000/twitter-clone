@@ -15,7 +15,7 @@ const UsersPage = () => {
   const { data: user, isLoading: currentUserLoading } = useCurrentUser();
   const { users, isLoading: allUsersLoading } = useUsers();
   const { followers, isLoading: followersLoading } = useFollowers(user?.id);
-  if (currentUserLoading || allUsersLoading || followersLoading || !users) {
+  if (currentUserLoading || allUsersLoading || !users) {
     return <Loader message="loading users" />;
   }
 
@@ -24,7 +24,11 @@ const UsersPage = () => {
       <Header label="users" displayArrow />
       <UsersSearchInput />
       {!router.query.search && (
-        <UsersCardFeed users={followers as any} title="your followers" />
+        <UsersCardFeed
+          users={followers as any}
+          isLoading={followersLoading}
+          title="your followers"
+        />
       )}{" "}
       <UsersList main title="people" users={users} />
       {router.query.search && <EmptyState resetUrl="users" />}
