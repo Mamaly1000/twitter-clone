@@ -118,21 +118,6 @@ const TweetCard = ({
     return formatDistanceToNowStrict(new Date(post.repost.post.createdAt));
   }, [post?.repost?.post?.createdAt]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (tweetRef) {
-        setHeight(tweetRef.current!.offsetHeight);
-      }
-    };
-    if (tweetRef) {
-      setHeight(tweetRef.current!.offsetHeight);
-    }
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [scrollHeight, tweetRef]);
-
   const mutualReplies = useMemo(() => {
     if (!post.commentIds || !currentUser) {
       return null;
@@ -148,6 +133,21 @@ const TweetCard = ({
       : [];
   }, [post.commentIds, currentUser?.followingIds]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (tweetRef) {
+        setHeight(tweetRef.current!.offsetHeight);
+      }
+    };
+    if (tweetRef) {
+      setHeight(tweetRef.current!.offsetHeight);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [scrollHeight, tweetRef, mutualReplies]);
+
   return (
     <article
       onClick={goToPost}
@@ -157,11 +157,12 @@ const TweetCard = ({
     >
       <div
         className={twMerge(
-          "flex flex-col items-start justify-start min-w-full",
-          isComment ? "px-5 pt-5  gap-4" : " pt-5 px-5",
+          "flex flex-col items-start justify-start min-w-full max-w-full",
+          isComment ? "px-5 pt-5  gap-4" : " p-2 md:p-5",
           !isComment && isEmpty(mutualReplies) ? "pb-5" : "pb-0"
         )}
       >
+        {/* tweet parent post reference */}
         {post.parentId && post.parentUsername && (
           <div
             onClick={(e) => {
@@ -188,12 +189,14 @@ const TweetCard = ({
             ></p>
           </div>
         )}
+        {/* main tweet container */}
         <div
           className={twMerge(
-            "min-w-full flex items-start justify-start gap-3",
+            "min-w-full max-w-full flex items-start justify-start gap-3",
             isComment ? "flex-col" : "flex-row"
           )}
         >
+          {/* tweet avatar section */}
           <div
             className={twMerge(
               "flex relative",
@@ -246,12 +249,17 @@ const TweetCard = ({
               />
             )}
           </div>
+          {/* main tweet content section */}
           <div
             ref={tweetRef}
-            className={twMerge(isComment ? "w-full" : "w-auto max-h-fit")}
+            className={twMerge(
+              isComment
+                ? "w-full max-w-full"
+                : "max-w-[90%] overflow-hidden max-h-fit"
+            )}
           >
             {!!!isComment && (
-              <div className="flex flex-wrap text-[15px] items-center gap-[6px] line-clamp-1 ">
+              <div className="flex flex-wrap text-[15px] items-center gap-[6px] line-clamp-1 min-w-full max-w-full">
                 <p
                   onClick={goToUser}
                   className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-[#d9d9d9]"
@@ -272,9 +280,10 @@ const TweetCard = ({
                 )}
               </div>
             )}
+            {/* tweet body and repost section */}
             <div
               className={twMerge(
-                "text-[#D9D9D9] flex flex-col items-start justify-start gap-3 w-full",
+                "text-[#D9D9D9] flex flex-col items-start justify-start gap-3 min-w-full max-w-full",
                 isComment ? "mt-4 mb-3" : "mt-1"
               )}
             >
@@ -282,12 +291,13 @@ const TweetCard = ({
                 className={twMerge(
                   isComment
                     ? "text-lg capitalize"
-                    : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize max-w-[95%] md:max-w-[70%] lg:max-w-[90%]",
+                    : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full",
                   post.repostId ? "" : "mb-3"
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
               ></p>
               {!!!status && <TweetImageList postId={post.id} />}
+              {/* repost-container */}
               {!!post.repost && !!post.repost.user && !!post.repostId && (
                 <div
                   onClick={(e) => {
@@ -296,21 +306,17 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="min-w-full max-w-[90%] overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3"
+                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 max-w-full "
                 >
-                  <Avatar
-                    repost
-                    className=" border-[1px] border-black"
-                    userId={post.repost.userId}
-                  />
-                  <div className="min-w-full max-w-full flex items-start justify-start flex-col gap-2">
+                  <Avatar repost userId={post.repost.userId} />
+                  <div className="max-w-[80%] flex items-start justify-start flex-col gap-2">
                     <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1 text-[13px]">
                       <p
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/users/${post.repost?.userId}`);
                         }}
-                        className="text-[#d9d9d9] capitalize font-bold hover:text-sky-500"
+                        className="text-[#d9d9d9] capitalize font-bold hover:text-sky-500 max-w-[95%] overflow-hidden text-wrap whitespace-pre-wrap"
                       >
                         {post.repost.user.name}
                       </p>
@@ -329,10 +335,10 @@ const TweetCard = ({
                       dangerouslySetInnerHTML={{
                         __html: formatString(post.repost.body),
                       }}
-                      className="text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] max-w-[80%] md:max-w-[70%]"
+                      className="max-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-4 text-balance"
                     ></p>
                     <TweetImageList
-                      className="max-w-[80%] min-w-[80%] md:max-w-[90%] md:min-w-[90%]"
+                      className="max-w-full"
                       postId={post.repost.postId}
                     />
                   </div>
@@ -437,6 +443,7 @@ const TweetCard = ({
           </div>
         </div>
       </div>
+      {/* mutable replies */}
       {!isComment && !isEmpty(mutualReplies) && (
         <MutualReplies
           replies={mutualReplies || []}

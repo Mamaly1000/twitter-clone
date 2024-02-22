@@ -1,55 +1,42 @@
-import React, { useState } from "react";
-import Draggable, { ControlPosition, DraggableEvent } from "react-draggable";
+import React, { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
+import { PanInfo, motion } from "framer-motion";
+
 interface DraggableComponentProps {
-  children: React.ReactNode;
+  children?: ReactNode;
   className?: string;
-  onDragStart?: (event: DraggableEvent) => void;
-  onDrag?: (event: DraggableEvent) => void;
-  onDragStop?: (event: DraggableEvent) => void;
-  onDragend: () => void;
+  onDragEnd?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => void;
 }
 
 const DraggableComponent: React.FC<DraggableComponentProps> = ({
   children,
   className,
-  onDragend,
+  onDragEnd,
 }) => {
-  const [initialPosition, setInitialPosition] = useState<ControlPosition>({
-    x: 0,
-    y: 0,
-  });
-  const [length, setLength] = useState(0);
-  const handleDragStart = (event: DraggableEvent & any) => {
-    setLength(event.clientY);
-  };
-  const handleDragStop = (event: DraggableEvent & any) => {
-    const deltaY = event.clientY - length;
-
-    if (Math.abs(deltaY) > 50) {
-      onDragend();
-      setInitialPosition({
-        ...initialPosition,
-        y: length > 0 ? length + deltaY : length - deltaY,
-      });
-    } else {
-      setInitialPosition({
-        ...initialPosition,
-        y: 0,
-      });
-    }
-  };
-
   return (
-    <Draggable
-      axis="y"
-      onStart={handleDragStart}
-      onStop={handleDragStop}
-      bounds={{ top: -50, bottom: 50, left: 0, right: 0 }}
-      position={initialPosition}
+    <motion.div
+      drag="y"
+      transition={{
+        ease: "linear",
+        delay: 0,
+        duration: 0.1,
+        power: 0,
+        velocity: 0,
+      }}
+      dragConstraints={{
+        top: 10,
+        bottom: 10,
+      }}
+      onDragEnd={onDragEnd}
+      dragSnapToOrigin
+      dragElastic={1}
+      className={twMerge("w-auto h-auto relative", className)}
     >
-      <div className={twMerge("drag-container", className)}>{children}</div>
-    </Draggable>
+      {children}
+    </motion.div>
   );
 };
 

@@ -3,10 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import MediaContainer from "./MediaContainer";
 import TweetSidebar from "./TweetSidebar";
-import Button from "../inputs/Button";
-import { IoClose } from "react-icons/io5";
-import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
-import DraggableComponentProps from "../ui/DragComponent";
 
 const StatusContainer = () => {
   const { isOpen, postId, onClose } = useStatus();

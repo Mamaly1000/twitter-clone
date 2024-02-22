@@ -46,11 +46,9 @@ const MediaContainer = ({
           <MdOutlineKeyboardDoubleArrowRight size={15} className="text-white" />
         </Button>
       </div>
-      <DraggableComponent
-        onDragend={() => handleClose()}
-        className="w-full flex items-center justify-center flex-col  h-full  relative"
-      >
+      <div className="w-full flex items-center justify-center flex-col  h-full  relative">
         <MediaSlider
+          handleClose={handleClose}
           className="min-w-[100%] max-w-[100%] md:min-w-[70%] md:max-w-[70%] max-h-[50vh] md:max-h-[60vh]"
           postId={postId}
         />
@@ -62,7 +60,7 @@ const MediaContainer = ({
             )}
           />
         )}
-      </DraggableComponent>
+      </div>
     </div>
   );
 };

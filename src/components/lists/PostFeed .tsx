@@ -15,10 +15,10 @@ const PostFeed = ({ id }: { id?: string }) => {
     <div className="text-neutral-600 text-center p-6 text-xl">No Tweets</div>;
   }
   return (
-    <div className="flex flex-col items-start justify-start gap-0">
+    <div className="flex flex-col items-start justify-start gap-0 min-w-full max-w-full">
       {(posts as Post[]).map((post) => (
         <TweetCard post={post} key={post.id} userId={id} />
-      ))} 
+      ))}
       <Pagination />
     </div>
   );

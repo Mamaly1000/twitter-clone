@@ -72,7 +72,7 @@ const MutualReplies = ({
 
   const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
   return (
-    <div className="min-w-full flex items-center justify-start px-5 pb-5 pt-2 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
+    <div className="min-w-full max-w-full flex items-center justify-start px-2 md:px-5 pb-2 md:pb-5 pt-2 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
       {replies.length === 1 && (
         <div className="min-w-full flex items-start justify-start gap-3">
           <div className="relative flex items-center justify-center ">

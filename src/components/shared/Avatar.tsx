@@ -38,7 +38,8 @@ const Avatar = ({
           ? "min-h-32 min-w-32 max-h-32 max-w-32"
           : "w-[40px] h-[40px] min-w-[40px] max-h-[40px] max-w-[40px] min-h-[40px] w- ",
         className,
-        repost && "min-w-[20px] max-h-[20px] min-h-[20px] max-w-[20px]"
+        repost &&
+          "min-w-[20px] max-h-[20px] min-h-[20px] max-w-[20px] border-[1px] border-black"
       )}
     >
       <Image
