@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useCurrentUser from "./useCurrentUser";
 import { useLoginModal } from "./useLoginModal";
 import usePost from "./usePost";
@@ -9,7 +9,7 @@ import axios from "axios";
 const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {
   const { data: currentUser } = useCurrentUser();
   const { post, mutate: mutatePost } = usePost(postId);
-
+  const [likeLoading, setLoading] = useState(false);
   const loginModal = useLoginModal();
 
   const hasLiked = useMemo(() => {
@@ -25,6 +25,7 @@ const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {
       return loginModal.onOpen();
     }
     try {
+      setLoading(true);
       let req;
       if (hasLiked) {
         req = () =>
@@ -45,10 +46,12 @@ const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {
       });
     } catch (error) {
       toast.error("something went wrong!");
+    } finally {
+      setLoading(false);
     }
-  }, [currentUser, loginModal, mutatePost, postId, hasLiked]);
+  }, [currentUser, loginModal, mutatePost, postId, hasLiked, setLoading]);
 
-  return { toggleLike, hasLiked };
+  return { toggleLike, hasLiked, likeLoading };
 };
 
 export default useLike;

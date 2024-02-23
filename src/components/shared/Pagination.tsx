@@ -21,7 +21,7 @@ function Pagination({ params }: { params: postQueryType }) {
         className="min-w-full p-0 m-0 flex flex-col justify-center items-center w-full"
         ref={ref}
       >
-        <Loader />
+        <Loader size={15} message="loading more tweets" />
       </section>
     )
   );

@@ -11,7 +11,11 @@ const AnimatedButton = ({
   className,
   isComment,
   isLoading,
+  iconSize,
+  large,
 }: {
+  large?: boolean;
+  iconSize?: number;
   isComment?: boolean;
   onClick?: (e: any) => void;
   Icon: IconType;
@@ -38,20 +42,20 @@ const AnimatedButton = ({
         scale: isLoading ? [0.9, 1, 0.9, 1, 0.9] : [1],
       }}
     >
-      <Icon size={14} />
+      <Icon size={iconSize || 14} />
       {!isComment && (
         <div className="w-auto relative flex items-center justify-center">
           <motion.p
             initial={
-              !visibleCount
+              !visibleCount && currentValue === value
                 ? {
-                    translateY: -10,
+                    translateY: 10,
                     opacity: 0,
                   }
                 : {}
             }
             animate={
-              !visibleCount
+              !visibleCount && currentValue === value
                 ? {
                     translateY: currentValue === value ? 0 : 20,
                     opacity: 100,
@@ -61,7 +65,7 @@ const AnimatedButton = ({
                     opacity: 0,
                   }
             }
-            className="text-[12px] absolute "
+            className={twMerge("text-[12px] absolute", large && "text-[20px]")}
           >
             {currentValue}
           </motion.p>
@@ -78,7 +82,7 @@ const AnimatedButton = ({
                     opacity: 0,
                   }
             }
-            className="text-[12px] absolute"
+            className={twMerge("text-[12px] absolute", large && "text-[20px]")}
           >
             {isActive ? (value === 0 ? 0 : value - 1) : value + 1}
           </motion.p>
