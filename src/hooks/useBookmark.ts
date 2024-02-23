@@ -4,15 +4,10 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { includes } from "lodash";
 import usePost from "./usePost";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
-import useBookmarks from "./useBookmarks";
-import { useRouter } from "next/router";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa"; 
 
-const useBookmark = (id?: string) => {
-  const router = useRouter();
-  const userId = router.query.user_id as string;
+const useBookmark = (id?: string) => { 
   const { mutate: postMutate } = usePost(id);
-  const { mutate: bookmarksMutate } = useBookmarks(userId as string);
   const { data: user, mutate: currentUserMutate } = useCurrentUser();
   const toggleBookmark = useCallback(async () => {
     if (id) {
@@ -21,13 +16,12 @@ const useBookmark = (id?: string) => {
           toast.success(res.data.message);
           currentUserMutate();
           postMutate();
-          bookmarksMutate();
         });
       } catch (error) {
         toast.error("something went wrong!");
       }
     }
-  }, [id, currentUserMutate, postMutate, bookmarksMutate]);
+  }, [id, currentUserMutate, postMutate]);
 
   const isBookmarked = useMemo(() => {
     if (!id || !user) {

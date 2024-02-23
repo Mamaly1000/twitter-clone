@@ -1,16 +1,27 @@
-import { PageRouter } from "@/libs/PageRouter";
 import fetcher from "@/libs/fetcher";
 import { Post } from "@prisma/client";
-import axios from "axios";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWRInfinite from "swr/infinite";
+import qs from "query-string";
+import { useInView } from "react-intersection-observer";
+import { debounce } from "lodash";
 
-const initialLimit = 15;
+const initialLimit = 10;
+export type PostsType =
+  | "bookmark"
+  | "liked"
+  | "media"
+  | "replies"
+  | "comment"
+  | "repost";
+export type postQueryType = {
+  id?: string;
+  type?: PostsType;
+  postId?: string;
+};
 
-const usePosts = (id?: string) => {
-  const router = useRouter();
-  const [isLoading, setLoading] = useState(false);
+const usePosts = (params: postQueryType) => {
+  const { inView, ref } = useInView();
   const [pagination, setPagination] = useState<{
     hasPrev: boolean;
     hasNext: boolean;
@@ -29,117 +40,77 @@ const usePosts = (id?: string) => {
     maxPages: 0,
   });
 
-  const url = !!id
-    ? `/api/posts?page=${router.query.page}&limit=${initialLimit}&user_id=${id}`
-    : `/api/posts?page=${router.query.page}&limit=${initialLimit}`;
-
   const {
     data,
     error,
-    isLoading: postsLoading,
+    size,
+    setSize,
     mutate,
-  } = useSWR(url, fetcher, {
-    errorRetryCount: 2,
-    shouldRetryOnError: false,
-  });
+    isLoading: postsLoading,
+  } = useSWRInfinite<{
+    posts: Post[];
+    pagination: any;
+  }>(
+    (index) => {
+      let query = qs.stringifyUrl({
+        url: "/api/posts",
+        query: {
+          user_id: params.id,
+          limit: initialLimit,
+          page: index + 1,
+          postId: params.postId,
+          search: params.type,
+        },
+      });
+      return query;
+    },
+    fetcher,
+    {
+      errorRetryCount: 2,
+      shouldRetryOnError: false,
+    }
+  );
 
-  const nextPage = async () => {
-    setLoading(true);
-    if (pagination.hasNext && pagination.nextPage) {
-      const newurl = !!id
-        ? `/api/posts?page=${
-            +(router.query?.page || 1) + 1
-          }&limit=${initialLimit}&user_id=${id}`
-        : `/api/posts?page=${
-            +(router.query?.page || 1) + 1
-          }&limit=${initialLimit}`;
-      await axios
-        .get(newurl)
-        .then(
-          (res: {
-            data: {
-              posts: Post[];
-              pagination: {
-                hasPrev: boolean;
-                hasNext: boolean;
-                nextPage: number | null;
-                prevPage: number | null;
-                currentPage: number;
-                totalItems: number;
-                maxPages: number;
-              };
-            };
-          }) => {
-            setPagination(res.data.pagination);
-            PageRouter(router, res.data.pagination.currentPage);
-            window.scroll({ top: 0 });
-          }
-        )
-        .finally(() => {
-          setLoading(false);
-        });
+  const nextPage = debounce((_val) => {
+    if (inView && pagination.hasNext) {
+      setSize(pagination.nextPage || 2);
     }
-  };
-  const prevPage = async () => {
-    setLoading(true);
-    if (pagination.hasPrev && pagination.prevPage) {
-      const newurl = !!id
-        ? `/api/posts?page=${
-            +(router.query?.page || 1) - 1
-          }&limit=${initialLimit}&user_id=${id}`
-        : `/api/posts?page=${
-            +(router.query?.page || 1) - 1
-          }&limit=${initialLimit}`;
-      await axios
-        .get(newurl)
-        .then(
-          (res: {
-            data: {
-              posts: Post[];
-              pagination: {
-                hasPrev: boolean;
-                hasNext: boolean;
-                nextPage: number | null;
-                prevPage: number | null;
-                currentPage: number;
-                totalItems: number;
-                maxPages: number;
-              };
-            };
-          }) => {
-            setPagination(res.data.pagination);
-            PageRouter(router, res.data.pagination.currentPage);
-            window.scroll({ top: 0 });
-          }
-        )
-        .finally(() => {
-          setLoading(false);
-        });
-    }
-  };
+  }, 2000);
 
   useEffect(() => {
-    if (router.query.page && data?.pagination) {
+    nextPage(size);
+    return () => {
+      nextPage.cancel();
+    };
+  }, [nextPage]);
+
+  useEffect(() => {
+    if (data?.[0]?.pagination) {
+      const pagination = data ? data[data.length - 1].pagination : null;
+
       setPagination({
-        currentPage: +router.query.page,
-        hasNext: data.pagination.hasNext,
-        hasPrev: data.pagination.hasPrev,
-        maxPages: data.pagination.maxPages,
-        nextPage: data.pagination.nextPage,
-        prevPage: data.pagination.prevPage,
-        totalItems: data.pagination.totalItems,
+        currentPage: +pagination.currentPage,
+        hasNext: pagination.hasNext,
+        hasPrev: pagination.hasPrev,
+        maxPages: pagination.maxPages,
+        nextPage: pagination.nextPage,
+        prevPage: pagination.prevPage,
+        totalItems: pagination.totalItems,
       });
     }
-  }, [router, setPagination, data]);
+  }, [setPagination, data]);
+
+  const posts: Post[] = data
+    ? [].concat(...(data.map((page) => page.posts) as any))
+    : [];
 
   return {
-    posts: (data?.posts || []) as Array<Post>,
+    posts: posts as Array<Post>,
     error,
-    isLoading: isLoading || postsLoading,
+    isLoading: postsLoading,
     mutate,
     pagination,
-    nextPage,
-    prevPage,
+    ref,
   };
 };
 

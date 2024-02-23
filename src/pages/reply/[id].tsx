@@ -21,6 +21,7 @@ const ReplyPage = () => {
       <Header label="reply to a tweet" displayArrow />
       <TweetCard post={post} isComment userId={(user as User).id} />
       <CreatePost
+        params={{ type: "comment", postId: post.id }}
         isComment
         postId={post.id}
         mainPage

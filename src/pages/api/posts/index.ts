@@ -1,9 +1,10 @@
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
-import { difference, without } from "lodash";
+import { difference } from "lodash";
 import HashtagHandler from "@/libs/HashtagHandler";
 import { MediaType } from "@/components/forms/UploadedImagesForm";
+import { PostsType } from "@/hooks/usePosts";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -14,20 +15,31 @@ export default async function handler(
   try {
     if (req.method === "GET") {
       const currentUser = await serverAuth(req, res);
-      const userId = req.query.user_id as string;
-      let limit = +(req.query.limit || 10) as number;
-      const page = +(!!req.query.page ? req.query.page : 1) as number;
+      const {
+        page,
+        user_id,
+        limit,
+        search,
+        postId,
+      }: {
+        search?: PostsType;
+        page?: number;
+        limit?: number;
+        user_id?: string;
+        postId?: string;
+      } = req.query;
 
-      const skip = (+page - 1) * +limit;
+      const skip = (+(page || 1) - 1) * +(limit || 15);
 
       let where = {};
 
-      if (userId && typeof userId === "string" && userId !== "undefined") {
+      if (user_id && typeof user_id === "string" && user_id !== "undefined") {
         where = {
-          userId,
+          userId: user_id,
         };
       }
-      if (currentUser && !userId) {
+
+      if (currentUser && !user_id) {
         where = {
           OR: [
             {
@@ -46,14 +58,58 @@ export default async function handler(
           ],
         };
       }
+      if (search && user_id) {
+        const targetUser = await prisma.user.findUnique({
+          where: {
+            id: user_id,
+          },
+        });
+        if (search === "liked") {
+          where = {
+            likedIds: {
+              has: user_id,
+            },
+          };
+        }
+        if (search === "bookmark" && targetUser) {
+          where = {
+            id: {
+              in: targetUser.bookmarksIds,
+            },
+          };
+        }
+        if (search === "media" && targetUser) {
+          where = {
+            userId: targetUser.id,
+            NOT: {
+              mediaIds: {
+                has: null,
+              },
+            },
+          };
+        }
+        if (search === "replies" && targetUser) {
+          where = {
+            AND: [
+              { userId: targetUser.id },
+              { parentId: { not: null } }, // Filter for non-null parentId
+            ],
+          };
+        }
+        if (search === "comment" && postId) {
+          where = {
+            parentId: postId,
+          };
+        }
+      }
       const totalPosts = await prisma.post.count({
         where,
       });
-      const maxPages = Math.ceil(totalPosts / limit);
+      const maxPages = Math.ceil(totalPosts / +(limit || 15));
 
       const posts = await prisma.post.findMany({
         where,
-        take: limit + 1,
+        take: +(limit || 15) + 1,
         skip: skip || 0,
         orderBy: { createdAt: "desc" },
         include: {
@@ -92,25 +148,24 @@ export default async function handler(
           },
         },
       });
-      const isNextPage = posts.length > limit; // Check if there are more items than the limit
+      const isNextPage = posts.length > +(limit || 15); // Check if there are more items than the limit
       if (isNextPage) {
         posts.pop();
       }
-
-      const hasPrev = page > 1;
+      const hasPrev = +(page || 1) > 1;
       const hasNext = isNextPage;
-      const nextPage = hasNext ? page + 1 : null;
-      const prevPage = hasPrev ? page - 1 : null;
-      const currentPage = page;
+      const pagination = {
+        nextPage: hasNext ? +(page || 1) + 1 : null,
+        prevPage: hasPrev ? +(page || 1) - 1 : null,
+        currentPage: +(page || 1),
+      };
 
-      res.status(200).json({
+      return res.status(200).json({
         posts,
         pagination: {
+          ...pagination,
           hasPrev,
           hasNext,
-          nextPage,
-          prevPage,
-          currentPage,
           maxPages,
           totalItems: totalPosts,
         },

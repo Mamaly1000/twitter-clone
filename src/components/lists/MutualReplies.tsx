@@ -10,6 +10,7 @@ import { useLoginModal } from "@/hooks/useLoginModal";
 import useLike from "@/hooks/useLike";
 import { FiShare } from "react-icons/fi";
 import { BiRepost } from "react-icons/bi";
+import TweetActionBar from "../shared/TweetActionBar";
 
 const MutualReplies = ({
   replies,
@@ -100,53 +101,7 @@ const MutualReplies = ({
                 __html: formatString(replies[0].body),
               }}
             ></p>
-            <div
-              className={twMerge(
-                "flex flex-row items-center text-[12px] gap-10 mt-1 text-[#687684]"
-              )}
-            >
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push(`/reply/${replies[0].postId}`);
-                }}
-                className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
-              >
-                <AiOutlineMessage size={15} />
-
-                <p className="text-[12px]">
-                  {replies[0].post.commentIds.length || 0}
-                </p>
-              </div>
-              <div
-                onClick={onLike}
-                className="flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500"
-              >
-                <LikeIcon color={hasLiked ? "red" : ""} size={15} />
-                <p className="text-[12px]">{replies[0].post.likedIds.length}</p>
-              </div>
-              <div
-                onClick={onRepost}
-                className={twMerge("hover:text-sky-400  ")}
-              >
-                <BiRepost size={15} />
-              </div>{" "}
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigator.share({
-                    title:
-                      replies[0].post.user.name +
-                      " tweet; " +
-                      replies[0].post.body,
-                    url: `/posts/${replies[0].postId}`,
-                  });
-                }}
-                className={twMerge("hover:text-sky-400  ")}
-              >
-                <FiShare size={15} />
-              </div>
-            </div>
+            <TweetActionBar mutual postId={replies[0].postId} />
           </div>
         </div>
       )}

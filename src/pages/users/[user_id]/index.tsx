@@ -1,8 +1,5 @@
-import BookmarksFeed from "@/components/lists/BookmarksFeed";
 import FollowingsFeed from "@/components/lists/FollowingsFeed";
-import LikedPostFeed from "@/components/lists/LikedPostFeed";
 import PostFeed from "@/components/lists/PostFeed ";
-import RepliesFeed from "@/components/lists/RepliesFeed";
 import FollowersList from "@/components/lists/followersList";
 import Loader from "@/components/shared/Loader";
 import UserBio from "@/components/shared/UserBio";
@@ -10,6 +7,7 @@ import UserHero from "@/components/shared/UserHero";
 import TabContent from "@/components/ui/TabContent";
 import Tabs from "@/components/ui/Tabs";
 import Header from "@/containers/Header";
+import { PostsType } from "@/hooks/usePosts"; 
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -22,24 +20,17 @@ export const profileTabs: {
 }[] = [
   { label: "tweets", value: uuidv4() },
   { label: "replies", value: uuidv4() },
-  { label: "Media", value: uuidv4() },
-  { label: "Likes", value: uuidv4() },
-  { label: "bookmarks", value: uuidv4() },
+  { label: "media", value: uuidv4() },
+  { label: "liked", value: uuidv4() },
+  { label: "bookmark", value: uuidv4() },
   { label: "followings", value: uuidv4() },
   { label: "followers", value: uuidv4() },
 ];
 
-export type profileTabsType =
-  | "tweets"
-  | "replies"
-  | "Media"
-  | "Likes"
-  | "bookmarks"
-  | "followings"
-  | "followers";
+export type profileTabsType = PostsType | "tweets" | "followings" | "followers";
 
 const UserPage = () => {
-  const router = useRouter();
+  const router = useRouter(); 
   const [profileTab, setProfileTab] = useState(profileTabs[0]);
   const userId = router.query.user_id as string;
   const { user, isLoading } = useUser(userId);
@@ -64,19 +55,17 @@ const UserPage = () => {
       <TabContent display={profileTab.label === "tweets"}>
         <PostFeed id={userId} />
       </TabContent>
-      <TabContent display={profileTab.label === "Likes"}>
-        <LikedPostFeed id={userId} />
+      <TabContent display={profileTab.label === "liked"}>
+        <PostFeed type="liked" id={userId} />
       </TabContent>
-      <TabContent display={profileTab.label === "Media"}>
-        <div className="min-w-full flex items-center justify-center min-h-[300px] text-white capitalize font-bold text-lg">
-          comming soon...
-        </div>
+      <TabContent display={profileTab.label === "media"}>
+        <PostFeed type="media" id={userId} />
       </TabContent>{" "}
-      <TabContent display={profileTab.label === "bookmarks"}>
-        <BookmarksFeed userId={userId} />
+      <TabContent display={profileTab.label === "bookmark"}>
+        <PostFeed type="bookmark" id={userId} />
       </TabContent>
       <TabContent display={profileTab.label === "replies"}>
-        <RepliesFeed id={userId} />
+        <PostFeed type="replies" id={userId} />
       </TabContent>
       <TabContent display={profileTab.label === "followers"}>
         <FollowersList id={userId} />

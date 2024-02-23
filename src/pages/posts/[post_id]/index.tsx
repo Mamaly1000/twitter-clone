@@ -1,4 +1,5 @@
 import TweetCard from "@/components/cards/TweetCard";
+import CreatePost from "@/components/forms/CreatePost";
 import CommentFeed from "@/components/lists/CommentFeed";
 import Loader from "@/components/shared/Loader";
 import Header from "@/containers/Header";
@@ -18,9 +19,15 @@ const PostPage = () => {
     <>
       <Header label="Tweet" displayArrow />
       <TweetCard isComment post={post} />
+      <CreatePost
+        isComment
+        mainPage
+        placeholder="add a reply..."
+        postId={post.id}
+      />
       <CommentFeed
         postId={post.id}
-        author={post.user.username}
+        author={post.user.username!}
         comments={post?.comments}
         userId={user.id}
       />

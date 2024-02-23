@@ -1,6 +1,6 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useLoginModal } from "@/hooks/useLoginModal";
-import usePosts from "@/hooks/usePosts";
+import usePosts, { PostsType } from "@/hooks/usePosts";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -34,7 +34,9 @@ const CreatePost = ({
   postId,
   mainPage = false,
   isRepost = false,
+  params,
 }: {
+  params?: { id?: string; type?: PostsType };
   isRepost?: boolean;
   mainPage?: boolean;
   postId?: string;
@@ -48,7 +50,10 @@ const CreatePost = ({
   const loginModal = useLoginModal();
 
   const { data: currentUser, mutate: currentUserMutate } = useCurrentUser();
-  const { mutate: mutatePosts } = usePosts();
+  const { mutate: mutatePosts } = usePosts({
+    id: params?.id,
+    type: params?.type,
+  });
   const { mutate: mutatePost } = usePost(postId as string);
   const [isLoading, setLoading] = useState(false);
 

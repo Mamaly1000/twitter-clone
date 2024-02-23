@@ -36,6 +36,7 @@ const TweetSidebar = ({
           <>
             <TweetCard status isComment post={post} />
             <CreatePost
+              params={{ type: "comment", postId: post.id }}
               isComment
               postId={post.id}
               mainPage
@@ -53,7 +54,9 @@ const TweetSidebar = ({
       <div
         className={twMerge(
           "absolute top-0 ring-0 lg:hidden z-30 min-h-screen max-h-screen overflow-auto sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] overflow-y-auto bg-black transition-all min-w-full",
-          !collapse ? "translate-x-[1000px] opacity-0" : "translate-x-0 opacity-100"
+          !collapse
+            ? "translate-x-[1000px] opacity-0"
+            : "translate-x-0 opacity-100"
         )}
       >
         <Button
@@ -74,6 +77,7 @@ const TweetSidebar = ({
           <>
             <TweetCard status isComment post={post} />
             <CreatePost
+              params={{ type: "comment", postId: post.id }}
               isComment
               postId={post.id}
               mainPage

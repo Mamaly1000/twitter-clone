@@ -23,6 +23,7 @@ import MutualReplies from "../lists/MutualReplies";
 import useBookmark from "@/hooks/useBookmark";
 import TweetImageList from "../lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
+import TweetActionBar from "../shared/TweetActionBar";
 
 const TweetCard = ({
   post,
@@ -382,64 +383,7 @@ const TweetCard = ({
                 </span>
               </div>
             )}
-            <div
-              className={twMerge(
-                "flex flex-row items-center text-[13px] gap-5 sm:gap-10 text-[#728291]",
-                isComment
-                  ? "min-w-full justify-evenly py-3 border-t-[1px] border-t-neutral-800"
-                  : "justify-between md:justify-normal"
-              )}
-            >
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  statusModal.onClose();
-                  router.push(`/reply/${post.id}`);
-                }}
-                className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
-              >
-                <AiOutlineMessage size={15} />
-                {!isComment && (
-                  <p className="text-[12px]">{post.commentIds.length || 0}</p>
-                )}
-              </div>
-              <div
-                onClick={onLike}
-                className="flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500"
-              >
-                <LikeIcon color={hasLiked ? "red" : ""} size={15} />
-                {!isComment && (
-                  <p className="text-[12px]">{post.likedIds.length}</p>
-                )}
-              </div>
-              <div
-                onClick={onRepost}
-                className={twMerge("hover:text-sky-400  ")}
-              >
-                <BiRepost size={15} />
-              </div>
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleBookmark();
-                }}
-                className={twMerge("hover:text-sky-400  ")}
-              >
-                <BookmarkIcon />
-              </div>
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigator.share({
-                    title: post.user.name + " tweet; " + post.body,
-                    url: `/posts/${post.id}`,
-                  });
-                }}
-                className={twMerge("hover:text-sky-400  ")}
-              >
-                <FiShare size={15} />
-              </div>
-            </div>
+            <TweetActionBar isComment={isComment} small postId={post.id} />
           </div>
         </div>
       </div>

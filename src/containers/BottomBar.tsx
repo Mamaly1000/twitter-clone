@@ -9,9 +9,13 @@ import { BiSolidHomeCircle } from "react-icons/bi";
 import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { PiUsersBold } from "react-icons/pi";
+import { twMerge } from "tailwind-merge";
+import { motion } from "framer-motion";
+import useScrollAnimation from "@/hooks/useScrollAnimation";
 
 const BottomBar = () => {
   const { data: currentUser } = useCurrentUser();
+  const { isScrolling } = useScrollAnimation({});
   const pathname = usePathname();
   const sidebar = useSidebar();
   const loginModal = useLoginModal();
@@ -44,7 +48,12 @@ const BottomBar = () => {
     },
   ];
   return (
-    <section className="fixed flex lg:hidden items-center justify-between gap-1 px-2 min-w-full z-20 min-h-[60px] max-h-[60px] border-t-[1px] border-neutral-800 sm:min-h-[70px] bg-black sm:max-h-[70px] bottom-0 left-0 ">
+    <motion.section
+      className={twMerge(
+        "fixed flex lg:hidden items-center justify-between gap-1 px-2 min-w-full z-20 min-h-[60px] max-h-[60px] border-t-[1px] border-neutral-800 sm:min-h-[70px] bg-black sm:max-h-[70px] bottom-0 left-0 transition-all"
+      )}
+      animate={{ translateY: isScrolling ? 500 : 0 }}
+    >
       {items.map((item) => (
         <SideBarItem
           labelClassName="hidden sm:block"
@@ -69,7 +78,7 @@ const BottomBar = () => {
         isActive={pathname?.includes("users") && !pathname?.endsWith("users")}
         labelClassName="hidden sm:block"
       />
-    </section>
+    </motion.section>
   );
 };
 

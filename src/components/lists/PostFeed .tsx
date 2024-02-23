@@ -1,12 +1,12 @@
-import usePosts from "@/hooks/usePosts";
+import usePosts, { PostsType } from "@/hooks/usePosts";
 import { Post } from "@prisma/client";
 import React from "react";
 import TweetCard from "../cards/TweetCard";
 import Loader from "../shared/Loader";
 import Pagination from "../shared/Pagination";
 
-const PostFeed = ({ id }: { id?: string }) => {
-  const { posts, isLoading } = usePosts(id);
+const PostFeed = ({ id, type }: { type?: PostsType; id?: string }) => {
+  const { posts, isLoading } = usePosts({ id, type });
 
   if (!posts || isLoading) {
     return <Loader message="Loading Tweets" />;
@@ -19,7 +19,7 @@ const PostFeed = ({ id }: { id?: string }) => {
       {(posts as Post[]).map((post) => (
         <TweetCard post={post} key={post.id} userId={id} />
       ))}
-      <Pagination />
+      <Pagination params={{ id, type }} />
     </div>
   );
 };
