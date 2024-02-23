@@ -10,6 +10,7 @@ import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { BiRepost } from "react-icons/bi";
 import { FiShare } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
+import AnimatedButton from "../ui/AnimatedButton";
 
 const TweetActionBar = ({
   postId,
@@ -68,6 +69,7 @@ const TweetActionBar = ({
   if (postLoading || !post) {
     return null;
   }
+
   return (
     <>
       {!small && !mutual && (
@@ -139,15 +141,19 @@ const TweetActionBar = ({
               <p className="text-[12px]">{post.commentIds.length || 0}</p>
             )}
           </div>
-          <div
-            onClick={onLike}
-            className="flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500"
-          >
-            <LikeIcon color={hasLiked ? "red" : ""} size={15} />
-            {!isComment && (
-              <p className="text-[12px]">{post.likedIds.length}</p>
+          <AnimatedButton
+            value={post.likedIds.length}
+            Icon={LikeIcon}
+            className={twMerge(
+              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500",
+              hasLiked ? "text-red-600" : "text-[#728291]"
             )}
-          </div>
+            isLoading={postLoading}
+            onClick={onLike}
+            isActive={hasLiked}
+            isComment={isComment}
+            key={post.likedIds.toString()}
+          />
           <div onClick={onRepost} className={twMerge("hover:text-sky-400  ")}>
             <BiRepost size={15} />
           </div>
