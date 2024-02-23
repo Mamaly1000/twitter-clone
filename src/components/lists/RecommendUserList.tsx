@@ -3,6 +3,7 @@ import UsersList from "./UsersList";
 import { User } from "@prisma/client";
 import Link from "next/link";
 import { isEmpty } from "lodash";
+import { motion } from "framer-motion";
 
 const RecommentUserList = ({
   users,
@@ -15,7 +16,17 @@ const RecommentUserList = ({
     return null;
   }
   return (
-    <div className="bg-[#16181C] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3 max-w-full  ">
+    <motion.div
+      initial={{
+        translateX: 100,
+        opacity: 0,
+      }}
+      animate={{
+        translateX: 0,
+        opacity: 100,
+      }}
+      className="bg-[#16181C] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3 max-w-full  "
+    >
       <h2 className="min-w-full text-left text-[20px] capitalize font-[800] leading-6 text-[#e7e9ea]">
         {title || "Who to follow"}
       </h2>
@@ -26,7 +37,7 @@ const RecommentUserList = ({
       >
         show more
       </Link>
-    </div>
+    </motion.div>
   );
 };
 

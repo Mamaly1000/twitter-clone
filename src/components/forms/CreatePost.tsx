@@ -36,7 +36,7 @@ const CreatePost = ({
   isRepost = false,
   params,
 }: {
-  params?: { id?: string; type?: PostsType };
+  params?: { id?: string; type?: PostsType; postId?: string };
   isRepost?: boolean;
   mainPage?: boolean;
   postId?: string;

@@ -11,10 +11,11 @@ import {
   AiOutlineHeart,
   AiOutlineMessage,
   AiOutlineRetweet,
-} from "react-icons/ai"; 
+} from "react-icons/ai";
 import { FiShare } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import AnimatedButton from "../ui/AnimatedButton";
+import { motion } from "framer-motion";
 
 const TweetActionBar = ({
   postId,
@@ -77,7 +78,12 @@ const TweetActionBar = ({
   return (
     <>
       {!small && !mutual && (
-        <div onClick={(e) => e.stopPropagation()} className={className}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 100 }}
+          onClick={(e) => e.stopPropagation()}
+          className={className}
+        >
           <AnimatedButton
             onClick={(e) => {
               e.stopPropagation();
@@ -91,7 +97,7 @@ const TweetActionBar = ({
             isComment={isComment}
             key={"reply-" + postId + post.commentIds.length}
             large
-          /> 
+          />
           <AnimatedButton
             value={post.likedIds.length}
             Icon={LikeIcon}
@@ -141,10 +147,12 @@ const TweetActionBar = ({
           >
             <FiShare size={20} />
           </div>
-        </div>
+        </motion.div>
       )}
       {small && (
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 100 }}
           className={twMerge(
             "flex flex-row items-center text-[13px] gap-5 sm:gap-10 text-[#728291]",
             isComment
@@ -207,10 +215,12 @@ const TweetActionBar = ({
           >
             <FiShare size={15} />
           </div>
-        </div>
+        </motion.div>
       )}
       {mutual && (
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 100 }}
           className={twMerge(
             "flex flex-row items-center text-[12px] gap-10 mt-1 text-[#687684]"
           )}
@@ -271,7 +281,7 @@ const TweetActionBar = ({
           >
             <FiShare size={15} />
           </div>
-        </div>
+        </motion.div>
       )}
     </>
   );

@@ -1,5 +1,4 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { useLoginModal } from "@/hooks/useLoginModal";
 import { Post, Repost, User } from "@prisma/client";
 import { format, formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
@@ -10,17 +9,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import Avatar from "../shared/Avatar";
-import useLike from "@/hooks/useLike";
-import { BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
 import { filter, intersection, isEmpty } from "lodash";
-import { FiShare } from "react-icons/fi";
 import MutualReplies from "../lists/MutualReplies";
-import useBookmark from "@/hooks/useBookmark";
 import TweetImageList from "../lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
 import TweetActionBar from "../shared/TweetActionBar";
@@ -40,16 +34,12 @@ const TweetCard = ({
   };
 }) => {
   const router = useRouter();
-  const loginModal = useLoginModal();
   const statusModal = useStatus();
 
   const [scrollHeight, setHeight] = useState(20);
   const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
   const { data: currentUser } = useCurrentUser();
-  const { toggleBookmark, BookmarkIcon } = useBookmark(post.id);
-
-  const { hasLiked, toggleLike } = useLike({ postId: post.id, userId });
 
   const goToUser = useCallback(
     (ev: any) => {
@@ -71,35 +61,6 @@ const TweetCard = ({
       router.push(`/posts/${post.parentId}`);
     }
   }, [router, post.parentId]);
-
-  const onLike = useCallback(
-    async (ev: any) => {
-      ev.stopPropagation();
-
-      if (!currentUser) {
-        return loginModal.onOpen();
-      }
-
-      toggleLike();
-    },
-    [loginModal, currentUser, toggleLike]
-  );
-
-  const onRepost = useCallback(
-    (e: any) => {
-      e.stopPropagation();
-      if (!currentUser || !post) {
-        loginModal.onOpen();
-      }
-      if (post?.id) {
-        router.push(`/repost/${post.id}`);
-        statusModal.onClose();
-      }
-    },
-    [loginModal, currentUser, post]
-  );
-
-  const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
 
   const createdAt = useMemo(() => {
     if (!post?.createdAt) {
@@ -256,7 +217,7 @@ const TweetCard = ({
             className={twMerge(
               isComment
                 ? "w-full max-w-full"
-                : "max-w-[90%] overflow-hidden max-h-fit"
+                : "max-w-[90%] overflow-hidden max-w-fit sm:min-w-[89%] "
             )}
           >
             {!!!isComment && (
@@ -292,7 +253,7 @@ const TweetCard = ({
                 className={twMerge(
                   isComment
                     ? "text-lg capitalize"
-                    : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full",
+                    : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full",
                   post.repostId ? "" : "mb-3"
                 )}
                 dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
@@ -307,7 +268,7 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 max-w-full "
+                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
                 >
                   <Avatar repost userId={post.repost.userId} />
                   <div className="max-w-[80%] flex items-start justify-start flex-col gap-2">

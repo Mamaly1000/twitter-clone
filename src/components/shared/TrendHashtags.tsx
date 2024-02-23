@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import HashtagCard from "../cards/HashtagCard";
 import Link from "next/link";
 import useCountry from "@/hooks/useCountry";
+import { motion } from "framer-motion";
 
 const TrendHashtags = ({
   hashtags,
@@ -24,7 +25,17 @@ const TrendHashtags = ({
     return null;
   }
   return (
-    <div className="bg-[#16181C] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3">
+    <motion.div
+      initial={{
+        translateX: 100,
+        opacity: 0,
+      }}
+      animate={{
+        translateX: 0,
+        opacity: 100,
+      }}
+      className="bg-[#16181C] text-[#D9D9D9] rounded-xl p-4 min-w-full flex flex-col items-start justify-start gap-3"
+    >
       <h2 className="min-w-full text-left text-[20px] capitalize font-[800] leading-6 text-[#e7e9ea]">
         {location} trends
       </h2>
@@ -39,7 +50,7 @@ const TrendHashtags = ({
       >
         show more
       </Link>
-    </div>
+    </motion.div>
   );
 };
 

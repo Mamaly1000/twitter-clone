@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { twMerge } from "tailwind-merge";
 import placeholder from "../../../public/placeholder.png";
 import useProfileImage from "@/hooks/useProfileImage";
+import { motion } from "framer-motion";
 const Avatar = ({
   userId,
   isLarge = false,
@@ -29,7 +30,9 @@ const Avatar = ({
   );
   if (!user) return null;
   return (
-    <div
+    <motion.div
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
       onClick={onClick}
       className={twMerge(
         "rounded-full hover:opacity-90 transition-all cursor-pointer relative ",
@@ -48,7 +51,7 @@ const Avatar = ({
         alt={user?.username || "profile image"}
         className="rounded-full object-cover"
       />
-    </div>
+    </motion.div>
   );
 };
 
