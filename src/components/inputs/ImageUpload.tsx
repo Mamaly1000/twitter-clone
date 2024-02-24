@@ -5,7 +5,7 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 import Loader from "../shared/Loader";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { handleImage } from "@/libs/handleImage";
 const ImageUpload = ({
   value,
@@ -36,7 +36,7 @@ const ImageUpload = ({
       toast.error("error occurred while uploading");
     },
     onUploadBegin: () => {
-      alert("upload has begun");
+      toast.info("upload has begun");
     },
   });
 
@@ -65,7 +65,7 @@ const ImageUpload = ({
         })}
       >
         <input {...getInputProps()} />
-        {files.length > 0 ||base64 ? (
+        {files.length > 0 || base64 ? (
           <div className="flex items-center justify-center flex-col gap-2">
             <Image
               src={base64}

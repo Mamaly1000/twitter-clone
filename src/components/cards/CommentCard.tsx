@@ -12,7 +12,7 @@ import Avatar from "../shared/Avatar";
 import { twMerge } from "tailwind-merge";
 import { BiDotsVertical, BiRepost } from "react-icons/bi";
 import { formatString } from "@/libs/wordDetector";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import axios from "axios";
 import usePost from "@/hooks/usePost";
 import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
@@ -20,6 +20,8 @@ import { includes } from "lodash";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useLoginModal } from "@/hooks/useLoginModal";
 import TweetImageList from "../lists/TweetImageList";
+import TweetActionBar from "../shared/TweetActionBar";
+import { motion } from "framer-motion";
 
 const CommentCard = ({
   comment,
@@ -138,9 +140,9 @@ const CommentCard = ({
       }}
     >
       <div className="flex flex-row items-start gap-3">
-        <div className="w-fit flex items-center justify-start gap-2 flex-col">
+        <div className="w-fit flex items-center justify-start flex-col">
           <Avatar userId={comment.user.id} />
-          <hr
+          <motion.hr
             className="w-[2px] rounded-md bg-neutral-300 bg-opacity-50 border-none transition-all"
             style={{
               minHeight: lastIndex === i ? scrollHeight - 20 : scrollHeight,
@@ -189,36 +191,14 @@ const CommentCard = ({
               ></p>
             )}
           </div>
-          <p
-            dangerouslySetInnerHTML={{ __html: formatString(comment.body) }}
-            className="text-white my-3 capitalize"
-          ></p>
+          {!!comment.body && (
+            <p
+              dangerouslySetInnerHTML={{ __html: formatString(comment.body) }}
+              className="text-white my-3 capitalize"
+            ></p>
+          )}
           <TweetImageList postId={comment.postId} />
-          <div className={twMerge("flex flex-row items-center gap-10 mt-4")}>
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/reply/${comment.postId}`);
-              }}
-              className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-sky-500"
-            >
-              <AiOutlineMessage size={20} />
-              <p>{comment.post.commentIds.length || 0}</p>
-            </div>
-            <div
-              onClick={onLike}
-              className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition-all hover:text-red-500"
-            >
-              <LikeIcon color={isliked ? "red" : ""} size={20} />
-              <p>{comment.post.likedIds.length}</p>
-            </div>
-            <div
-              onClick={onRepost}
-              className={twMerge("hover:text-sky-400 text-neutral-500 ")}
-            >
-              <BiRepost size={20} />
-            </div>
-          </div>
+          <TweetActionBar small postId={comment.postId} />
         </div>
       </div>
     </div>

@@ -18,10 +18,10 @@ function Pagination({ params }: { params: postQueryType }) {
     hasMore &&
     !(+pagination.maxPages === +pagination.currentPage) && (
       <section
-        className="min-w-full p-0 m-0 flex flex-col justify-center items-center w-full"
+        className="min-w-full p-0 m-0 flex flex-col justify-center items-center w-full max-h-[100px] "
         ref={ref}
       >
-        <Loader size={25} message="loading more tweets" />
+        <Loader className="min-h-[100px] max-h-[100px] " size={25} type="bounce" />
       </section>
     )
   );

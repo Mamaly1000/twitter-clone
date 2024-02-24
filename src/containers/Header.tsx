@@ -29,7 +29,7 @@ const Header = ({
           : "relative bg-transparent"
       )}
       animate={{
-        translateY: isScrolling ? -400 : 0,
+        translateY: isScrolling && scrolled ? -400 : 0,
       }}
     >
       <div className="flex flex-row items-center justify-between gap-2 text-sky-500">

@@ -39,8 +39,14 @@ html {
   height: 5px;
 }
 ::selection {
-  @apply bg-none cursor-default;
+  @apply bg-sky-700 cursor-default transition-all;
 }
 .scroll-hidden::-webkit-scrollbar {
   @apply hidden;
+}
+:root {
+  --toastify-color-success: #0ea5e9;
+}
+.Toastify__toast-container--bottom-left {
+  @apply fixed top-0 left-0 w-full h-fit md:left-5 md:top-[unset] md:bottom-5 md:w-fit md:min-w-[300px];
 }

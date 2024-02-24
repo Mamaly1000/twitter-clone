@@ -7,7 +7,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { signIn } from "next-auth/react";
 import CountrySelect from "../inputs/Select";
 import { SingleCountryType } from "@/hooks/useCountry";

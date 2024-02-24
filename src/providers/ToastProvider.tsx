@@ -1,15 +1,8 @@
 import React from "react";
-import { Toaster } from "react-hot-toast";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const ToastProvider = () => {
-  return (
-    <Toaster
-      position="top-center"
-      toastOptions={{
-        className: "bg-slate-900 text-white",
-      }}
-    />
-  );
+  return <ToastContainer position="bottom-left" theme="dark" />;
 };
 
 export default ToastProvider;

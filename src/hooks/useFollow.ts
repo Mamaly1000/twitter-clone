@@ -3,7 +3,7 @@ import useCurrentUser from "./useCurrentUser";
 import { useLoginModal } from "./useLoginModal";
 import useUser from "./useUser";
 import { User } from "@prisma/client";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { includes } from "lodash";
 import useRecommendedUsers from "./useRecommendedUsers";

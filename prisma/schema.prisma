@@ -26,8 +26,7 @@ model User {
   followingIds    String[] @db.ObjectId
   followerIds     String[] @db.ObjectId
   hasNotification Boolean? 
-  profileFieldsIds String[] @db.ObjectId
-  bookmarksIds String[] @db.ObjectId
+  profileFieldsIds String[] @db.ObjectId 
   profileFields Field[] 
 
   posts         Post[]

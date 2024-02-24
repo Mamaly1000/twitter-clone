@@ -1,34 +1,33 @@
 import { useCallback, useMemo } from "react";
 import useCurrentUser from "./useCurrentUser";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { includes } from "lodash";
 import usePost from "./usePost";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa"; 
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
 
-const useBookmark = (id?: string) => { 
-  const { mutate: postMutate } = usePost(id);
+const useBookmark = (postId?: string) => {
+  const { mutate: postMutate, post } = usePost(postId);
   const { data: user, mutate: currentUserMutate } = useCurrentUser();
   const toggleBookmark = useCallback(async () => {
-    if (id) {
+    if (postId) {
       try {
-        await axios.post(`/api/bookmark/${id}`).then((res) => {
-          toast.success(res.data.message);
-          currentUserMutate();
+        await axios.post(`/api/bookmark/${postId}`).then((res) => {
+          toast.success(res.data.message); 
           postMutate();
         });
       } catch (error) {
         toast.error("something went wrong!");
       }
     }
-  }, [id, currentUserMutate, postMutate]);
+  }, [postId, currentUserMutate, postMutate]);
 
   const isBookmarked = useMemo(() => {
-    if (!id || !user) {
+    if (!postId || !user) {
       return false;
     }
-    return includes(user?.bookmarksIds, id);
-  }, [user, id]);
+    return includes(post?.bookmarkedIds, user?.id);
+  }, [user, postId, post]);
 
   const BookmarkIcon = isBookmarked ? FaBookmark : FaRegBookmark;
 

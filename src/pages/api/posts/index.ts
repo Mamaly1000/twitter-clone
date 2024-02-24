@@ -73,8 +73,8 @@ export default async function handler(
         }
         if (search === "bookmark" && targetUser) {
           where = {
-            id: {
-              in: targetUser.bookmarksIds,
+            bookmarkedIds: {
+              has: targetUser.id,
             },
           };
         }
@@ -184,7 +184,7 @@ export default async function handler(
       });
       const { body, hashtags, mentions, medias } = req.body;
       const newPost = await prisma.post.create({
-        data: { body: body, userId: user.currentUser.id },
+        data: { body: !!body ? body : "", userId: user.currentUser.id },
       });
       // handling tweet media media
       try {
@@ -292,7 +292,7 @@ export default async function handler(
         console.log("error in creating notification for created tweet");
       }
 
-      return res.status(200).json({ newPost, message: "post created" });
+      return res.status(200).json({ newPost, message: "your post was sent!" });
     }
   } catch (error) {
     console.log(error);

@@ -30,25 +30,17 @@ export default async function handler(
     }
 
     const isBookmarked = includes(
-      currentUser.currentUser.bookmarksIds,
-      TargetPost.id
+      TargetPost.bookmarkedIds,
+      currentUser.currentUser.id
     );
 
     if (isBookmarked) {
       let newBookmarkList = without(
-        currentUser.currentUser.bookmarksIds,
-        TargetPost.id
+        TargetPost.bookmarkedIds,
+        currentUser.currentUser.id
       );
-      await prisma.user.update({
-        where: { id: currentUser.currentUser.id },
-        data: {
-          bookmarksIds: newBookmarkList,
-        },
-      });
       await prisma.post.update({
-        where: {
-          id: TargetPost.id,
-        },
+        where: { id: TargetPost.id },
         data: {
           bookmarkedIds: newBookmarkList,
         },
@@ -56,15 +48,9 @@ export default async function handler(
     }
     if (!isBookmarked) {
       let newBookmarkList = [
-        ...currentUser.currentUser.bookmarksIds,
-        TargetPost.id,
+        ...TargetPost.bookmarkedIds,
+        currentUser.currentUser.id,
       ];
-      await prisma.user.update({
-        where: { id: currentUser.currentUser.id },
-        data: {
-          bookmarksIds: newBookmarkList,
-        },
-      });
       await prisma.post.update({
         where: { id: TargetPost.id },
         data: {
@@ -74,24 +60,26 @@ export default async function handler(
     }
 
     try {
-      await prisma.notification.create({
-        data: {
-          body: `in case you missed ${currentUser.currentUser.username} bookmarked your tweet;`,
-          actionUsername: currentUser.currentUser.username || "some body",
-          type: "BOOKMARK",
-          userId: TargetPost.userId,
-          actionUser: currentUser.currentUser.id,
-          postId: TargetPost.id,
-        },
-      });
-      await prisma.user.update({
-        where: {
-          id: TargetPost.userId,
-        },
-        data: {
-          hasNotification: true,
-        },
-      });
+      if (TargetPost.userId !== currentUser.currentUser.id) {
+        await prisma.notification.create({
+          data: {
+            body: `in case you missed ${currentUser.currentUser.username} bookmarked your tweet;`,
+            actionUsername: currentUser.currentUser.username || "some body",
+            type: "BOOKMARK",
+            userId: TargetPost.userId,
+            actionUser: currentUser.currentUser.id,
+            postId: TargetPost.id,
+          },
+        });
+        await prisma.user.update({
+          where: {
+            id: TargetPost.userId,
+          },
+          data: {
+            hasNotification: true,
+          },
+        });
+      }
     } catch (error) {
       console.log("error in bookmark notification", error);
     }

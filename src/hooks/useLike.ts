@@ -3,7 +3,7 @@ import useCurrentUser from "./useCurrentUser";
 import { useLoginModal } from "./useLoginModal";
 import usePost from "./usePost";
 import { Post } from "@prisma/client";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import axios from "axios";
 
 const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {

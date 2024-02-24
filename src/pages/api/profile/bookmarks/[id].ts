@@ -25,8 +25,8 @@ export default async function handler(
 
     const bookmarkPosts = await prisma.post.findMany({
       where: {
-        id: {
-          in: profile.bookmarksIds,
+        bookmarkedIds: {
+          has: profile.id,
         },
       },
       include: {
@@ -34,7 +34,6 @@ export default async function handler(
           select: {
             username: true,
             name: true,
-            bookmarksIds: true,
             createdAt: true,
             id: true,
             email: true,
@@ -48,7 +47,6 @@ export default async function handler(
               select: {
                 username: true,
                 name: true,
-                bookmarksIds: true,
                 createdAt: true,
                 id: true,
                 email: true,

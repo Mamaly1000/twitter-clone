@@ -42,7 +42,7 @@ export default async function handler(
 
     const newPost = await prisma.post.create({
       data: {
-        body,
+        body: !!body ? body : "",
         parentId: currentPost.id,
         userId: currentUser.currentUser.id,
         parentUsername: currentPost.user.username,
@@ -52,7 +52,7 @@ export default async function handler(
       data: {
         userId: currentUser.currentUser.id,
         postId: newPost.id,
-        body,
+        body: !!body ? body : "",
         parentId: post_id as string,
       },
     });
@@ -130,30 +130,48 @@ export default async function handler(
         let mentionedUsers: string[] = mentions || [];
         const mentionAndUserComment = includes(mentionedUsers, post.userId);
         await prisma.notification.createMany({
-          data: [
-            ...mentionedUsers.map((id) => ({
-              body: `in case you missed it @${currentUser.currentUser.username} mentioned you on its reply`,
-              userId: post.userId,
-              postId: post.id,
-              actionUser: currentUser.currentUser.id,
-              actionUsername: currentUser.currentUser.username || "some body",
-              type: "MENTION",
-            })),
-            {
-              body: mentionAndUserComment
-                ? `in case you missed it @${currentUser.currentUser.username} replied and mentioned you on your tweet`
-                : `in case you missed it @${currentUser.currentUser.username} replied on your tweet`,
-              userId: post.userId,
-              postId: post.id,
-              actionUser: currentUser.currentUser.id,
-              actionUsername: currentUser.currentUser.username || "some body",
-              type: mentionAndUserComment ? "MENTION" : "COMMENT",
-            },
-          ],
+          data:
+            post.userId !== currentUser.currentUser.id
+              ? [
+                  ...mentionedUsers.map((id) => ({
+                    body: `in case you missed it @${currentUser.currentUser.username} mentioned you on its reply`,
+                    userId: id,
+                    postId: post.id,
+                    actionUser: currentUser.currentUser.id,
+                    actionUsername:
+                      currentUser.currentUser.username || "some body",
+                    type: "MENTION",
+                  })),
+                  {
+                    body: mentionAndUserComment
+                      ? `in case you missed it @${currentUser.currentUser.username} replied and mentioned you on your tweet`
+                      : `in case you missed it @${currentUser.currentUser.username} replied on your tweet`,
+                    userId: post.userId,
+                    postId: post.id,
+                    actionUser: currentUser.currentUser.id,
+                    actionUsername:
+                      currentUser.currentUser.username || "some body",
+                    type: mentionAndUserComment ? "MENTION" : "COMMENT",
+                  },
+                ]
+              : mentionedUsers.map((id) => ({
+                  body: `in case you missed it @${currentUser.currentUser.username} mentioned you on its reply`,
+                  userId: id,
+                  postId: post.id,
+                  actionUser: currentUser.currentUser.id,
+                  actionUsername:
+                    currentUser.currentUser.username || "some body",
+                  type: "MENTION",
+                })),
         });
         await prisma.user.updateMany({
           where: {
-            id: { in: [...mentionedUsers, post.userId] },
+            id: {
+              in:
+                post.userId !== currentUser.currentUser.id
+                  ? [...mentionedUsers, post.userId]
+                  : mentionedUsers,
+            },
           },
           data: {
             hasNotification: true,
@@ -164,9 +182,7 @@ export default async function handler(
       console.log("error in saving notification while liking", error);
     }
 
-    return res
-      .status(200)
-      .json({ message: "thanks for your comment!", comment });
+    return res.status(200).json({ message: "reply sent!", comment });
   } catch (error) {
     return res
       .status(500)

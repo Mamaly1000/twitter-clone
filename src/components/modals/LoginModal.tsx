@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { signIn } from "next-auth/react";
 const loginSchema = z.object({
   email: z.string().email("not valid email").min(1, "minimum character is 1"),

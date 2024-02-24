@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { z } from "zod";
 import Avatar from "../shared/Avatar";
 import Button from "../inputs/Button";
@@ -20,11 +20,7 @@ import { useUploadedImages } from "@/hooks/useUploadedImages";
 import UploadedImagesForm from "./UploadedImagesForm";
 
 const createPostSchema = z.object({
-  body: z
-    .string({
-      required_error: "content cannot be empty!",
-    })
-    .min(5, "minimum characters must be 5"),
+  body: z.string().optional(),
   mentionIds: z.array(z.string()),
 });
 
@@ -106,12 +102,44 @@ const CreatePost = ({
         } finally {
           setLoading(false);
         }
-      } else {
+      }
+      if (!!!isComment && !!!isRepost) {
         try {
           setLoading(true);
-          let url = isComment
-            ? `/api/comments?post_id=${postId}`
-            : "/api/posts";
+          let url = "/api/posts";
+          await axios
+            .post(url, {
+              body: values.body,
+              hashtags,
+              mentions: values.mentionIds,
+              medias: Images.images,
+            })
+            .then((res: any) => {
+              mutatePosts();
+              mutatePost();
+              toast.success(res.data.message);
+              form.reset();
+              setHashtags([]);
+              Images.onRemove([]);
+              setMentions([]);
+
+              if (mainPage) {
+                if (mainPage && !!postId) {
+                  router.push(`/posts/${res.data.comment.parentId}`);
+                } else router.push("/");
+              }
+            });
+        } catch (error) {
+          console.log(error);
+          toast.error("something went wrong!");
+        } finally {
+          setLoading(false);
+        }
+      }
+      if (isComment) {
+        try {
+          setLoading(true);
+          let url = `/api/comments?post_id=${postId}`;
           await axios
             .post(url, {
               body: values.body,
@@ -185,7 +213,10 @@ const CreatePost = ({
               <hr className="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
               <div className="mt-4 flex flex-row justify-end w-full gap-4">
                 <Button
-                  disabled={isLoading || !(form.watch("body").length > 5)}
+                  disabled={
+                    isLoading ||
+                    !(form.watch("body").length > 5 || Images.images.length > 0)
+                  }
                   onClick={onSubmit}
                 >
                   Tweet

@@ -18,6 +18,7 @@ import MutualReplies from "../lists/MutualReplies";
 import TweetImageList from "../lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
 import TweetActionBar from "../shared/TweetActionBar";
+import AnimatedNumber from "../ui/AnimatedNumber";
 
 const TweetCard = ({
   post,
@@ -217,7 +218,7 @@ const TweetCard = ({
             className={twMerge(
               isComment
                 ? "w-full max-w-full"
-                : "max-w-[90%] overflow-hidden max-w-fit sm:min-w-[89%] "
+                : "max-w-[90%] overflow-hidden sm:min-w-[89%] "
             )}
           >
             {!!!isComment && (
@@ -249,15 +250,17 @@ const TweetCard = ({
                 isComment ? "mt-4 mb-3" : "mt-1"
               )}
             >
-              <p
-                className={twMerge(
-                  isComment
-                    ? "text-lg capitalize"
-                    : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full",
-                  post.repostId ? "" : "mb-3"
-                )}
-                dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
-              ></p>
+              {!!post.body && (
+                <p
+                  className={twMerge(
+                    isComment
+                      ? "text-lg capitalize"
+                      : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full",
+                    post.repostId ? "" : "mb-3"
+                  )}
+                  dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
+                ></p>
+              )}
               {!!!status && <TweetImageList postId={post.id} />}
               {/* repost-container */}
               {!!post.repost && !!post.repost.user && !!post.repostId && (
@@ -293,12 +296,14 @@ const TweetCard = ({
                       </p>
                       <span className=" ">{repostCreateAt}</span>
                     </div>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html: formatString(post.repost.body),
-                      }}
-                      className="max-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-4 text-balance"
-                    ></p>
+                    {!!post.repost.body && (
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: formatString(post.repost.body),
+                        }}
+                        className="max-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-4 text-balance"
+                      ></p>
+                    )}
                     <TweetImageList
                       className="max-w-full"
                       postId={post.repost.postId}
@@ -315,15 +320,21 @@ const TweetCard = ({
             {isComment && (
               <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-800 py-3">
                 <span className="flex items-center justify-center gap-1">
-                  <span className="text-white">
+                  <AnimatedNumber
+                    key={post.id + post.repostIds.toString()}
+                    className="text-white"
+                  >
                     {post.repostIds.length || 0}
-                  </span>
+                  </AnimatedNumber>
                   retweets
                 </span>
                 <span className="flex items-center justify-center gap-1">
-                  <span className="text-white">
+                  <AnimatedNumber
+                    key={"comment-" + post.id + post.commentIds.toString()}
+                    className="text-white"
+                  >
                     {post.commentIds.length || 0}
-                  </span>
+                  </AnimatedNumber>
                   comments
                 </span>
               </div>
@@ -331,15 +342,21 @@ const TweetCard = ({
             {isComment && (
               <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-800 py-3">
                 <span className="flex items-center justify-center gap-1">
-                  <span className="text-white">
+                  <AnimatedNumber
+                    key={post.id + post.likedIds.toString()}
+                    className="text-white"
+                  >
                     {post.likedIds.length || 0}
-                  </span>
+                  </AnimatedNumber>
                   likes
                 </span>{" "}
                 <span className="flex items-center justify-center gap-1">
-                  <span className="text-white">
+                  <AnimatedNumber
+                    key={post.id + post.bookmarkedIds.toString()}
+                    className="text-white"
+                  >
                     {post.bookmarkedIds.length || 0}
-                  </span>
+                  </AnimatedNumber>
                   bookmarks
                 </span>
               </div>

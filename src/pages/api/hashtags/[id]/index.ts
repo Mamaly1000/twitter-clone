@@ -38,7 +38,6 @@ export default async function handler(
       },
       select: {
         bio: true,
-        bookmarksIds: true,
         createdAt: true,
         email: true,
         followerIds: true,
@@ -60,7 +59,6 @@ export default async function handler(
             user: {
               select: {
                 bio: true,
-                bookmarksIds: true,
                 createdAt: true,
                 email: true,
                 followerIds: true,
@@ -75,7 +73,6 @@ export default async function handler(
         user: {
           select: {
             bio: true,
-            bookmarksIds: true,
             createdAt: true,
             email: true,
             followerIds: true,

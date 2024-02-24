@@ -8,7 +8,7 @@ import { objectGenerator } from "@/libs/objectGenerator";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { User } from "@prisma/client";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import Input from "../inputs/Input";
 import useUser from "@/hooks/useUser";
 import ImageUpload from "../inputs/ImageUpload";

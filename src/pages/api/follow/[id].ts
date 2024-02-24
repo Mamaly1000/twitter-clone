@@ -39,7 +39,7 @@ export default async function handler(
     } else {
       followerIds = [...user.followerIds, currentUser.currentUser.id];
       followingIds = [...currentUser.currentUser.followingIds, user.id];
-    } 
+    }
 
     await prisma.user.update({
       where: {
@@ -79,7 +79,7 @@ export default async function handler(
           });
         }
       } catch (error) {
-        console.log("error in saving notification while liking", error);
+        console.log("error in saving notification while following", error);
       }
     }
 
@@ -107,7 +107,7 @@ export default async function handler(
           });
         }
       } catch (error) {
-        console.log("error in saving notification while liking", error);
+        console.log("error in saving notification while following", error);
       }
     }
 
