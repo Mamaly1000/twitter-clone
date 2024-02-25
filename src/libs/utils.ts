@@ -4,3 +4,16 @@ export function isBase64Image(imageData?: string | null) {
     return base64Regex.test(imageData);
   }
 }
+export const getShortUnit = (unit: string) =>
+  ({
+    minute: "m",
+    minutes: "m",
+    hour: "h",
+    hours: "h",
+    second: "s",
+    seconds: "s",
+    month: "mo",
+    months: "mo",
+    year: "y",
+    years: "y",
+  }[unit] || unit);

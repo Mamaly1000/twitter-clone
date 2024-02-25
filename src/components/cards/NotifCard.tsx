@@ -3,10 +3,11 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useMemo } from "react";
 import Avatar from "../shared/Avatar";
-import { formatString } from "@/libs/wordDetector";
+import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import NotifImage from "../shared/NotifImage";
 import { BsClock } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
+import TweetImageList from "../lists/TweetImageList";
 
 const NotifCard = ({
   notif,
@@ -21,6 +22,9 @@ const NotifCard = ({
 
     return formatDistanceToNowStrict(new Date(notif.createdAt));
   }, [notif.createdAt]);
+  const direction = useMemo(() => {
+    return getStringDirectionality(notif?.post?.body || "");
+  }, [notif.post.body]);
   return (
     <div
       onClick={() =>
@@ -78,12 +82,22 @@ const NotifCard = ({
                     </div>
                   </div>
                 )}
-                <p
-                  className="text-neutral-200 min-w-full text-sm "
-                  dangerouslySetInnerHTML={{
-                    __html: formatString(notif.post.body),
-                  }}
-                ></p>
+                {!!notif.post.body ? (
+                  <p
+                    style={{
+                      direction: direction.dir,
+                    }}
+                    className={twMerge(
+                      "text-neutral-200 min-w-full text-sm ",
+                      direction.className
+                    )}
+                    dangerouslySetInnerHTML={{
+                      __html: formatString(notif.post.body),
+                    }}
+                  ></p>
+                ) : (
+                  <TweetImageList postId={notif.post.id} />
+                )}
               </div>
             )}
           </div>

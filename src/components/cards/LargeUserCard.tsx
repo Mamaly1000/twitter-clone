@@ -1,5 +1,4 @@
-import useCoverImage from "@/hooks/useCoverImage";
-import useProfileImage from "@/hooks/useProfileImage";
+import useCoverImage from "@/hooks/useCoverImage"; 
 import { User } from "@prisma/client";
 import Image from "next/image";
 import React, { useCallback } from "react";

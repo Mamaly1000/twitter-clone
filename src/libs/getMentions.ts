@@ -1,5 +1,5 @@
 export function getMentions(text: string) {
-  const regex = /@(\w+)/g;
+  const regex = /@([\w.-]+)/g;
   const mentions = [];
   let match;
 
@@ -11,7 +11,7 @@ export function getMentions(text: string) {
   return mentions;
 }
 export function getHashtags(text: string) {
-  const regex = /#[a-zA-Z0-9_]+/g;
+  const regex = /#[a-zA-Z0-9.-_]+/g;
   const hashtags = text.match(regex);
   return hashtags ? hashtags.map((tag) => tag.slice(1)) : [];
 }

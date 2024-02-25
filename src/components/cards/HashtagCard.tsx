@@ -1,7 +1,10 @@
 import useCountry from "@/hooks/useCountry";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useLoginModal } from "@/hooks/useLoginModal";
-import { formatNumbersWithCommas } from "@/libs/wordDetector";
+import {
+  formatNumbersWithCommas,
+  getStringDirectionality,
+} from "@/libs/wordDetector";
 import { Hashtag } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo } from "react";
@@ -40,6 +43,10 @@ const HashtagCard = ({
     router.push(`/hashtags/${hashtag.id}`);
   }, [loginModal, user, hashtag.id, router]);
 
+  const direction = useMemo(() => {
+    return getStringDirectionality(hashtag.name);
+  }, [hashtag.name]);
+
   return (
     <div
       onClick={onClick}
@@ -53,7 +60,12 @@ const HashtagCard = ({
           {i} · trending in {location}
         </p>
       )}
-      <span className="font-semibold capitalize text-[15px] leading-5 text-gray-900 dark:text-white">
+      <span
+        className={twMerge(
+          "font-semibold capitalize text-[15px] leading-5 text-gray-900 dark:text-white",
+          direction.className
+        )}
+      >
         #{hashtag.name}
       </span>
       <p className="text-[13px] text-[#6E767D] capitalize flex items-center justify-start gap-2">

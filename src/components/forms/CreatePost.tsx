@@ -4,21 +4,24 @@ import usePosts, { PostsType } from "@/hooks/usePosts";
 import { useRegisterModal } from "@/hooks/useRegisterModal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import Avatar from "../shared/Avatar";
 import Button from "../inputs/Button";
 import usePost from "@/hooks/usePost";
-import { formatString } from "@/libs/wordDetector";
+import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import { getHashtags, getMentions } from "@/libs/getMentions";
 import { useRouter } from "next/router";
 import MentionsList from "../lists/MentionsList";
 import ImageUpload from "../inputs/ImageInput";
 import { useUploadedImages } from "@/hooks/useUploadedImages";
 import UploadedImagesForm from "./UploadedImagesForm";
-
+import CircularProgressBar from "../ui/CircularProgressBar";
+import { motion } from "framer-motion";
+import useMeasure from "react-use-measure";
+import { twMerge } from "tailwind-merge";
 const createPostSchema = z.object({
   body: z.string().optional(),
   mentionIds: z.array(z.string()),
@@ -39,6 +42,8 @@ const CreatePost = ({
   isComment?: boolean;
   placeholder?: string;
 }) => {
+  const [ref, { height }] = useMeasure();
+
   const router = useRouter();
   const Images = useUploadedImages();
 
@@ -77,7 +82,7 @@ const CreatePost = ({
           if (currentUser) {
             await axios
               .post(`/api/repost`, {
-                quote: values.body,
+                quote: values.body?.trim(),
                 postId: postId,
                 hashtags,
                 mentions: values.mentionIds,
@@ -109,7 +114,7 @@ const CreatePost = ({
           let url = "/api/posts";
           await axios
             .post(url, {
-              body: values.body,
+              body: values.body?.trim(),
               hashtags,
               mentions: values.mentionIds,
               medias: Images.images,
@@ -142,7 +147,7 @@ const CreatePost = ({
           let url = `/api/comments?post_id=${postId}`;
           await axios
             .post(url, {
-              body: values.body,
+              body: values.body?.trim(),
               hashtags,
               mentions: values.mentionIds,
               medias: Images.images,
@@ -185,32 +190,54 @@ const CreatePost = ({
     [form, setMentions, getMentions, setHashtags, getHashtags]
   );
 
+  const direction = useMemo(() => {
+    return getStringDirectionality(form.watch("body"));
+  }, [form.watch("body"), onChange]);
+
   return (
-    <div className="border-b-[1px] border-neutral-800 px-5 py-2 ">
+    <motion.div
+      animate={{ height: height + 20 }}
+      className="border-b-[1px] border-neutral-800 px-5 py-3 overflow-hidden"
+    >
       {currentUser ? (
-        <div className="flex flex-col justify-start items-start gap-4 text-white">
+        <motion.div
+          ref={ref}
+          className="flex flex-col justify-start items-start gap-4 text-white overflow-hidden py-2"
+        >
           <div className="min-w-full max-w-full flex items-start justify-start gap-4">
             <div>
               <Avatar userId={currentUser?.id} />
             </div>
             <div className="max-w-full overflow-hidden w-full flex items-start justify-start gap-3 flex-col pb-2">
-              {mainPage && (
-                <p
-                  className="min-w-full p-2  text-left to-emerald-50 text-white font-semibold"
-                  dangerouslySetInnerHTML={{
-                    __html: formatString(form.watch("body")),
-                  }}
-                ></p>
-              )}
+              <motion.p
+                style={{
+                  direction: direction.dir,
+                }}
+                className={twMerge(
+                  "min-w-full p-2 to-emerald-50 text-white font-semibold",
+                  direction.className
+                )}
+                dangerouslySetInnerHTML={{
+                  __html: formatString(form.watch("body")),
+                }}
+                key={form.watch("body")}
+              ></motion.p>
               <textarea
+                style={{
+                  direction: direction.dir,
+                }}
                 disabled={isLoading}
                 aria-placeholder={placeholder}
                 onChange={onChange}
                 value={form.watch("body")}
-                className="disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px]   placeholder-neutral-500 text-white max-w-full overflow-hidden "
+                className={twMerge(
+                  "disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-white max-w-full overflow-hidden  placeholder:capitalize",
+                  direction.className
+                )}
+                maxLength={400}
                 placeholder={placeholder}
               ></textarea>
-              <hr className="opacity-0 peer-focus:opacity-100 h-[1px] w-full border-neutral-800 transition" />
+              <hr className="peer-focus:w-full w-[0px] bg-sky-500 border-none h-[1.4px] transition-all duration-500" />
               <div className="mt-4 flex flex-row justify-end w-full gap-4">
                 <Button
                   disabled={
@@ -232,27 +259,13 @@ const CreatePost = ({
                   length={4}
                   disable={Images.images.length >= 4 || isLoading}
                 />
+                <CircularProgressBar
+                  currentValue={form.watch("body").length}
+                  limit={400}
+                />
               </div>
             </div>
           </div>
-          {mainPage && hashtags.length > 0 && (
-            <div className="min-w-full max-w-full overflow-hidden flex flex-row items-center justify-start gap-3 capitalize">
-              <h4 className="capitalize w-fit text-sm whitespace-nowrap font-semibold">
-                hashTags :
-              </h4>
-              <div className="min-w-full flex items-start justify-start flex-wrap gap-2">
-                {hashtags.map((h) => (
-                  <span
-                    key={h}
-                    className="px-3 py-2 rounded-md drop-shadow-2xl border-[1px] border-sky-400 text-sky-400 text-sm font-semibold capitalize"
-                  >
-                    #{h}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
           <MentionsList
             mentions={mentions}
             onChange={(val) => {
@@ -261,9 +274,9 @@ const CreatePost = ({
             }}
           />
           <UploadedImagesForm />
-        </div>
+        </motion.div>
       ) : (
-        <div className="py-8">
+        <div ref={ref} className="py-8">
           <h1 className="text-white text-2xl text-center mb-4 font-bold">
             Welcome to Twitter
           </h1>
@@ -275,7 +288,7 @@ const CreatePost = ({
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

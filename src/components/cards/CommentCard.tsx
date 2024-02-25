@@ -1,27 +1,15 @@
 import { Comment, Post, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo } from "react";
 import Avatar from "../shared/Avatar";
 import { twMerge } from "tailwind-merge";
-import { BiDotsVertical, BiRepost } from "react-icons/bi";
-import { formatString } from "@/libs/wordDetector";
-import { toast } from "react-toastify";
-import axios from "axios";
-import usePost from "@/hooks/usePost";
-import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
-import { includes } from "lodash";
-import useCurrentUser from "@/hooks/useCurrentUser";
-import { useLoginModal } from "@/hooks/useLoginModal";
+import { BiDotsVertical } from "react-icons/bi";
+import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import TweetImageList from "../lists/TweetImageList";
 import TweetActionBar from "../shared/TweetActionBar";
 import { motion } from "framer-motion";
+import useMeasure from "react-use-measure";
 
 const CommentCard = ({
   comment,
@@ -29,7 +17,6 @@ const CommentCard = ({
   lastIndex,
   userId,
   postAuthor,
-  postId,
 }: {
   postId: string;
   postAuthor: string;
@@ -39,15 +26,8 @@ const CommentCard = ({
   comment: Comment & { user?: any; post: Post & { user: User } };
 }) => {
   const router = useRouter();
-  const { mutate: postMutate } = usePost(postId);
-  const { mutate: userMutate } = useCurrentUser();
 
-  const [scrollHeight, setHeight] = useState(50);
-  const commentRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
-
-  const loginModal = useLoginModal();
-
-  const [isLoading, setLoading] = useState(false);
+  const [ref, { height }] = useMeasure();
 
   const goToUser = useCallback(
     (ev: any) => {
@@ -66,66 +46,9 @@ const CommentCard = ({
     return formatDistanceToNowStrict(new Date(comment.createdAt));
   }, [comment.createdAt]);
 
-  const onLike = useCallback(async () => {
-    if (!isLoading) {
-      try {
-        setLoading(true);
-        await axios
-          .patch(`/api/comments/like/${comment.postId}`)
-          .then((res) => {
-            toast.success(res.data.message);
-            postMutate();
-            userMutate();
-          });
-      } catch (error: any) {
-        if (error.response.data.message) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("something went wrong!");
-        }
-      }
-    }
-  }, [
-    comment.postId,
-    userId,
-    isLoading,
-    setLoading,
-    postId,
-    postMutate,
-    userMutate,
-  ]);
-
-  const isliked = useMemo(() => {
-    const list = [...(comment.post.likedIds || [])];
-    return includes(list, userId);
-  }, [comment.post.likedIds, userId]);
-
-  const onRepost = useCallback(
-    (e: any) => {
-      e.stopPropagation();
-      if (!userId) {
-        loginModal.onOpen();
-      }
-
-      if (comment.postId) router.push(`/repost/${comment.postId}`);
-    },
-    [loginModal, userId, comment.postId]
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (commentRef) {
-        setHeight(commentRef.current!.offsetHeight);
-      }
-    };
-    if (commentRef) {
-      setHeight(commentRef.current!.offsetHeight);
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [scrollHeight, window, commentRef]);
-
-  const LikeIcon = isliked ? AiFillHeart : AiOutlineHeart;
+  const direction = useMemo(() => {
+    return getStringDirectionality(comment?.body);
+  }, [comment.body]);
 
   return (
     <div
@@ -143,10 +66,8 @@ const CommentCard = ({
         <div className="w-fit flex items-center justify-start flex-col">
           <Avatar userId={comment.user.id} />
           <motion.hr
-            className="w-[2px] rounded-md bg-neutral-300 bg-opacity-50 border-none transition-all"
-            style={{
-              minHeight: lastIndex === i ? scrollHeight - 20 : scrollHeight,
-            }}
+            className="w-[1.8px] rounded-md bg-neutral-300 bg-opacity-30 border-none transition-all"
+            animate={{ height }}
           />
           {lastIndex === i && (
             <span className="flex flex-col text-neutral-300 text-opacity-50 text-lg gap-1 ">
@@ -154,7 +75,7 @@ const CommentCard = ({
             </span>
           )}
         </div>
-        <div ref={commentRef} className="min-h-fit">
+        <div ref={ref} className="min-h-fit">
           <div className="flex flex-col  items-start justify-start">
             <div className=" flex-wrap items-center justify-start gap-1">
               <p
@@ -193,8 +114,14 @@ const CommentCard = ({
           </div>
           {!!comment.body && (
             <p
+              style={{
+                direction: direction.dir,
+              }}
               dangerouslySetInnerHTML={{ __html: formatString(comment.body) }}
-              className="text-white my-3 capitalize"
+              className={twMerge(
+                "text-white my-3 capitalize",
+                direction.className
+              )}
             ></p>
           )}
           <TweetImageList postId={comment.postId} />

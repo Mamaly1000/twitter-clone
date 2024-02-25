@@ -1,3 +1,4 @@
+import React from "react";
 import RecommentUserList from "@/components/lists/RecommendUserList";
 import TrendHashtags from "@/components/shared/TrendHashtags";
 import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
@@ -5,7 +6,6 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import useRecommendedUsers from "@/hooks/useRecommendedUsers";
 import useTrendHashtags from "@/hooks/useTrendHashtags";
 import useUserLocation from "@/hooks/useUserLocation";
-import React from "react";
 
 const FollowBar = () => {
   const { users } = useRecommendedUsers();

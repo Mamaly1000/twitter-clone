@@ -1,6 +1,10 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Post, Repost, User } from "@prisma/client";
-import { format, formatDistanceToNowStrict } from "date-fns";
+import {
+  format,
+  formatDistanceToNowStrict,
+  formatDistanceToNow,
+} from "date-fns";
 import { useRouter } from "next/router";
 import React, {
   useCallback,
@@ -10,7 +14,7 @@ import React, {
   useState,
 } from "react";
 import Avatar from "../shared/Avatar";
-import { formatString } from "@/libs/wordDetector";
+import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
 import { filter, intersection, isEmpty } from "lodash";
@@ -19,6 +23,9 @@ import TweetImageList from "../lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
 import TweetActionBar from "../shared/TweetActionBar";
 import AnimatedNumber from "../ui/AnimatedNumber";
+import { getShortUnit } from "@/libs/utils";
+import useMeasure from "react-use-measure";
+import { motion } from "framer-motion";
 
 const TweetCard = ({
   post,
@@ -34,11 +41,10 @@ const TweetCard = ({
     repost?: Repost & { user?: User; post: Post };
   };
 }) => {
+  const [ref, { height }] = useMeasure();
+
   const router = useRouter();
   const statusModal = useStatus();
-
-  const [scrollHeight, setHeight] = useState(20);
-  const tweetRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
 
   const { data: currentUser } = useCurrentUser();
 
@@ -70,8 +76,8 @@ const TweetCard = ({
     if (isComment) {
       return format(post.createdAt, "HH:mm . dd/MM/yy");
     }
-
-    return formatDistanceToNowStrict(new Date(post.createdAt));
+    const cd = formatDistanceToNowStrict(new Date(post.createdAt)).split(" ");
+    return cd[0] + "" + getShortUnit(cd[1]);
   }, [post.createdAt]);
 
   const repostCreateAt = useMemo(() => {
@@ -96,21 +102,12 @@ const TweetCard = ({
       : [];
   }, [post.commentIds, currentUser?.followingIds]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (tweetRef) {
-        setHeight(tweetRef.current!.offsetHeight);
-      }
-    };
-    if (tweetRef) {
-      setHeight(tweetRef.current!.offsetHeight);
-    }
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [scrollHeight, tweetRef, mutualReplies]);
-
+  const tweetdirection = useMemo(() => {
+    return getStringDirectionality(post?.body || "");
+  }, [post.body]);
+  const reTweetdirection = useMemo(() => {
+    return getStringDirectionality(post.repost?.body || "");
+  }, [post.repost?.body]);
   return (
     <article
       onClick={goToPost}
@@ -121,8 +118,8 @@ const TweetCard = ({
       <div
         className={twMerge(
           "flex flex-col items-start justify-start min-w-full max-w-full",
-          isComment ? "px-5 pt-5  gap-4" : " p-2 md:p-5",
-          !isComment && isEmpty(mutualReplies) ? "pb-5" : "pb-0"
+          isComment ? "px-5 pt-5  gap-4" : " p-2 ",
+          !isComment && isEmpty(mutualReplies) ? "pb-0" : "pb-0"
         )}
       >
         {/* tweet parent post reference */}
@@ -206,19 +203,19 @@ const TweetCard = ({
               </div>
             )}
             {!!!isComment && !isEmpty(mutualReplies) && (
-              <hr
+              <motion.hr
                 className="w-[2px]   bg-neutral-300 bg-opacity-50 border-none transition-all"
-                style={{ minHeight: scrollHeight - 20 }}
+                animate={{ height }}
               />
             )}
           </div>
           {/* main tweet content section */}
           <div
-            ref={tweetRef}
+            ref={ref}
             className={twMerge(
               isComment
                 ? "w-full max-w-full"
-                : "max-w-[90%] overflow-hidden sm:min-w-[89%] "
+                : "overflow-hidden min-w-[calc(100%-52px)] max-w-[calc(100%-52px)]"
             )}
           >
             {!!!isComment && (
@@ -254,10 +251,15 @@ const TweetCard = ({
                 <p
                   className={twMerge(
                     isComment
-                      ? "text-lg capitalize"
-                      : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full",
+                      ? "text-lg capitalize min-w-full max-w-full" +
+                          tweetdirection.className
+                      : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full " +
+                          tweetdirection.className,
                     post.repostId ? "" : "mb-3"
                   )}
+                  style={{
+                    direction: tweetdirection.dir,
+                  }}
                   dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
                 ></p>
               )}
@@ -274,7 +276,7 @@ const TweetCard = ({
                   className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
                 >
                   <Avatar repost userId={post.repost.userId} />
-                  <div className="max-w-[80%] flex items-start justify-start flex-col gap-2">
+                  <div className=" w-[95%] flex items-start justify-start flex-col gap-2">
                     <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1 text-[13px]">
                       <p
                         onClick={(e) => {
@@ -301,7 +303,13 @@ const TweetCard = ({
                         dangerouslySetInnerHTML={{
                           __html: formatString(post.repost.body),
                         }}
-                        className="max-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-4 text-balance"
+                        style={{
+                          direction: reTweetdirection.dir,
+                        }}
+                        className={twMerge(
+                          "max-w-full min-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-4 text-balance",
+                          reTweetdirection.className
+                        )}
                       ></p>
                     )}
                     <TweetImageList

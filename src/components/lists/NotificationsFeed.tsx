@@ -3,10 +3,11 @@ import useNotif from "@/hooks/useNotif";
 import React, { useEffect } from "react";
 import NotifCard from "../cards/NotifCard";
 import Loader from "../shared/Loader";
+import NotifPagination from "../shared/NotifPagination";
 
 const NotificationsFeed = () => {
-  const { data: user, mutate: userMutate } = useCurrentUser();
-  const { notifs = [], isLoading } = useNotif(user?.id);
+  const { mutate: userMutate } = useCurrentUser();
+  const { notifs = [], isLoading } = useNotif();
 
   useEffect(() => {
     userMutate();
@@ -25,10 +26,11 @@ const NotificationsFeed = () => {
   }
 
   return (
-    <div className="flex flex-col min-w-full">
+    <div className="flex flex-col min-w-full max-w-full">
       {notifs.map((notification: Record<string, any>) => (
         <NotifCard notif={notification as any} key={notification.id} />
       ))}
+      <NotifPagination />
     </div>
   );
 };
