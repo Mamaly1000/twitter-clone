@@ -16,4 +16,6 @@ export const getShortUnit = (unit: string) =>
     months: "mo",
     year: "y",
     years: "y",
+    day: "d",
+    days: "d",
   }[unit] || unit);

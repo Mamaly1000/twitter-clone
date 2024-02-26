@@ -17,7 +17,7 @@ const CommentFeed = ({
     <div className="text-neutral-600 text-center p-6 text-xl">No Replies</div>;
   }
   return (
-    <div className="min-w-full flex flex-col items-start justify-start gap-0 p-0 m-0">
+    <div className="min-w-full flex flex-col items-start justify-start gap-0 p-0 m-0 max-w-full">
       {comments?.map((comment, i, arr) => (
         <CommentCard
           comment={comment as any}

@@ -1,20 +1,15 @@
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 import Avatar from "../shared/Avatar";
-import { formatString } from "../../libs/wordDetector";
-import { format } from "date-fns";
+import { formatString, getStringDirectionality } from "../../libs/wordDetector";
+import { format, formatDistanceToNowStrict } from "date-fns";
 import { twMerge } from "tailwind-merge";
-import { useRouter } from "next/router";
-import { AiFillHeart, AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
 import { User } from "@prisma/client";
-import { useLoginModal } from "@/hooks/useLoginModal";
-import useLike from "@/hooks/useLike";
-import { FiShare } from "react-icons/fi";
-import { BiRepost } from "react-icons/bi";
 import TweetActionBar from "../shared/TweetActionBar";
+import { getShortUnit } from "@/libs/utils";
+import TweetImageList from "./TweetImageList";
 
 const MutualReplies = ({
   replies,
-  currentUser,
 }: {
   currentUser: User;
   replies: {
@@ -37,76 +32,66 @@ const MutualReplies = ({
     postId: string;
   }[];
 }) => {
-  const router = useRouter();
-
-  const { hasLiked, toggleLike } = useLike({
-    postId: replies[0].postId,
-    userId: currentUser.id,
-  });
-
-  const loginModal = useLoginModal();
-
-  const onLike = useCallback(
-    async (ev: any) => {
-      ev.stopPropagation();
-
-      if (!currentUser) {
-        return loginModal.onOpen();
-      }
-
-      toggleLike();
-    },
-    [loginModal, currentUser, toggleLike]
-  );
-
-  const onRepost = useCallback(
-    (e: any) => {
-      e.stopPropagation();
-      if (!currentUser) {
-        loginModal.onOpen();
-      }
-
-      if (replies[0].postId) router.push(`/repost/${replies[0].postId}`);
-    },
-    [loginModal, currentUser]
-  );
-
-  const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
+  const createdAt = useMemo(() => {
+    if (!replies[0]?.createdAt) {
+      return null;
+    }
+    const cd = formatDistanceToNowStrict(new Date(replies[0].createdAt)).split(
+      " "
+    );
+    return cd[0] + "" + getShortUnit(cd[1]);
+  }, [replies[0].createdAt]);
+  const tweetdirection = useMemo(() => {
+    return getStringDirectionality(replies[0]?.body || "");
+  }, [replies[0].body]);
   return (
-    <div className="min-w-full max-w-full flex items-center justify-start px-2 md:px-5 pb-2 md:pb-5 pt-2 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
+    <div className="min-w-full max-w-full flex items-center justify-start px-2 pb-0 pt-3 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
       {replies.length === 1 && (
-        <div className="min-w-full flex items-start justify-start gap-3">
+        <div className="min-w-full max-w-full flex items-start justify-start gap-3">
           <div className="relative flex items-center justify-center ">
             <Avatar
               userId={replies[0].user.id}
-              className="relative z-10 border-neutral-300 border-[1px] border-opacity-50"
+              className="relative z-10 border-[#333639] border-[1px] border-opacity-50"
             />
-            <hr className="w-[2px] absolute -top-2 min-h-[20px] z-0 bg-neutral-300 bg-opacity-50 border-none transition-all" />
+            <hr className="w-[2px] absolute -top-[43px] rounded-full min-h-[40px] z-0 bg-[#333639] border-none transition-all" />
           </div>
-          <div className="w-fit flex flex-col items-start justify-start gap-2 capitalize">
-            <div className="w-fit flex flex-wrap items-center justify-start gap-[6px] ">
-              <p className="text-zinc-300 text-[13px] font-bold leading-[14px]">
+          <div className="min-w-[calc(100%-52px)] max-w-[calc(100%-52px)] flex flex-col items-start justify-start gap-2 capitalize">
+            <div className=" flex flex-wrap items-center justify-start gap-[6px] min-w-full max-w-full">
+              <p className="text-[#e7e9ea] text-[15px] font-bold leading-[14px]">
                 {replies[0].user.name}
               </p>
-              <span className=" text-zinc-500 text-[13px] font-normal leading-[14px] hidden sm:block">
+              <span className=" text-[#717678] text-[15px] font-normal leading-[14px] hidden sm:block">
                 @{replies[0].user.username}
               </span>
               <span className="text-zinc-500 text-sm font-normal leading-[14px]">
-                {format(replies[0].createdAt, "MMM/dd/yyyy")}
+                {createdAt}
               </span>
             </div>
-            <p
-              className="w-[289px] text-zinc-300 text-sm font-normal leading-[17px]"
-              dangerouslySetInnerHTML={{
-                __html: formatString(replies[0].body),
-              }}
-            ></p>
+            {replies[0].body ? (
+              <p
+                className={twMerge(
+                  "w-[289px] text-zinc-300 text-sm font-normal leading-[17px] min-w-full max-w-full",
+                  tweetdirection.className
+                )}
+                style={{
+                  direction: tweetdirection.dir,
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: formatString(replies[0].body),
+                }}
+              ></p>
+            ) : (
+              <TweetImageList
+                className="min-w-full max-w-full"
+                postId={replies[0].postId}
+              />
+            )}
             <TweetActionBar mutual postId={replies[0].postId} />
           </div>
         </div>
       )}
       {replies.length > 2 && (
-        <div className="min-w-full flex items-center justify-start gap-[35px]">
+        <div className="min-w-full flex items-center justify-start gap-[35px] pb-5">
           <div className="flex items-center justify-start min-w-[65px] md:min-w-[35px] min-h-[18px] relative  ">
             {replies.map((rep, i) => {
               return (

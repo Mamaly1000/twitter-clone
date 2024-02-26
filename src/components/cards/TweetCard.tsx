@@ -112,12 +112,12 @@ const TweetCard = ({
     <article
       onClick={goToPost}
       className={twMerge(
-        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer hover:bg-neutral-900 transition-all group flex items-center justify-center flex-col p-0  overflow-hidden"
+        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0  overflow-hidden"
       )}
     >
       <div
         className={twMerge(
-          "flex flex-col items-start justify-start min-w-full max-w-full",
+          "flex flex-col items-start justify-start min-w-full max-w-full hover:bg-neutral-900",
           isComment ? "px-5 pt-5  gap-4" : " p-2 ",
           !isComment && isEmpty(mutualReplies) ? "pb-0" : "pb-0"
         )}
@@ -169,10 +169,10 @@ const TweetCard = ({
               <Avatar
                 className={twMerge(
                   " relative  border-[2px] border-opacity-50",
-                  !isEmpty(mutualReplies) && !isComment && "border-neutral-300",
+                  !isEmpty(mutualReplies) && !isComment && "border-[#333639]",
                   isComment &&
                     !!post.parentId &&
-                    "relative z-10 border-neutral-300 border-[2px]  "
+                    "relative z-10 border-[#333639] border-[2px]  "
                 )}
                 hasBorder
                 userId={post.user.id}
@@ -204,7 +204,7 @@ const TweetCard = ({
             )}
             {!!!isComment && !isEmpty(mutualReplies) && (
               <motion.hr
-                className="w-[2px]   bg-neutral-300 bg-opacity-50 border-none transition-all"
+                className="w-[2px] bg-[#333639] border-none transition-all"
                 animate={{ height }}
               />
             )}
@@ -373,7 +373,7 @@ const TweetCard = ({
           </div>
         </div>
       </div>
-      {/* mutable replies */}
+      {/* mutual replies */}
       {!isComment && !isEmpty(mutualReplies) && (
         <MutualReplies
           replies={mutualReplies || []}

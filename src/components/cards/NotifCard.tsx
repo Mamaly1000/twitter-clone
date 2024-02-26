@@ -24,7 +24,7 @@ const NotifCard = ({
   }, [notif.createdAt]);
   const direction = useMemo(() => {
     return getStringDirectionality(notif?.post?.body || "");
-  }, [notif.post.body]);
+  }, [notif.post?.body]);
   return (
     <div
       onClick={() =>

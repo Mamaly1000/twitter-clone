@@ -10,6 +10,7 @@ import TweetImageList from "../lists/TweetImageList";
 import TweetActionBar from "../shared/TweetActionBar";
 import { motion } from "framer-motion";
 import useMeasure from "react-use-measure";
+import { getShortUnit } from "@/libs/utils";
 
 const CommentCard = ({
   comment,
@@ -17,6 +18,7 @@ const CommentCard = ({
   lastIndex,
   userId,
   postAuthor,
+  postId,
 }: {
   postId: string;
   postAuthor: string;
@@ -42,8 +44,10 @@ const CommentCard = ({
     if (!comment?.createdAt) {
       return null;
     }
-
-    return formatDistanceToNowStrict(new Date(comment.createdAt));
+    const cd = formatDistanceToNowStrict(new Date(comment.createdAt)).split(
+      " "
+    );
+    return cd[0] + getShortUnit(cd[1]);
   }, [comment.createdAt]);
 
   const direction = useMemo(() => {
@@ -63,21 +67,26 @@ const CommentCard = ({
       }}
     >
       <div className="flex flex-row items-start gap-3">
-        <div className="w-fit flex items-center justify-start flex-col">
-          <Avatar userId={comment.user.id} />
-          <motion.hr
-            className="w-[1.8px] rounded-md bg-neutral-300 bg-opacity-30 border-none transition-all"
-            animate={{ height }}
-          />
-          {lastIndex === i && (
-            <span className="flex flex-col text-neutral-300 text-opacity-50 text-lg gap-1 ">
-              <BiDotsVertical />
-            </span>
-          )}
+        <div className="w-fit flex items-center justify-start flex-col relative ">
+          <Avatar userId={comment.user.id} className="relative z-[2]" />
+          <div className="absolute flex flex-col items-center justify-center gap-1 z-[1]">
+            <motion.hr
+              className="w-[1.8px] rounded-md bg-neutral-300 bg-opacity-30 border-none transition-all  z-10"
+              animate={{ height: lastIndex === i ? height - 20 : height }}
+            />
+            {lastIndex === i && (
+              <span className="flex flex-col text-neutral-300 text-opacity-50 text-lg gap-1 ">
+                <BiDotsVertical />
+              </span>
+            )}
+          </div>
         </div>
-        <div ref={ref} className="min-h-fit">
-          <div className="flex flex-col  items-start justify-start">
-            <div className=" flex-wrap items-center justify-start gap-1">
+        <div
+          ref={ref}
+          className="min-w-[calc(100%-52px)] max-w-[calc(100%-52px)] max-h-fit"
+        >
+          <div className="flex flex-col  items-start justify-start min-w-full max-w-full">
+            <div className="  flex  items-center justify-start gap-1 min-w-full max-w-full">
               <p
                 onClick={goToUser}
                 className="
@@ -125,7 +134,11 @@ const CommentCard = ({
             ></p>
           )}
           <TweetImageList postId={comment.postId} />
-          <TweetActionBar small postId={comment.postId} />
+          <TweetActionBar
+            className="min-w-full"
+            small
+            postId={comment.postId}
+          />
         </div>
       </div>
     </div>
