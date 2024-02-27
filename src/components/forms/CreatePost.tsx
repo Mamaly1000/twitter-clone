@@ -22,6 +22,7 @@ import CircularProgressBar from "../ui/CircularProgressBar";
 import { motion } from "framer-motion";
 import useMeasure from "react-use-measure";
 import { twMerge } from "tailwind-merge";
+import EmojiWidget from "./EmojiWidget";
 const createPostSchema = z.object({
   body: z.string().optional(),
   mentionIds: z.array(z.string()),
@@ -197,18 +198,18 @@ const CreatePost = ({
   return (
     <motion.div
       animate={{ height: height + 20 }}
-      className="border-b-[1px] border-neutral-800 px-5 py-3 overflow-hidden"
+      className="border-b-[1px] border-neutral-800 px-5 py-3  relative z-10"
     >
       {currentUser ? (
         <motion.div
           ref={ref}
-          className="flex flex-col justify-start items-start gap-4 text-white overflow-hidden py-2"
+          className="flex flex-col justify-start items-start gap-4 text-white   py-2"
         >
           <div className="min-w-full max-w-full flex items-start justify-start gap-4">
             <div>
               <Avatar userId={currentUser?.id} />
             </div>
-            <div className="max-w-full overflow-hidden w-full flex items-start justify-start gap-3 flex-col pb-2">
+            <div className="max-w-full w-full flex items-start justify-start gap-3 flex-col pb-2">
               <motion.p
                 style={{
                   direction: direction.dir,
@@ -238,7 +239,7 @@ const CreatePost = ({
                 placeholder={placeholder}
               ></textarea>
               <hr className="peer-focus:w-full w-[0px] bg-sky-500 border-none h-[1.4px] transition-all duration-500" />
-              <div className="mt-4 flex flex-row justify-end w-full gap-4">
+              <div className="mt-4 flex flex-row justify-end w-full gap-4 relative">
                 <Button
                   disabled={
                     isLoading ||
@@ -258,6 +259,11 @@ const CreatePost = ({
                   }}
                   length={4}
                   disable={Images.images.length >= 4 || isLoading}
+                />
+                <EmojiWidget
+                  onChange={(val) => {
+                    form.setValue("body", form.watch("body") + " " + val);
+                  }}
                 />
                 <CircularProgressBar
                   currentValue={form.watch("body").length}

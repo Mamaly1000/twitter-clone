@@ -1,23 +1,12 @@
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Post, Repost, User } from "@prisma/client";
-import {
-  format,
-  formatDistanceToNowStrict,
-  formatDistanceToNow,
-} from "date-fns";
+import { format, formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Avatar from "../shared/Avatar";
 import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
-import { twMerge } from "tailwind-merge";
-import { filter, intersection, isEmpty } from "lodash";
+import { twMerge } from "tailwind-merge"; 
 import MutualReplies from "../lists/MutualReplies";
 import TweetImageList from "../lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
@@ -25,11 +14,10 @@ import TweetActionBar from "../shared/TweetActionBar";
 import AnimatedNumber from "../ui/AnimatedNumber";
 import { getShortUnit } from "@/libs/utils";
 import useMeasure from "react-use-measure";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; 
 
 const TweetCard = ({
   post,
-  userId,
   isComment = false,
   status,
 }: {
@@ -42,6 +30,7 @@ const TweetCard = ({
   };
 }) => {
   const [ref, { height }] = useMeasure();
+  const [mutualReplies, setMutuals] = useState(false);
 
   const router = useRouter();
   const statusModal = useStatus();
@@ -87,21 +76,6 @@ const TweetCard = ({
     return formatDistanceToNowStrict(new Date(post.repost.post.createdAt));
   }, [post?.repost?.post?.createdAt]);
 
-  const mutualReplies = useMemo(() => {
-    if (!post.commentIds || !currentUser) {
-      return null;
-    }
-    const list = intersection(
-      post.commentIds,
-      currentUser.mutualReplies.map((u) => u.id)
-    );
-    return list.length > 0
-      ? filter(currentUser.mutualReplies, (rep) =>
-          post.commentIds.includes(rep.id)
-        )
-      : [];
-  }, [post.commentIds, currentUser?.followingIds]);
-
   const tweetdirection = useMemo(() => {
     return getStringDirectionality(post?.body || "");
   }, [post.body]);
@@ -119,7 +93,7 @@ const TweetCard = ({
         className={twMerge(
           "flex flex-col items-start justify-start min-w-full max-w-full hover:bg-neutral-900",
           isComment ? "px-5 pt-5  gap-4" : " p-2 ",
-          !isComment && isEmpty(mutualReplies) ? "pb-0" : "pb-0"
+          !isComment && mutualReplies ? "pb-0" : "pb-0"
         )}
       >
         {/* tweet parent post reference */}
@@ -165,11 +139,11 @@ const TweetCard = ({
                 : "flex-col items-center justify-center gap-1"
             )}
           >
-            <div className="relative flex items-center justify-center">
+            <div className="z-10 relative flex items-center justify-center">
               <Avatar
                 className={twMerge(
                   " relative  border-[2px] border-opacity-50",
-                  !isEmpty(mutualReplies) && !isComment && "border-[#333639]",
+                  mutualReplies && !isComment && "border-[#333639]",
                   isComment &&
                     !!post.parentId &&
                     "relative z-10 border-[#333639] border-[2px]  "
@@ -202,9 +176,9 @@ const TweetCard = ({
                 )}
               </div>
             )}
-            {!!!isComment && !isEmpty(mutualReplies) && (
+            {!!!isComment && mutualReplies && (
               <motion.hr
-                className="w-[2px] bg-[#333639] border-none transition-all"
+                className="z-0 w-[2px] bg-[#333639] border-none transition-all absolute top-0"
                 animate={{ height }}
               />
             )}
@@ -213,6 +187,7 @@ const TweetCard = ({
           <div
             ref={ref}
             className={twMerge(
+              "max-h-fit",
               isComment
                 ? "w-full max-w-full"
                 : "overflow-hidden min-w-[calc(100%-52px)] max-w-[calc(100%-52px)]"
@@ -374,9 +349,12 @@ const TweetCard = ({
         </div>
       </div>
       {/* mutual replies */}
-      {!isComment && !isEmpty(mutualReplies) && (
+      {!isComment && (
         <MutualReplies
-          replies={mutualReplies || []}
+          setMutual={(val) => {
+            setMutuals(val);
+          }}
+          postId={post.id}
           currentUser={currentUser}
         />
       )}

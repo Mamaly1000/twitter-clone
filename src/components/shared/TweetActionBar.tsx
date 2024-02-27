@@ -157,7 +157,8 @@ const TweetActionBar = ({
             "flex flex-row items-center text-[13px] gap-5 sm:gap-10 text-[#728291]",
             isComment
               ? "min-w-full justify-evenly py-3 border-t-[1px] border-t-neutral-800"
-              : "justify-between md:justify-normal"
+              : "justify-between md:justify-normal",
+            className
           )}
         >
           <AnimatedButton

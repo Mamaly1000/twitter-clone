@@ -16,39 +16,10 @@ export default async function handler(
     if (!currentUser) {
       return res.status(401).json({ message: "not signed in!" });
     }
-    // if someone is reading this code i should confess that it is not an optimize way to track your mutaulfollowings comments
-    const mutualReplies = await prisma.comment.findMany({
-      where: {
-        userId: {
-          in: currentUser.currentUser.followingIds,
-        },
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        postId: true,
-        body: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            username: true,
-          },
-        },
-        post: {
-          select: {
-            commentIds: true,
-            likedIds: true,
-            user: { select: { name: true } },
-            body: true,
-          },
-        },
-      },
-    });
 
     return res.status(200).json({
       ...currentUser.currentUser,
-      mutualReplies: mutualReplies || [],
+      mutualReplies: [],
     });
   } catch (error) {
     console.log(error);

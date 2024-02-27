@@ -6,6 +6,7 @@ declare global {
 }
 import { IoImageOutline } from "react-icons/io5";
 import Button from "./Button";
+import { toast } from "react-toastify";
 
 const ImageUpload = ({
   onChange,
@@ -46,9 +47,12 @@ const ImageUpload = ({
             textLight: "#FFFFFF",
           },
         },
+        resourceType: "image",
+        clientAllowedFormats: ["webp", "png", "jpeg"],
+        sources: ["url", "local", "camera"],
       }}
-      onError={(error) => {
-        console.log(error);
+      onError={(error: any) => {
+        toast.error(error?.status);
       }}
     >
       {({ open }) => {
