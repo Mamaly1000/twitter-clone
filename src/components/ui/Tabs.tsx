@@ -23,8 +23,8 @@ const Tabs = ({
   }[];
   currentValue?: {
     disabled?: boolean;
-    label: profileTabsType | string;
-    value: string;
+    label?: profileTabsType | string;
+    value?: string;
   };
 }) => {
   return (

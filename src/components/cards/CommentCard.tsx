@@ -18,7 +18,6 @@ const CommentCard = ({
   lastIndex,
   userId,
   postAuthor,
-  postId,
 }: {
   postId: string;
   postAuthor: string;
@@ -57,7 +56,7 @@ const CommentCard = ({
   return (
     <div
       className={twMerge(
-        `min-w-full px-5  cursor-pointer hover:bg-neutral-900 transition-all `,
+        `min-w-full px-5  cursor-pointer hover:bg-neutral-900 transition-all max-w-full`,
         i === 0 ? "pt-4 pb-1" : "py-1",
         lastIndex === i && "pb-3"
       )}
@@ -128,14 +127,14 @@ const CommentCard = ({
               }}
               dangerouslySetInnerHTML={{ __html: formatString(comment.body) }}
               className={twMerge(
-                "text-white my-3 capitalize",
+                "text-[#e7e9ea] text-[15px]  my-2 leading-[20px] font-[400] capitalize ",
                 direction.className
               )}
             ></p>
           )}
           <TweetImageList postId={comment.postId} />
           <TweetActionBar
-            className="min-w-full"
+            className="min-w-full max-w-full"
             small
             postId={comment.postId}
           />

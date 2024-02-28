@@ -128,12 +128,7 @@ const CreatePost = ({
               setHashtags([]);
               Images.onRemove([]);
               setMentions([]);
-
-              if (mainPage) {
-                if (mainPage && !!postId) {
-                  router.push(`/posts/${res.data.comment.parentId}`);
-                } else router.push("/");
-              }
+              router.push("/");
             });
         } catch (error) {
           console.log(error);
@@ -161,12 +156,7 @@ const CreatePost = ({
               setHashtags([]);
               Images.onRemove([]);
               setMentions([]);
-
-              if (mainPage) {
-                if (mainPage && !!postId) {
-                  router.push(`/posts/${res.data.comment.parentId}`);
-                } else router.push("/");
-              }
+              router.push(`/posts/${res.data.comment.parentId}`);
             });
         } catch (error) {
           console.log(error);
@@ -198,7 +188,10 @@ const CreatePost = ({
   return (
     <motion.div
       animate={{ height: height + 20 }}
-      className="border-b-[1px] border-neutral-800 px-5 py-3  relative z-10"
+      className={twMerge(
+        "border-b-[1px] border-neutral-800 px-5 py-3  relative z-10 max-w-full min-w-full",
+        mainPage ? "hidden md:block" : ""
+      )}
     >
       {currentUser ? (
         <motion.div

@@ -4,23 +4,31 @@ import { useState } from "react";
 import fetcher from "@/libs/fetcher";
 const useEmoji = (show: boolean) => {
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState<{
+    disabled?: boolean | undefined;
+    label: string;
+    value: string;
+  } | null>(null);
+  const url = category
+    ? `https://emoji-api.com/categories/${category.value}`
+    : `https://emoji-api.com/emojis`;
   const { data, error, isLoading, mutate } = useSWR(
     show
       ? qs.stringifyUrl({
-          url: `https://emoji-api.com/emojis`,
+          url: url,
           query: {
-            search: search,
+            search: category ? null : search,
             access_key: process.env.NEXT_PUBLIC_EMOJI,
           },
         })
       : null,
     fetcher
   );
-  const emojis:
-    | {
-        character: string;
-        codePoint: string;
-      }[] = data instanceof Array ? data : [];
+  const emojis: {
+    character: string;
+    unicodeName: string;
+    codePoint: string;
+  }[] = data instanceof Array ? data : [];
   return {
     emojis,
     error,
@@ -28,6 +36,8 @@ const useEmoji = (show: boolean) => {
     mutate,
     setSearch,
     search,
+    setCategory,
+    category,
   };
 };
 

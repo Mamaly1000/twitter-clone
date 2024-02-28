@@ -21,8 +21,7 @@ const RepostPage = () => {
       <TweetCard post={post} isComment userId={user.id} />
       <CreatePost
         isRepost
-        postId={post.id}
-        mainPage
+        postId={post.id} 
         placeholder="write your quote... (optional)"
       />
     </div>

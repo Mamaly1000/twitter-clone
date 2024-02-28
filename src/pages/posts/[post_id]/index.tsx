@@ -20,8 +20,7 @@ const PostPage = () => {
       <Header label="Tweet" displayArrow />
       <TweetCard isComment post={post} />
       <CreatePost
-        isComment
-        mainPage
+        isComment 
         placeholder="add a reply..."
         postId={post.id}
       />

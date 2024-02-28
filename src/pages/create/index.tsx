@@ -6,7 +6,7 @@ const CreateTweetPage = () => {
   return (
     <div>
       <Header label="create a tweet" displayArrow />
-      <CreatePost mainPage placeholder="what's happening?" />
+      <CreatePost placeholder="what's happening?" />
     </div>
   );
 };

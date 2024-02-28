@@ -23,8 +23,7 @@ const ReplyPage = () => {
       <CreatePost
         params={{ type: "comment", postId: post.id }}
         isComment
-        postId={post.id}
-        mainPage
+        postId={post.id} 
         placeholder="tweet your reply"
       />
     </>

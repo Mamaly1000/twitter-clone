@@ -6,7 +6,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import Avatar from "../shared/Avatar";
 import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
-import { twMerge } from "tailwind-merge"; 
+import { twMerge } from "tailwind-merge";
 import MutualReplies from "../lists/MutualReplies";
 import TweetImageList from "../lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
@@ -14,7 +14,7 @@ import TweetActionBar from "../shared/TweetActionBar";
 import AnimatedNumber from "../ui/AnimatedNumber";
 import { getShortUnit } from "@/libs/utils";
 import useMeasure from "react-use-measure";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
 
 const TweetCard = ({
   post,
@@ -230,7 +230,8 @@ const TweetCard = ({
                           tweetdirection.className
                       : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full " +
                           tweetdirection.className,
-                    post.repostId ? "" : "mb-3"
+                    post.repostId ? "" : "mb-3",
+                    !isComment && "line-clamp-4 md:line-clamp-5"
                   )}
                   style={{
                     direction: tweetdirection.dir,
@@ -251,7 +252,7 @@ const TweetCard = ({
                   className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
                 >
                   <Avatar repost userId={post.repost.userId} />
-                  <div className=" w-[95%] flex items-start justify-start flex-col gap-2">
+                  <div className=" max-w-[calc(100%-32px)] min-w-[calc(100%-32px)] flex items-start justify-start flex-col gap-2">
                     <div className="min-w-full max-w-full overflow-hidden line-clamp-1 flex items-center justify-start gap-1 text-[13px]">
                       <p
                         onClick={(e) => {
@@ -282,13 +283,13 @@ const TweetCard = ({
                           direction: reTweetdirection.dir,
                         }}
                         className={twMerge(
-                          "max-w-full min-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-4 text-balance",
+                          "max-w-full min-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-3 md:line-clamp-4 text-balance",
                           reTweetdirection.className
                         )}
                       ></p>
                     )}
                     <TweetImageList
-                      className="max-w-full"
+                      className="max-w-full min-w-full"
                       postId={post.repost.postId}
                     />
                   </div>

@@ -27,7 +27,7 @@ const TweetSidebar = ({
     <>
       <div
         className={twMerge(
-          "relative hidden lg:block z-20 min-h-screen sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] lg:max-h-screen overflow-y-auto overflow-x-visible bg-black lg:col-span-5 border-l-[1px] border-neutral-800 2xl:col-span-3"
+          "relative hidden lg:block z-20 min-h-screen sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] lg:max-h-screen overflow-y-auto bg-black lg:col-span-5 border-l-[1px] border-neutral-800 2xl:col-span-3 overflow-x-hidden"
         )}
       >
         {isLoading || userLoading ? (
@@ -39,7 +39,6 @@ const TweetSidebar = ({
               params={{ type: "comment", postId: post.id }}
               isComment
               postId={post.id}
-              mainPage
               placeholder="what is your reply?"
             />
             <CommentFeed
@@ -80,7 +79,6 @@ const TweetSidebar = ({
               params={{ type: "comment", postId: post.id }}
               isComment
               postId={post.id}
-              mainPage
               placeholder="what is your reply?"
             />
             <CommentFeed
