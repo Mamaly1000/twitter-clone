@@ -78,7 +78,7 @@ const HashtagHandler = async (
           .createMany({
             data: hashtags.map((h) => ({
               location: location,
-              name: h,
+              name: h.toLowerCase(),
               userIds: [userId],
               postIds: [postId],
               count: 1,

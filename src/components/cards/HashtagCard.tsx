@@ -35,6 +35,7 @@ const HashtagCard = ({
     }
     return null;
   }, [hashtag.location]);
+ 
 
   const onClick = useCallback(() => {
     if (!user) {

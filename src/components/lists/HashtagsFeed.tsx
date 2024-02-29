@@ -1,17 +1,23 @@
-import { Hashtag } from "@prisma/client";
 import { isEmpty } from "lodash";
 import React from "react";
 import Loader from "../shared/Loader";
 import HashtagCard from "../cards/HashtagCard";
+import HashtagPagination from "../shared/HashtagPagination";
+import useHashtags from "@/hooks/useHashtags";
 
 const HashtagsFeed = ({
-  hashtags,
   title,
+  params,
 }: {
-  hashtags: Hashtag[];
+  params?: {
+    search?: string | undefined;
+    hashtagId?: string | undefined;
+  };
   title: string;
 }) => {
-  if (isEmpty(hashtags)) {
+  const { isLoading, hashtags } = useHashtags();
+
+  if (isEmpty(hashtags) || isLoading) {
     return <Loader message="please wait" />;
   }
 
@@ -22,9 +28,10 @@ const HashtagsFeed = ({
       </h2>
       <div className="min-w-full flex flex-col items-start justify-start gap-0 border-t-[1px] border-neutral-800">
         {hashtags.map((h, i) => (
-          <HashtagCard main i={i + 1} hashtag={h} key={h.id} />
+          <HashtagCard main i={i + 1} hashtag={h} key={h.id + i} />
         ))}
       </div>
+      <HashtagPagination params={params} />
     </section>
   );
 };

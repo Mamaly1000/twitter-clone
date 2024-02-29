@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/libs/prisma";
-import serverAuth from "@/libs/serverAuth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,10 +10,12 @@ export default async function handler(
     return res.status(405).end();
   }
   try {
-    const { search } = req.query;
-
+    const limit = 15;
+    const { page, hashtagId, search }: Partial<any> = req.query;
+    const skip = (+(page || 1) - 1) * limit;
     let where = {};
-    if (search && search !== "undefined") {
+
+    if (search) {
       where = {
         OR: [
           { name: { contains: search } },
@@ -23,41 +24,55 @@ export default async function handler(
       };
     }
 
-    const currentUser = await serverAuth(req, res);
-
-    if (!currentUser) {
-      return res.status(401).json({ message: "Unauthorized" });
+    if (hashtagId) {
+      const targetHashtag = await prisma.hashtag.findUnique({
+        where: {
+          id: hashtagId,
+        },
+      });
+      if (targetHashtag) {
+        where = {
+          id: targetHashtag.id,
+        };
+      }
     }
-
-    const userLocation = await prisma.field.findFirst({
-      where: {
-        userId: currentUser.currentUser.id,
-        type: "LOCATION",
-      },
-    });
 
     const hashtags = await prisma.hashtag.findMany({
       where,
+      take: limit + 1,
+      skip: skip || 0,
       orderBy: {
         count: "desc",
+        createdAt: "desc",
       },
     });
-    if (!userLocation) {
-      return res.status(200).json({ data: hashtags });
-    }
-    const currentUserHashtags = await prisma.hashtag.findMany({
-      where: {
-        location: userLocation.value,
-      },
-      take: 5,
-      orderBy: {
-        count: "desc",
-      },
+    const totalHashtags = await prisma.hashtag.count({
+      where,
     });
+    const maxPages = Math.ceil(totalHashtags / limit);
 
-    return res
-      .status(200)
-      .json({ hashtags, currentUserHashtags: currentUserHashtags || [] });
+    const isNextPage = hashtags.length > limit; // Check if there are more items than the limit
+    if (isNextPage) {
+      hashtags.pop();
+    }
+    const hasPrev = +(page || 1) > 1;
+    const hasNext = isNextPage;
+    const pagination = {
+      nextPage: hasNext ? +(page || 1) + 1 : null,
+      prevPage: hasPrev ? +(page || 1) - 1 : null,
+      currentPage: +(page || 1),
+    };
+
+    return res.status(200).json({
+      hashtags,
+      pagination: {
+        ...pagination,
+        hasPrev,
+        hasNext,
+        maxPages,
+        totalItems: totalHashtags,
+      },
+    });
   } catch (error) {
     return res
       .status(500)
