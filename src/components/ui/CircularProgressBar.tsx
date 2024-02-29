@@ -13,7 +13,7 @@ const CircularProgressBar = ({
   size?: number;
 }) => {
   const [percentage, setPercentage] = useState(0);
-  const [mainColor, setMainColor] = useState(color || "#0EA5E9");
+  const [mainColor, setMainColor] = useState(color || "#1d9bf0");
   const fadedColor = "rgba(255 255 255/.3)";
 
   useEffect(() => {

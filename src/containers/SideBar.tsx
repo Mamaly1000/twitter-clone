@@ -1,7 +1,7 @@
 import SideBarItem from "@/components/Layout-components/SideBarItem";
 import SideBarLogo from "@/components/shared/SideBarLogo";
 import React from "react";
-import { BiLogOut, BiSolidHomeCircle } from "react-icons/bi";
+import { BiLogOut } from "react-icons/bi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButton";
 import useCurrentUser from "@/hooks/useCurrentUser";
@@ -9,20 +9,25 @@ import { signOut } from "next-auth/react";
 import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
 import { PiUsersBold } from "react-icons/pi";
 import { User } from "@prisma/client";
+import { GoHome } from "react-icons/go";
 import { twMerge } from "tailwind-merge";
 import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
+import { usePathname } from "next/navigation";
 const SideBar = () => {
   const { data: currentUser } = useCurrentUser();
+  const pathname = usePathname();
   const items = [
     {
-      icon: BiSolidHomeCircle,
+      icon: GoHome,
       label: "Home",
       href: "/",
+      isActive: pathname === "/",
     },
     {
       icon: HiOutlineHashtag,
       label: "explore",
       href: "/hashtags",
+      isActive: pathname?.endsWith("hashtags"),
     },
     {
       icon: IoMdNotificationsOutline,
@@ -30,17 +35,20 @@ const SideBar = () => {
       href: `/notifications/${currentUser?.id}`,
       auth: true,
       alert: (currentUser as User)?.hasNotification || false,
+      isActive: !!pathname?.match("notifications"),
     },
     {
       icon: HiOutlineUser,
       label: "Profile",
       href: `/users/${currentUser?.id}`,
       auth: true,
+      isActive: !!pathname?.endsWith("users/"+currentUser?.id),
     },
     {
       icon: PiUsersBold,
       label: "users",
       href: `/users`,
+      isActive: pathname?.endsWith("users"),
     },
   ];
   return (
@@ -52,13 +60,18 @@ const SideBar = () => {
         visibleClassname: "translate-y-0 top-2",
       }}
       className={twMerge(
-        "hidden lg:block lg:col-span-3 h-full items-start justify-end "
+        "hidden md:block md:col-span-3 h-full items-start justify-end "
       )}
       targetElement={
-        <div className="xl:max-w-[60%] flex flex-col items-start justify-end w-full" >
+        <div className=" min-w-fit md:max-w-[60px] lg:max-w-[85%] xl:max-w-[60%] flex flex-col items-start justify-end w-full overflow-hidden">
           <SideBarLogo />
           {items.map((item) => (
-            <SideBarItem key={item.href} item={item as any} />
+            <SideBarItem
+              key={item.href}
+              isActive={item.isActive}
+              item={item as any}
+              iconSize={26}
+            />
           ))}
           {currentUser && (
             <SideBarItem
@@ -69,7 +82,7 @@ const SideBar = () => {
               }}
             />
           )}
-          <SideBarTweetButton className="lg:min-w-full text-[17px]" />
+          <SideBarTweetButton />
         </div>
       }
     />

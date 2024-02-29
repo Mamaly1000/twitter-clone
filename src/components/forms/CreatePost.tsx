@@ -43,8 +43,6 @@ const CreatePost = ({
   isComment?: boolean;
   placeholder?: string;
 }) => {
-  const [ref, { height }] = useMeasure();
-
   const router = useRouter();
   const Images = useUploadedImages();
 
@@ -187,35 +185,33 @@ const CreatePost = ({
 
   return (
     <motion.div
-      animate={{ height: height + 20 }}
       className={twMerge(
-        "border-b-[1px] border-neutral-800 px-5 py-3  relative z-10 max-w-full min-w-full",
+        "border-b-[1px] border-neutral-800 relative z-20 max-w-full min-w-full",
         mainPage ? "hidden md:block" : ""
       )}
     >
       {currentUser ? (
-        <motion.div
-          ref={ref}
-          className="flex flex-col justify-start items-start gap-4 text-white   py-2"
-        >
+        <motion.div className="flex flex-col justify-start items-start gap-1 text-white  px-5 py-3">
           <div className="min-w-full max-w-full flex items-start justify-start gap-4">
             <div>
               <Avatar userId={currentUser?.id} />
             </div>
             <div className="max-w-full w-full flex items-start justify-start gap-3 flex-col pb-2">
-              <motion.p
-                style={{
-                  direction: direction.dir,
-                }}
-                className={twMerge(
-                  "min-w-full p-2 to-emerald-50 text-white font-semibold",
-                  direction.className
-                )}
-                dangerouslySetInnerHTML={{
-                  __html: formatString(form.watch("body")),
-                }}
-                key={form.watch("body")}
-              ></motion.p>
+              {form.watch("body").length > 0 && (
+                <motion.p
+                  style={{
+                    direction: direction.dir,
+                  }}
+                  className={twMerge(
+                    "min-w-full p-2 to-emerald-50 text-white font-semibold",
+                    direction.className
+                  )}
+                  dangerouslySetInnerHTML={{
+                    __html: formatString(form.watch("body")),
+                  }}
+                  key={form.watch("body")}
+                ></motion.p>
+              )}
               <textarea
                 style={{
                   direction: direction.dir,
@@ -228,42 +224,51 @@ const CreatePost = ({
                   "disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-white max-w-full overflow-hidden  placeholder:capitalize",
                   direction.className
                 )}
-                maxLength={400}
+                maxLength={300}
                 placeholder={placeholder}
               ></textarea>
               <hr className="peer-focus:w-full w-[0px] bg-sky-500 border-none h-[1.4px] transition-all duration-500" />
-              <div className="mt-4 flex flex-row justify-end w-full gap-4 relative">
-                <Button
-                  disabled={
-                    isLoading ||
-                    !(form.watch("body").length > 5 || Images.images.length > 0)
-                  }
-                  onClick={onSubmit}
-                >
-                  Tweet
-                </Button>
-                <ImageUpload
-                  onChange={(val) => {
-                    if (Images.images.length >= 4) {
-                      toast.error("max image length is 4");
-                    } else {
-                      Images.onAdd([...Images.images, { url: val }]);
-                    }
-                  }}
-                  length={4}
-                  disable={Images.images.length >= 4 || isLoading}
-                />
-                <EmojiWidget
-                  onChange={(val) => {
-                    form.setValue("body", form.watch("body") + " " + val);
-                  }}
-                />
-                <CircularProgressBar
-                  currentValue={form.watch("body").length}
-                  limit={400}
-                />
-              </div>
             </div>
+          </div>
+          <hr className="min-w-full max-h-[1.3px] min-h-[1.3px] bg-neutral-800 border-none" />
+          {/* tweet action bar */}
+          <div className="flex items-center justify-between w-full gap-4 relative mt-1 z-10">
+            <section className="max-w-fit flex items-center justify-start gap-1 flex-wrap">
+              <ImageUpload
+                onChange={(val) => {
+                  if (Images.images.length >= 4) {
+                    toast.error("max image length is 4");
+                  } else {
+                    Images.onAdd([...Images.images, { url: val }]);
+                  }
+                }}
+                length={4}
+                disable={Images.images.length >= 4 || isLoading}
+              />
+              <EmojiWidget
+                onChange={(val) => {
+                  form.setValue("body", form.watch("body") + " " + val);
+                }}
+              />
+            </section>
+            <section className="max-w-fit flex items-center justify-end gap-2 flex-wrap">
+              {form.watch("body").length > 0 && (
+                <CircularProgressBar
+                  size={25}
+                  currentValue={form.watch("body").length}
+                  limit={300}
+                />
+              )}
+              <Button
+                disabled={
+                  isLoading ||
+                  !(form.watch("body").length > 5 || Images.images.length > 0)
+                }
+                onClick={onSubmit}
+              >
+                Tweet
+              </Button>
+            </section>
           </div>
           <MentionsList
             mentions={mentions}
@@ -275,7 +280,7 @@ const CreatePost = ({
           <UploadedImagesForm />
         </motion.div>
       ) : (
-        <div ref={ref} className="py-8">
+        <div className="py-8 px-5">
           <h1 className="text-white text-2xl text-center mb-4 font-bold">
             Welcome to Twitter
           </h1>

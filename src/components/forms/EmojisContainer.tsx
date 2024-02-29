@@ -42,7 +42,7 @@ const EmojisContainer = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute top-[110%] w-[300px] h-[300px] max-h-[300px] max-w-[300px] rounded-lg bg-black border-[1px] border-neutral-800 p-2 flex flex-col items-start justify-start gap-2 "
+          className="absolute top-[110%] w-[300px] h-[300px] max-h-[300px] max-w-[300px] rounded-lg bg-black border-[1px] border-neutral-800 p-2  flex-col items-start justify-start gap-2  hidden md:flex"
         >
           <SearchInput
             className="sticky top-0 left-0 bg-black z-10"

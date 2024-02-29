@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className=" text-white">
       <Header label="Home" />
-      <CreatePost mainPage placeholder="your tweet ...." />
+      <CreatePost mainPage placeholder="what is happening?!" />
       <PostFeed />
     </div>
   );

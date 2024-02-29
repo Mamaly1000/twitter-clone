@@ -5,13 +5,14 @@ import useSidebar from "@/hooks/useSidebar";
 import { User } from "@prisma/client";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { BiSolidHomeCircle } from "react-icons/bi";
 import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { PiUsersBold } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { motion } from "framer-motion";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
+import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButton";
+import { GoHome } from "react-icons/go";
 
 const BottomBar = () => {
   const { data: currentUser } = useCurrentUser();
@@ -21,7 +22,7 @@ const BottomBar = () => {
   const loginModal = useLoginModal();
   const items = [
     {
-      icon: BiSolidHomeCircle,
+      icon: GoHome,
       label: "Home",
       href: "/",
       isActive: pathname === "/",
@@ -32,7 +33,7 @@ const BottomBar = () => {
       href: `/notifications/${currentUser?.id}`,
       auth: true,
       alert: (currentUser as User)?.hasNotification || false,
-      isActive: pathname?.includes("notifications"),
+      isActive: !!pathname?.match("notifications"),
     },
     {
       icon: PiUsersBold,
@@ -50,15 +51,15 @@ const BottomBar = () => {
   return (
     <motion.section
       className={twMerge(
-        "fixed flex lg:hidden items-center justify-between gap-1 px-2 min-w-full z-20 min-h-[60px] max-h-[60px] border-t-[1px] border-neutral-800 sm:min-h-[70px] bg-black sm:max-h-[70px] bottom-0 left-0 transition-all"
+        "fixed flex md:hidden items-center justify-between gap-1 px-2 min-w-full z-20 min-h-[60px] max-h-[60px] border-t-[1px] border-neutral-800 sm:min-h-[70px] bg-black sm:max-h-[70px] bottom-0 left-0 transition-all backdrop-blur-2xl"
       )}
-      animate={{ translateY: isScrolling ? 500 : 0 }}
+      animate={{ opacity: isScrolling ? 0.5 : 1 }}
     >
       {items.map((item) => (
         <SideBarItem
-          labelClassName="hidden sm:block"
           key={item.href}
           item={item as any}
+          bottomBar
           isActive={item.isActive}
         />
       ))}
@@ -75,9 +76,10 @@ const BottomBar = () => {
             }
           },
         }}
-        isActive={pathname?.includes("users") && !pathname?.endsWith("users")}
+        isActive={!!pathname?.endsWith("users/" + currentUser?.id)}
         labelClassName="hidden sm:block"
       />
+      <SideBarTweetButton className="absolute top-[-60px] right-2 m-0 w-[45px] h-[45px] p-2 " />
     </motion.section>
   );
 };

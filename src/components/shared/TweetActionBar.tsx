@@ -6,12 +6,8 @@ import usePost from "@/hooks/usePost";
 import { useStatus } from "@/hooks/useStatus";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
-import {
-  AiFillHeart,
-  AiOutlineHeart,
-  AiOutlineMessage,
-  AiOutlineRetweet,
-} from "react-icons/ai";
+import { AiFillHeart, AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
+import { FaRegComment } from "react-icons/fa";
 import { FiShare } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import AnimatedButton from "../ui/AnimatedButton";
@@ -93,7 +89,7 @@ const TweetActionBar = ({
             iconSize={20}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
             value={post.commentIds.length}
-            Icon={AiOutlineMessage}
+            Icon={FaRegComment}
             isComment={isComment}
             key={"reply-" + postId + post.commentIds.length}
             large
@@ -169,7 +165,7 @@ const TweetActionBar = ({
             }}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
             value={post.commentIds.length}
-            Icon={AiOutlineMessage}
+            Icon={FaRegComment}
             isComment={isComment}
             key={"reply-" + postId + post.commentIds.length}
           />
@@ -234,7 +230,7 @@ const TweetActionBar = ({
             }}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
             value={post.commentIds.length}
-            Icon={AiOutlineMessage}
+            Icon={FaRegComment}
             isComment={isComment}
             key={"reply-" + postId + post.commentIds.length}
           />

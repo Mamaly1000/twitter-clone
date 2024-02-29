@@ -4,26 +4,16 @@ import FollowBar from "./FollowBar";
 import BottomBar from "./BottomBar";
 import { twMerge } from "tailwind-merge";
 import { inter } from "@/pages/_app";
-import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
-import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButton";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className={twMerge("h-screen bg-black ", inter.className)}>
-      <div className="container h-full max-xl: xl:px-30 max-w-full ">
+    <div className={twMerge("h-screen bg-black relative", inter.className)}>
+      <div className="container h-full max-xl: xl:px-30 max-w-full relative">
         <div className="grid grid-cols-12 h-full relative z-10">
           <SideBar />
-          <ScrollHideShowComponent
-            target={{
-              className: "fixed bottom-[65px] sm:bottom-[75px] end-2 lg:hidden",
-            }}
-            targetElement={
-              <SideBarTweetButton className="m-0 w-[45px] h-[45px] p-2 lg:hidden" />
-            }
-            className="col-span-12 pb-[65px] sm:pb-[75px] lg:pb-0 lg:col-span-6 border-x-[1px] border-neutral-800 relative"
-          >
+          <section className="col-span-12 pb-[60px] sm:pb-[70px] lg:pb-0 md:col-span-8 lg:col-span-6 border-x-[1px] border-neutral-800 relative">
             {children}
-          </ScrollHideShowComponent>
+          </section>
           <FollowBar />
         </div>
         <BottomBar />

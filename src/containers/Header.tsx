@@ -23,13 +23,13 @@ const Header = ({
   return (
     <motion.div
       className={twMerge(
-        "border-b-[1px] border-neutral-800 p-5 transition-all z-50",
-        scrolled
-          ? "sticky top-0 left-0 bg-black px-2 py-3 font-semibold bg-opacity-70 backdrop-blur-sm"
-          : "relative bg-transparent"
+        "border-b-[1px] top-0 left-0 sticky border-neutral-800 p-5 transition-all z-50",
+        scrolled ? " backdrop-blur-sm" : " "
       )}
       animate={{
         translateY: isScrolling && scrolled ? -400 : 0,
+        backgroundColor:
+          isScrolling && scrolled ? "rgba(0 0 0 /0)" : "rgba(0 0 0 /1)",
       }}
     >
       <div className="flex flex-row items-center justify-between gap-2 text-sky-500">

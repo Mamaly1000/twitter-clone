@@ -1,13 +1,12 @@
 import SideBarItem from "@/components/Layout-components/SideBarItem";
-import SideBarTweetButton from "@/components/Layout-components/SideBarTweetButton";
-import SideBarLogo from "@/components/shared/SideBarLogo";
 import SmallUserBio from "@/components/shared/SmallUserBio";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useSidebar from "@/hooks/useSidebar";
-import { debounce } from "lodash";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-import { BiLogOut, BiSolidHomeCircle } from "react-icons/bi";
+import { BiLogOut } from "react-icons/bi";
+import { GoHome } from "react-icons/go";
 import { HiOutlineHashtag, HiOutlineUser } from "react-icons/hi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { PiUsersBold } from "react-icons/pi";
@@ -17,16 +16,19 @@ const MobileSideBar = () => {
   const { data: currentUser } = useCurrentUser();
   const sidebar = useSidebar();
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
   const items = [
     {
-      icon: BiSolidHomeCircle,
+      icon: GoHome,
       label: "Home",
       href: "/",
+      isActive: pathname === "/",
     },
     {
       icon: HiOutlineHashtag,
       label: "explore",
       href: "/hashtags",
+      isActive: pathname?.endsWith("hashtags"),
     },
     {
       icon: IoMdNotificationsOutline,
@@ -34,17 +36,20 @@ const MobileSideBar = () => {
       href: `/notifications/${currentUser?.id}`,
       auth: true,
       alert: currentUser?.hasNotification || false,
+      isActive: !!pathname?.match("notifications"),
     },
     {
       icon: HiOutlineUser,
       label: "Profile",
       href: `/users/${currentUser?.id}`,
       auth: true,
+      isActive: !!pathname?.endsWith("users/" + currentUser?.id),
     },
     {
       icon: PiUsersBold,
       label: "users",
       href: `/users`,
+      isActive: pathname?.endsWith("users"),
     },
   ];
   const onClose = useCallback(() => {
@@ -85,9 +90,11 @@ const MobileSideBar = () => {
           <div className=" transition-all min-w-full flex items-start justify-start flex-col text-[19px] text-[#D9D9D9]">
             {items.map((item) => (
               <SideBarItem
-                labelClassName="block text-lg ms-2"
                 key={item.href}
                 item={item as any}
+                iconSize={26}
+                mobile
+                isActive={item.isActive}
               />
             ))}
             {currentUser && (
@@ -97,6 +104,8 @@ const MobileSideBar = () => {
                   icon: BiLogOut,
                   label: "Logout",
                 }}
+                mobile
+                iconSize={26}
                 labelClassName="block text-lg ms-2"
               />
             )}

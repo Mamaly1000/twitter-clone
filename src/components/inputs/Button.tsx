@@ -29,13 +29,13 @@ const Button = ({
       disabled={disabled}
       className={twMerge(
         ` 
-    disabled:opacity-70
-    disabled:cursor-not-allowed
-    rounded-[50px]
-    font-semibold
-    hover:opacity-80
-    transition hover:scale-105 active:scale-95 
-    border-2`,
+        disabled:opacity-70
+        disabled:cursor-not-allowed
+        rounded-[50px]
+        font-semibold
+        hover:opacity-80
+        transition-all hover:scale-105 active:scale-95 
+        border-2`,
         fullWidth ? "w-full" : "w-fit",
         secondary
           ? "text-white bg-black border-[#566370]"

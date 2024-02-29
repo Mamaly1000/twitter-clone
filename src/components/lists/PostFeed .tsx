@@ -15,7 +15,7 @@ const PostFeed = ({ id, type }: { type?: PostsType; id?: string }) => {
     <div className="text-neutral-600 text-center p-6 text-xl">No Tweets</div>;
   }
   return (
-    <div className="flex flex-col items-start justify-start gap-0 min-w-full max-w-full">
+    <div className="flex flex-col items-start justify-start gap-0 min-w-full max-w-full relative z-0">
       {(posts as Post[]).map((post) => (
         <TweetCard post={post} key={post.id} userId={id} />
       ))}

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import { useCallback } from "react";
 declare global {
   var cloudinary: any;
 }
-import { IoImageOutline } from "react-icons/io5";
+import { CiImageOn } from "react-icons/ci";
 import Button from "./Button";
 import { toast } from "react-toastify";
 
@@ -12,7 +12,9 @@ const ImageUpload = ({
   onChange,
   length = 1,
   disable,
+  children,
 }: {
+  children?: ReactNode;
   disable?: boolean;
   length?: number;
   onChange: (value: string) => void;
@@ -56,15 +58,29 @@ const ImageUpload = ({
       }}
     >
       {({ open }) => {
-        return (
+        return children ? (
+          <section
+            onClick={() => {
+              if (!disable) {
+                open?.();
+              } else {
+                toast.warning("please wait");
+              }
+            }}
+            className="w-fit h-fit cursor-pointer p-0 m-0 "
+          >
+            {children}
+          </section>
+        ) : (
           <Button
-            className="rounded-md max-w-full w-10 flex items-center justify-center p-[1px]   "
+            className="max-w-[34px] min-w-[34px] min-h-[34px] max-h-[34px] flex items-center justify-center p-[1px] border-none hover:bg-sky-500 hover:bg-opacity-30 rounded-full"
             onClick={() => {
               open?.();
             }}
             disabled={disable}
+            secondary
           >
-            <IoImageOutline size={20} className="text-white" />
+            <CiImageOn size={25} className="text-sky-500  " />
           </Button>
         );
       }}
