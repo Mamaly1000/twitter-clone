@@ -1,6 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
-
-import prisma from "@/libs/prisma";
+import { NextApiRequest, NextApiResponse } from "next"; 
+import prisma from "@/libs/prisma"; 
 
 export default async function handler(
   req: NextApiRequest,
@@ -43,7 +42,6 @@ export default async function handler(
       skip: skip || 0,
       orderBy: {
         count: "desc",
-        createdAt: "desc",
       },
     });
     const totalHashtags = await prisma.hashtag.count({
@@ -74,8 +72,10 @@ export default async function handler(
       },
     });
   } catch (error) {
+    console.log(error);
+
     return res
       .status(500)
-      .json({ message: "error in updating notification", error });
+      .json({ message: "error in getting hashtags", error });
   }
 }

@@ -9,8 +9,8 @@ import useUserLocation from "@/hooks/useUserLocation";
 
 const FollowBar = () => {
   const { users } = useRecommendedUsers();
-  const { hashtags } = useTrendHashtags();
   const { data: user } = useCurrentUser();
+  const { hashtags } = useTrendHashtags();
   const { location } = useUserLocation(user?.id);
   return (
     <ScrollHideShowComponent

@@ -1,11 +1,14 @@
 import { debounce } from "lodash";
-import React, { useState } from "react";
+import React from "react";
 import useHashtags from "@/hooks/useHashtags";
 import { useRouter } from "next/router";
 import qs from "query-string";
+import SearchInput from "../inputs/SearchInput";
+import useScrollAnimation from "@/hooks/useScrollAnimation";
+import { motion } from "framer-motion";
 const HashtagSearchInput = () => {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
+  const { scrolled, isScrolling } = useScrollAnimation({});
   const { isLoading } = useHashtags({ search: router.query.search as string });
 
   const onSearch = debounce((val) => {
@@ -19,17 +22,22 @@ const HashtagSearchInput = () => {
   }, 1000);
 
   return (
-    <div className="min-w-full max-h-full flex items-center justify-between">
-      <input
+    <motion.div
+      animate={{
+        top: scrolled && isScrolling ? 0 : "60px",
+      }}
+      className="min-w-full z-10 sticky py-2 bg-black max-h-full flex items-center justify-between px-3 my-3 border-b-[1px] border-neutral-800"
+    >
+      <SearchInput
         disabled={isLoading}
         onChange={(e) => {
           onSearch(e.target.value);
         }}
+        size={30}
         placeholder={"search #twitter"}
-        type={"text"}
-        className="w-full p-4 text-lg bg-black border-2 border-neutral-800 outline-none text-white focus:border-sky-500 focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed "
+        inputClassName="min-w-[calc(100%-32px)] max-w-[calc(100%-32px)] text-lg bg-black"
       />
-    </div>
+    </motion.div>
   );
 };
 

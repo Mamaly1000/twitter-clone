@@ -1,39 +1,27 @@
 import HashtagsFeed from "@/components/lists/HashtagsFeed";
 import HashtagSearchInput from "@/components/search-components/HashtagSearchInput";
 import EmptyState from "@/components/shared/EmptyState";
-import Loader from "@/components/shared/Loader";
+import TrendHashtags from "@/components/shared/TrendHashtags";
 import Header from "@/containers/Header";
-import useCountry from "@/hooks/useCountry";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import useTrendHashtags from "@/hooks/useTrendHashtags";
 import useUserLocation from "@/hooks/useUserLocation";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React from "react";
 
 const HashtagsPage = () => {
   const router = useRouter();
   const { data: currentUser } = useCurrentUser();
+  const { hashtags } = useTrendHashtags();
   const { location } = useUserLocation(currentUser?.id);
-  const { getByValue } = useCountry();
-  const currentUserLocation = useMemo(() => {
-    if (location) {
-      const l = getByValue(location);
-      return `${l?.label}, ${l?.city}`;
-    }
-    return null;
-  }, [location, getByValue]);
-  if (!location || !currentUser) {
-    return <Loader message="loading hashtags" />;
-  }
+
   return (
     <>
       <Header label="Explore" displayArrow />
       <HashtagSearchInput />
-      {/* {!router.query.search && (
-        <HashtagsFeed
-          hashtags={userHashtags}
-          title={`trends in ${currentUserLocation}`}
-        />
-      )} */}
+      {!router.query.search && (
+        <TrendHashtags MainPage userLocation={location} hashtags={hashtags || []} />
+      )}
       <HashtagsFeed
         params={{
           search: router.query.search as string,

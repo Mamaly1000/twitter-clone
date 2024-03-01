@@ -28,7 +28,7 @@ const HashtagsFeed = ({
       </h2>
       <div className="min-w-full flex flex-col items-start justify-start gap-0 border-t-[1px] border-neutral-800">
         {hashtags.map((h, i) => (
-          <HashtagCard main i={i + 1} hashtag={h} key={h.id + i} />
+          <HashtagCard main i={i + 1}  hideLocation hashtag={h} key={h.id + i} />
         ))}
       </div>
       <HashtagPagination params={params} />
