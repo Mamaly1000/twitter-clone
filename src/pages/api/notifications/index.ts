@@ -100,6 +100,15 @@ export default async function handler(
         hasNotification: false,
       },
     });
+    await prisma.notification.updateMany({
+      where: {
+        userId: userData.currentUser.id,
+        isSeen: false,
+      },
+      data: {
+        isSeen: true,
+      },
+    });
 
     return res.status(200).json({
       notifications,

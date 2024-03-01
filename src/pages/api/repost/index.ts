@@ -133,7 +133,10 @@ export default async function handler(
       }
       // repost notifications
       try {
-        let mentionedUsers: string[] = mentions || [];
+        let mentionedUsers: string[] = without(
+          mentions || [],
+          currentUser.currentUser.id
+        );
         let myFollowers = difference(
           currentUser.currentUser.followerIds,
           mentionedUsers
@@ -144,34 +147,34 @@ export default async function handler(
               mentionedUsers.length > 0
                 ? [
                     ...myFollowers.map((followedId) => ({
-                      actionUser: currentUser.currentUser.id,
-                      actionUsername: currentUser.currentUser.username || "",
+                      actionUserId: currentUser.currentUser.id,
+                      isSeen: false,
                       body: `in case you missed @${currentUser.currentUser.username} retweets.`,
                       userId: followedId,
                       postId: newPost.id,
                       type: "REPOST",
                     })),
                     ...mentionedUsers.map((id) => ({
-                      actionUser: currentUser.currentUser.id,
-                      actionUsername: currentUser.currentUser.username || "",
                       body: `in case you missed @${currentUser.currentUser.username} mentioned you in a retweets.`,
                       userId: id,
                       postId: newPost.id,
                       type: "MENTION",
+                      actionUserId: currentUser.currentUser.id,
+                      isSeen: false,
                     })),
                     {
                       body: `in case you missed @${currentUser.currentUser.username} retweets your tweet.`,
                       userId: selectedPost.userId,
                       postId: newPost.id,
-                      actionUser: currentUser.currentUser.id,
-                      type: "REPOST",
-                      actionUsername: currentUser.currentUser.username || "",
+                      actionUserId: currentUser.currentUser.id,
+                      isSeen: false,
+                      type: "REPOST", 
                     },
                   ]
                 : [
                     ...myFollowers.map((followedId) => ({
-                      actionUser: currentUser.currentUser.id,
-                      actionUsername: currentUser.currentUser.username || "",
+                      actionUserId: currentUser.currentUser.id,
+                      isSeen: false,
                       body: `in case you missed @${currentUser.currentUser.username} retweets.`,
                       userId: followedId,
                       postId: newPost.id,
@@ -181,9 +184,9 @@ export default async function handler(
                       body: `in case you missed @${currentUser.currentUser.username} retweets your tweet.`,
                       userId: selectedPost.userId,
                       postId: newPost.id,
-                      actionUser: currentUser.currentUser.id,
-                      type: "REPOST",
-                      actionUsername: currentUser.currentUser.username || "",
+                      actionUserId: currentUser.currentUser.id,
+                      isSeen: false,
+                      type: "REPOST", 
                     },
                   ],
           });

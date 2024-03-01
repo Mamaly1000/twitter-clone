@@ -62,9 +62,9 @@ export default async function handler(
         if (userId) {
           await prisma.notification.create({
             data: {
-              actionUser: currentUser.currentUser.id,
+              actionUserId: currentUser.currentUser.id,
+              isSeen: false,
               userId: userId,
-              actionUsername: currentUser.currentUser.username || "somebody",
               body: `in case you missed; @${currentUser.currentUser.username} unfollows you.`,
               type: "UNFOLLOW",
             },
@@ -90,9 +90,9 @@ export default async function handler(
         if (userId) {
           await prisma.notification.create({
             data: {
-              actionUser: currentUser.currentUser.id,
+              actionUserId: currentUser.currentUser.id,
+              isSeen: false,
               userId: userId,
-              actionUsername: currentUser.currentUser.username || "somebody",
               body: `in case you missed; @${currentUser.currentUser.username} follows you.`,
               type: "FOLLOW",
             },

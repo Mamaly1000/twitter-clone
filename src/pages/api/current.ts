@@ -16,10 +16,16 @@ export default async function handler(
     if (!currentUser) {
       return res.status(401).json({ message: "not signed in!" });
     }
+    const notificationCount = await prisma.notification.count({
+      where: {
+        userId: currentUser.currentUser.id,
+        isSeen: false,
+      },
+    });
 
     return res.status(200).json({
       ...currentUser.currentUser,
-      mutualReplies: [],
+      notificationCount: notificationCount,
     });
   } catch (error) {
     console.log(error);

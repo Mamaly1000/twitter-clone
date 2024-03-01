@@ -12,7 +12,7 @@ interface Props {
     icon: IconType;
     href?: string;
     auth?: boolean;
-    alert?: undefined;
+    alert?: number;
     onClick?: () => void;
   };
   labelClassName?: string;
@@ -24,7 +24,6 @@ interface Props {
 }
 const SideBarItem = ({
   item: { label, icon: Icon, href, alert, onClick, auth = false },
-  labelClassName,
   className,
   isActive,
   iconSize = 20,
@@ -68,15 +67,21 @@ const SideBarItem = ({
             isActive ? "font-extrabold text-white fill-white " : ""
           )}
         />
-        {!alert && isActive && (
+        {!!!alert && isActive && (
           <span className="min-w-[10px] min-h-[10px] rounded-full bg-sky-500 absolute top-0 right-0 "></span>
         )}
-        {alert ? (
-          <FaCircle
-            className="text-sky-500 absolute top-2 right-2 md:right-3 md:top-3 max-w-[30px] max-h-[30px] "
-            size={14}
-          />
-        ) : null}
+        {!!alert && (
+          <span
+            className={twMerge(
+              " rounded-full bg-sky-600 absolute top-0 right-0 flex items-center justify-center font-light",
+              bottomBar
+                ? "min-w-[10px] min-h-[10px] text-[14px] max-w-[10px] max-h-[10px]"
+                : "min-w-[20px] min-h-[20px] text-[14px] max-w-[20px] max-h-[20px]"
+            )}
+          >
+            {!bottomBar && (alert > 10 ? `+9` : alert)}
+          </span>
+        )}
       </motion.div>
       <p
         className={twMerge(

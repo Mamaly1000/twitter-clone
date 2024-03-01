@@ -32,7 +32,7 @@ const BottomBar = () => {
       label: "Notifications",
       href: `/notifications/${currentUser?.id}`,
       auth: true,
-      alert: (currentUser as User)?.hasNotification || false,
+      alert: currentUser?.notificationCount || 0,
       isActive: !!pathname?.match("notifications"),
     },
     {

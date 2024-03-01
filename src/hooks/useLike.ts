@@ -6,7 +6,7 @@ import { Post } from "@prisma/client";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {
+const useLike = ({ postId }: { postId?: string }) => {
   const { data: currentUser } = useCurrentUser();
   const { post, mutate: mutatePost } = usePost(postId);
   const [likeLoading, setLoading] = useState(false);
@@ -26,24 +26,14 @@ const useLike = ({ postId, userId }: { postId?: string; userId?: string }) => {
     }
     try {
       setLoading(true);
-      let req;
-      if (hasLiked) {
-        req = () =>
-          axios.delete("/api/like", {
-            data: {
-              postId,
-            },
-          });
-      } else {
-        req = () =>
-          axios.post("/api/like", {
-            postId,
-          });
-      }
-      await req().then((res) => {
-        mutatePost();
-        toast.success(res.data.message);
-      });
+      await axios
+        .patch("/api/like", {
+          postId,
+        })
+        .then((res) => {
+          mutatePost();
+          toast.success(res.data.message);
+        });
     } catch (error) {
       toast.error("something went wrong!");
     } finally {

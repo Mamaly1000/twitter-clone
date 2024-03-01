@@ -16,6 +16,7 @@ export type notifTypes =
   | "TWEET"
   | "MENTION"
   | "BOOKMARK"
+  | "UNBOOKMARK"
   | "COMMENT";
 const NotifImage = ({ type }: { type: notifTypes }) => {
   return (
@@ -48,6 +49,9 @@ const NotifImage = ({ type }: { type: notifTypes }) => {
       )}
       {type === "BOOKMARK" && (
         <MdBookmarks className="w-[25px] h-[25px] md:w-[30px] md:h-[30px]" />
+      )}{" "}
+      {type === "UNBOOKMARK" && (
+        <MdBookmarks className="w-[25px] h-[25px] md:w-[30px] md:h-[30px] text-red-500" />
       )}
       {type === "COMMENT" && (
         <Image

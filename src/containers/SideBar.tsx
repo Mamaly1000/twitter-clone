@@ -34,7 +34,7 @@ const SideBar = () => {
       label: "Notifications",
       href: `/notifications/${currentUser?.id}`,
       auth: true,
-      alert: (currentUser as User)?.hasNotification || false,
+      alert: currentUser?.notificationCount || 0,
       isActive: !!pathname?.match("notifications"),
     },
     {
@@ -42,7 +42,7 @@ const SideBar = () => {
       label: "Profile",
       href: `/users/${currentUser?.id}`,
       auth: true,
-      isActive: !!pathname?.endsWith("users/"+currentUser?.id),
+      isActive: !!pathname?.endsWith("users/" + currentUser?.id),
     },
     {
       icon: PiUsersBold,

@@ -1,7 +1,7 @@
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/libs/prisma";
-import { difference } from "lodash";
+import { difference, without } from "lodash";
 import HashtagHandler from "@/libs/HashtagHandler";
 import { MediaType } from "@/components/forms/UploadedImagesForm";
 import { PostsType } from "@/hooks/usePosts";
@@ -239,7 +239,10 @@ export default async function handler(
       }
       // handle notifications
       try {
-        let mentionedUsers: string[] = mentions || [];
+        let mentionedUsers: string[] = without(
+          mentions || [],
+          user.currentUser.id
+        );
         let myFollowers = difference(
           user.currentUser.followerIds,
           mentionedUsers
@@ -250,26 +253,26 @@ export default async function handler(
             mentionedUsers.length > 0
               ? [
                   ...myFollowers.map((id) => ({
-                    actionUser: user.currentUser.id,
                     userId: id,
-                    actionUsername: user.currentUser.username || "somebody",
+                    actionUserId: user.currentUser.id,
+                    isSeen: false,
                     body: `in case you missed it @${user.currentUser.username} tweets;`,
                     type: "TWEET",
                     postId: newPost.id,
                   })),
                   ...mentionedUsers.map((id) => ({
-                    actionUser: user.currentUser.id,
                     userId: id,
-                    actionUsername: user.currentUser.username || "some body",
                     body: `in case you missed it @${user.currentUser.username} mentioned you in tweets;`,
                     postId: newPost.id,
                     type: "MENTION",
+                    actionUserId: user.currentUser.id,
+                    isSeen: false,
                   })),
                 ]
               : myFollowers.map((id) => ({
-                  actionUser: user.currentUser.id,
                   userId: id,
-                  actionUsername: user.currentUser.username || "some body",
+                  actionUserId: user.currentUser.id,
+                  isSeen: false,
                   body: `in case you missed it @${user.currentUser.username} tweets;`,
                   postId: newPost.id,
                   type: "TWEET",

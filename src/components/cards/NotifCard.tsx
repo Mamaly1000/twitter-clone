@@ -1,7 +1,7 @@
 import { Notification, Post, User } from "@prisma/client";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Avatar from "../shared/Avatar";
 import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import NotifImage from "../shared/NotifImage";
@@ -9,12 +9,15 @@ import { BsClock } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
 import TweetImageList from "../lists/TweetImageList";
 import { getShortUnit } from "@/libs/utils";
+import DeleteNotifButton from "@/hooks/DeleteNotifButton";
+import { motion } from "framer-motion";
 
 const NotifCard = ({
   notif,
 }: {
   notif: Notification & { user: User; post: Post & { user: User } };
 }) => {
+  const [deleted, setDeleted] = useState(false);
   const router = useRouter();
 
   const createdAt = useMemo(() => {
@@ -31,21 +34,48 @@ const NotifCard = ({
   }, [notif.post?.body]);
 
   return (
-    <div
+    <motion.article
+      animate={{
+        translateX: deleted ? 1000 : 0,
+        opacity: deleted ? 0 : 1,
+        display: deleted ? "none" : "flex",
+      }}
+      transition={{
+        duration: 0.12,
+        ease: "linear",
+        display: {
+          delay: 0.15,
+        },
+      }}
       onClick={() =>
         router.push(
-          notif.postId ? `/posts/${notif.postId}` : `/users/${notif.actionUser}`
+          notif.postId
+            ? `/posts/${notif.postId}`
+            : `/users/${notif.actionUserId}`
         )
       }
       key={notif.id}
-      className=" flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all"
+      className={twMerge(
+        "flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all",
+        !notif.isSeen ? "bg-sky-900 bg-opacity-40" : ""
+      )}
     >
-      <NotifImage type={notif.type as any} />
+      <div className="w-fit max-w-fit flex items-start justify-start flex-col gap-2">
+        <NotifImage type={notif.type as any} />
+        <DeleteNotifButton
+          size={25}
+          onDeleteEnd={() => {
+            setDeleted(true);
+          }}
+          className="text-white hover:scale-110 active:scale-90  bg-sky-500 rounded-lg w-[30px] h-[30px]  flex items-center justify-center"
+          notifId={notif.id}
+        />
+      </div>
       <section className="overflow-hidden flex items-start justify-between gap-3 md:flex-row flex-col max-w-[calc(100%-36px)] md:max-w-[calc(100%-46px)] min-w-[calc(100%-36px)] md:min-w-[calc(100%-46px)]">
         <div className=" min-w-full max-w-full md:min-w-[calc(100%-62px)] md:max-w-[calc(100%-62px)] overflow-hidden flex flex-col items-start justify-start gap-3 text-[12px] md:text-[15px]">
           {/* notif header */}
           <div className="flex flex-col md:flex-row items-start justify-start gap-2">
-            <Avatar userId={notif.actionUser} />
+            <Avatar userId={notif.actionUserId} />
             <div className="flex items-start justify-start flex-col text-white min-w-full max-w-full">
               <p className="flex items-center justify-start gap-1 flex-wrap text-lg capitalize">
                 {notif.user.name}
@@ -113,7 +143,7 @@ const NotifCard = ({
           {createdAt}
         </span>
       </section>
-    </div>
+    </motion.article>
   );
 };
 

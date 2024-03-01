@@ -75,17 +75,19 @@ model Comment {
 }
 
 model Notification {
-  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   body               String
-  userId             String @db.ObjectId
-  actionUser         String @db.ObjectId
-  actionUsername     String
-  type String
   createdAt          DateTime @default(now())
-  postId             String? @db.ObjectId
-  user               User @relation(fields: [actionUser], references: [id], onDelete: Cascade)
-  post               Post? @relation(fields: [postId], references: [id], onDelete:Cascade)
+  actionUserId       String   @db.ObjectId @map("action_user_id") 
+  type               String
+  userId             String   @db.ObjectId @map("user_id")
+  postId             String?  @db.ObjectId @map("post_id")
+  isSeen             Boolean  @default(false)
+ 
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post               Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
+
 
 model Repost{
   id String @id @default(auto()) @map("_id") @db.ObjectId

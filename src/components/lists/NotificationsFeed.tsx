@@ -26,7 +26,7 @@ const NotificationsFeed = () => {
   }
 
   return (
-    <div className="flex flex-col min-w-full max-w-full">
+    <div className="flex flex-col min-w-full max-w-full overflow-x-hidden">
       {notifs.map((notification: Record<string, any>) => (
         <NotifCard notif={notification as any} key={notification.id} />
       ))}

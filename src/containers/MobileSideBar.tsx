@@ -35,7 +35,7 @@ const MobileSideBar = () => {
       label: "Notifications",
       href: `/notifications/${currentUser?.id}`,
       auth: true,
-      alert: currentUser?.hasNotification || false,
+      alert: currentUser?.notificationCount || 0,
       isActive: !!pathname?.match("notifications"),
     },
     {

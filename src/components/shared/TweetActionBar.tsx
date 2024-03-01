@@ -6,12 +6,13 @@ import usePost from "@/hooks/usePost";
 import { useStatus } from "@/hooks/useStatus";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
-import { AiFillHeart, AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
+import { AiOutlineRetweet } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { FiShare } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import AnimatedButton from "../ui/AnimatedButton";
 import { motion } from "framer-motion";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
 const TweetActionBar = ({
   postId,
@@ -37,7 +38,6 @@ const TweetActionBar = ({
   const { hasLiked, toggleLike, likeLoading } = useLike({
     postId: post?.id,
   });
-
   const onLike = useCallback(
     async (ev: any) => {
       ev.stopPropagation();
@@ -66,7 +66,7 @@ const TweetActionBar = ({
     [loginModal, currentUser, post]
   );
 
-  const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
+  const LikeIcon = hasLiked ? GoHeartFill : GoHeart;
   if (postLoading || !post) {
     return null;
   }
@@ -98,8 +98,8 @@ const TweetActionBar = ({
             value={post.likedIds.length}
             Icon={LikeIcon}
             className={twMerge(
-              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500",
-              hasLiked || likeLoading ? "text-red-600" : "text-[#728291]"
+              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]",
+              hasLiked || likeLoading ? "text-[#f91880]" : "text-[#728291]"
             )}
             iconSize={20}
             isLoading={likeLoading}
@@ -150,7 +150,7 @@ const TweetActionBar = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 100 }}
           className={twMerge(
-            "flex flex-row items-center text-[13px] gap-5 sm:gap-10 text-[#728291]",
+            "flex flex-row items-center text-[15px] gap-5 sm:gap-10 text-[#728291]",
             isComment
               ? "min-w-full justify-evenly py-3 border-t-[1px] border-t-neutral-800"
               : "justify-between md:justify-normal",
@@ -167,19 +167,21 @@ const TweetActionBar = ({
             value={post.commentIds.length}
             Icon={FaRegComment}
             isComment={isComment}
+            iconSize={15}
             key={"reply-" + postId + post.commentIds.length}
           />
           <AnimatedButton
             value={post.likedIds.length}
             Icon={LikeIcon}
             className={twMerge(
-              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500",
-              hasLiked || likeLoading ? "text-red-600" : "text-[#728291]"
+              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]",
+              hasLiked || likeLoading ? "text-[#f91880]" : "text-[#728291]"
             )}
             isLoading={likeLoading}
             onClick={onLike}
             isActive={hasLiked}
             isComment={isComment}
+            iconSize={15}
             key={"like-" + postId + post.likedIds.length}
           />
           <AnimatedButton
@@ -187,6 +189,7 @@ const TweetActionBar = ({
             Icon={AiOutlineRetweet}
             value={post.repostIds.length}
             className={twMerge("hover:text-sky-400  ")}
+            iconSize={15}
             isComment={isComment}
           />
           <AnimatedButton
@@ -194,6 +197,7 @@ const TweetActionBar = ({
               e.stopPropagation();
               toggleBookmark();
             }}
+            iconSize={15}
             className={twMerge("hover:text-sky-400  ")}
             Icon={BookmarkIcon}
             value={post.bookmarkedIds.length}
@@ -239,8 +243,8 @@ const TweetActionBar = ({
             value={post.likedIds.length}
             Icon={LikeIcon}
             className={twMerge(
-              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-red-500",
-              hasLiked || likeLoading ? "text-red-600" : "text-[#728291]"
+              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]",
+              hasLiked || likeLoading ? "text-[#f91880]" : "text-[#728291]"
             )}
             isLoading={likeLoading}
             onClick={onLike}

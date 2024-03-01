@@ -6,25 +6,7 @@ const useCurrentUser = () => {
 
   return {
     data: data as User & {
-      mutualReplies: {
-        user: {
-          id: string;
-          name: string | null;
-          username: string | null;
-        };
-        post: {
-          user: {
-            name: string | null;
-          };
-          body: string;
-          likedIds: string[];
-          commentIds: string[];
-        };
-        id: string;
-        createdAt: Date;
-        body: string;
-        postId: string;
-      }[];
+      notificationCount: number;
     },
 
     error,

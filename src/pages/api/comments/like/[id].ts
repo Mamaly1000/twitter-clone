@@ -32,27 +32,29 @@ export default async function handler(
           likedIds: newLikingIds,
         },
       });
-      try {
-        await prisma.notification.create({
-          data: {
-            actionUsername: user.currentUser.username || "some body",
-            body: `in case you missed @${user.currentUser.username} disLiked your reply`,
-            type: "DISLIKE",
-            userId: post.userId,
-            actionUser: user.currentUser.id,
-            postId: post.id,
-          },
-        });
-        await prisma.user.update({
-          where: {
-            id: post.userId,
-          },
-          data: {
-            hasNotification: true,
-          },
-        });
-      } catch (error) {
-        console.log("failed to update the user notification");
+      if (post.userId !== user.currentUser.id) {
+        try {
+          await prisma.notification.create({
+            data: {
+              actionUserId: user.currentUser.id,
+              isSeen: false,
+              body: `in case you missed @${user.currentUser.username} disLiked your reply`,
+              type: "DISLIKE",
+              userId: post.userId,
+              postId: post.id,
+            },
+          });
+          await prisma.user.update({
+            where: {
+              id: post.userId,
+            },
+            data: {
+              hasNotification: true,
+            },
+          });
+        } catch (error) {
+          console.log("failed to update the user notification");
+        }
       }
     } else {
       likingIds = [...likingIds, user.currentUser.id];
@@ -62,27 +64,29 @@ export default async function handler(
           likedIds: likingIds,
         },
       });
-      try {
-        await prisma.notification.create({
-          data: {
-            actionUsername: user.currentUser.username || "some body",
-            body: `in case you missed @${user.currentUser.username} Liked your reply`,
-            type: "LIKE",
-            userId: post.userId,
-            actionUser: user.currentUser.id,
-            postId: post.id,
-          },
-        });
-        await prisma.user.update({
-          where: {
-            id: post.userId,
-          },
-          data: {
-            hasNotification: true,
-          },
-        });
-      } catch (error) {
-        console.log("failed to update the user notification");
+      if (post.userId !== user.currentUser.id) {
+        try {
+          await prisma.notification.create({
+            data: {
+              actionUserId: user.currentUser.id,
+              isSeen: false,
+              body: `in case you missed @${user.currentUser.username} Liked your reply`,
+              type: "LIKE",
+              userId: post.userId,
+              postId: post.id,
+            },
+          });
+          await prisma.user.update({
+            where: {
+              id: post.userId,
+            },
+            data: {
+              hasNotification: true,
+            },
+          });
+        } catch (error) {
+          console.log("failed to update the user notification");
+        }
       }
     }
     return res

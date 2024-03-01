@@ -2,7 +2,7 @@ import prisma from "@/libs/prisma";
 import serverAuth from "@/libs/serverAuth";
 import { NextApiRequest, NextApiResponse } from "next";
 import HashtagHandler from "../../../libs/HashtagHandler";
-import { includes } from "lodash";
+import { includes, without } from "lodash";
 import { MediaType } from "@/components/forms/UploadedImagesForm";
 export default async function handler(
   req: NextApiRequest,
@@ -127,7 +127,10 @@ export default async function handler(
       });
 
       if (post?.userId) {
-        let mentionedUsers: string[] = mentions || [];
+        let mentionedUsers: string[] = without(
+          mentions || [],
+          currentUser.currentUser.id
+        );
         const mentionAndUserComment = includes(mentionedUsers, post.userId);
         await prisma.notification.createMany({
           data:
@@ -137,9 +140,8 @@ export default async function handler(
                     body: `in case you missed it @${currentUser.currentUser.username} mentioned you on its reply`,
                     userId: id,
                     postId: post.id,
-                    actionUser: currentUser.currentUser.id,
-                    actionUsername:
-                      currentUser.currentUser.username || "some body",
+                    actionUserId: currentUser.currentUser.id,
+                    isSeen: false,
                     type: "MENTION",
                   })),
                   {
@@ -148,9 +150,8 @@ export default async function handler(
                       : `in case you missed it @${currentUser.currentUser.username} replied on your tweet`,
                     userId: post.userId,
                     postId: post.id,
-                    actionUser: currentUser.currentUser.id,
-                    actionUsername:
-                      currentUser.currentUser.username || "some body",
+                    actionUserId: currentUser.currentUser.id,
+                    isSeen: false,
                     type: mentionAndUserComment ? "MENTION" : "COMMENT",
                   },
                 ]
@@ -158,9 +159,8 @@ export default async function handler(
                   body: `in case you missed it @${currentUser.currentUser.username} mentioned you on its reply`,
                   userId: id,
                   postId: post.id,
-                  actionUser: currentUser.currentUser.id,
-                  actionUsername:
-                    currentUser.currentUser.username || "some body",
+                  actionUserId: currentUser.currentUser.id,
+                  isSeen: false,
                   type: "MENTION",
                 })),
         });
