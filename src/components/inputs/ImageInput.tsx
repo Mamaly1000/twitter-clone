@@ -13,7 +13,9 @@ const ImageUpload = ({
   length = 1,
   disable,
   children,
+  label,
 }: {
+  label?: string;
   children?: ReactNode;
   disable?: boolean;
   length?: number;
@@ -67,8 +69,13 @@ const ImageUpload = ({
                 toast.warning("please wait");
               }
             }}
-            className="w-fit h-fit cursor-pointer p-0 m-0 "
+            className="relative cursor-pointer opacity-70 hover:opacity-100 w-full min-w-full max-w-full overflow-hidden min-h-[200px] aspect-video max-h-[200px] rounded-lg border-[1px] border-neutral-800 border-dashed bg-[#2e2e2e] disabled:cursor-not-allowed disabled:animate-pulse"
           >
+            {label && (
+              <span className="absolute top-0 left-0 rounded-tr-none rounded-bl-none rounded-lg bg-neutral-800 flex items-center justify-center text-lg capitalize text-[#e7e9ea] font-semibold px-3 py-2">
+                {label}
+              </span>
+            )}
             {children}
           </section>
         ) : (

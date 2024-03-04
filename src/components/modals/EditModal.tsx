@@ -19,7 +19,6 @@ import CountrySelect from "../inputs/Select";
 import useCountry, { SingleCountryType } from "@/hooks/useCountry";
 import useUserFields from "@/hooks/useUserFields";
 import useCoverImage from "@/hooks/useCoverImage";
-import UploadedImagesForm from "../forms/UploadedImagesForm";
 import Image from "next/image";
 
 const editSchema = z.object({
@@ -171,6 +170,7 @@ const EditModal = () => {
         onChange={(val) => {
           form.setValue("profileImage", val);
         }}
+        label="profile image"
         disable={isLoading}
         length={1}
       >
@@ -178,25 +178,26 @@ const EditModal = () => {
           unoptimized
           src={form.watch("profileImage")}
           alt="profile image"
-          width={100}
-          height={100}
-          className="object-cover"
+          fill
+          className="object-contain "
         />
       </ImageUpload>
-      {/* <ImageUpload
-        value={form.watch("profileImage")}
-        disabled={isLoading}
-        onChange={(image) => {
-          form.setValue("profileImage", image);
-        }}
-        label="Upload profile image"
-      />
       <ImageUpload
-        value={form.watch("coverImage")}
-        disabled={isLoading}
-        onChange={(image) => form.setValue("coverImage", image)}
-        label="Upload cover image"
-      /> */}
+        onChange={(val) => {
+          form.setValue("coverImage", val);
+        }}
+        label="cover Image"
+        disable={isLoading}
+        length={1}
+      >
+        <Image
+          unoptimized
+          src={form.watch("coverImage")}
+          alt="cover image"
+          fill
+          className="object-contain "
+        />
+      </ImageUpload>
       <Input
         register={form.register("name")}
         name="name"

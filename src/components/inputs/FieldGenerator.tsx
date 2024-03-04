@@ -2,20 +2,19 @@ import React, { useState } from "react";
 import Input from "./Input";
 import { v4 as uuidv4 } from "uuid";
 import { BiTrash } from "react-icons/bi";
-import { GrAdd, GrLocation } from "react-icons/gr";
+import { GrAdd } from "react-icons/gr";
 import { IconType } from "react-icons";
 import { FaBirthdayCake } from "react-icons/fa";
 import { MdWorkHistory } from "react-icons/md";
 import { BsLink45Deg } from "react-icons/bs";
 import FieldIcon from "../shared/FieldIcon";
 import { without } from "lodash";
-import CountrySelect from "./Select";
 import { SingleCountryType } from "@/hooks/useCountry";
 import { twMerge } from "tailwind-merge";
 import CustomCalendar from "./Calendar";
 import { format } from "date-fns";
-import { FaEarthAsia } from "react-icons/fa6";
 import Link from "next/link";
+import Tabs from "../ui/Tabs";
 export const ProfileFieldsTypes: {
   type: "LINK" | "BIRTHDAY" | "JOB";
   label: "link" | "birthday" | "job";
@@ -79,39 +78,28 @@ const FieldGenerator = ({
       }}
     >
       <div className="min-w-full flex flex-col items-start justify-start gap-2">
-        <div className="min-w-full flex flex-wrap items-center capitalize justify-start gap-3 ">
-          <span className="text-[14px] capitalize text-neutral-200">
-            select field type :
-          </span>
-          <div className="flex items-start justify-start flex-wrap gap-2 ">
-            {ProfileFieldsTypes.map((t) => {
-              return (
-                <button
-                  className={twMerge(
-                    "px-2 py-1 rounded-md border-[1px]  hover:scale-105 transition-all ",
-                    t.type === activeField?.type
-                      ? "border-sky-400 text-sky-400"
-                      : "border-white text-white",
-                    disabled ? "cursor-not-allowed" : ""
-                  )}
-                  key={t.type}
-                  onClick={(e) => {
-                    if (disabled) {
-                      e.preventDefault();
-                    } else {
-                      setActivefield({
-                        type: t.type,
-                        value: location?.value ? location.value : "",
-                      });
-                    }
-                  }}
-                >
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <Tabs
+          onSelect={(val) => {
+            if (!disabled) {
+              setActivefield({
+                type: val.label as any,
+                value: val?.value,
+              });
+            }
+          }}
+          className="items-center justify-start divide-x-[1px] divide-neutral-800"
+          optionClassName="capitalize"
+          options={ProfileFieldsTypes.map((t) => {
+            return {
+              label: t.label,
+              value: t.type,
+            };
+          })}
+          currentValue={{
+            label: activeField?.value,
+            value: activeField?.type,
+          }}
+        />
         <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-2">
           {!!activeField && (
             <div className="min-w-full flex justify-between gap-2 items-center mt-3">
