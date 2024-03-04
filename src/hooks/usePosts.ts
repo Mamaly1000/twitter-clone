@@ -13,11 +13,13 @@ export type PostsType =
   | "media"
   | "replies"
   | "comment"
-  | "repost";
+  | "repost"
+  | "hashtag";
 export type postQueryType = {
   id?: string;
   type?: PostsType;
   postId?: string;
+  hashtagId?: string;
 };
 
 const usePosts = (params: postQueryType) => {
@@ -60,6 +62,7 @@ const usePosts = (params: postQueryType) => {
           page: index + 1,
           postId: params.postId,
           search: params.type,
+          hashtagId: params.hashtagId,
         },
       });
       return query;

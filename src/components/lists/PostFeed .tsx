@@ -5,8 +5,16 @@ import TweetCard from "../cards/TweetCard";
 import Loader from "../shared/Loader";
 import Pagination from "../shared/Pagination";
 
-const PostFeed = ({ id, type }: { type?: PostsType; id?: string }) => {
-  const { posts, isLoading } = usePosts({ id, type });
+const PostFeed = ({
+  id,
+  type,
+  hashtagId,
+}: {
+  hashtagId?: string;
+  type?: PostsType;
+  id?: string;
+}) => {
+  const { posts, isLoading } = usePosts({ id, type, hashtagId });
 
   if (!posts || isLoading) {
     return <Loader message="Loading Tweets" />;

@@ -9,7 +9,7 @@ import { BsClock } from "react-icons/bs";
 import { twMerge } from "tailwind-merge";
 import TweetImageList from "../lists/TweetImageList";
 import { getShortUnit } from "@/libs/utils";
-import DeleteNotifButton from "@/hooks/DeleteNotifButton";
+import DeleteNotifButton from "@/components/inputs/DeleteNotifButton";
 import { motion } from "framer-motion";
 
 const NotifCard = ({

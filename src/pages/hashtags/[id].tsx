@@ -1,5 +1,4 @@
 import PostFeed from "@/components/lists/PostFeed ";
-import RawPostFeed from "@/components/lists/RawPostFeed";
 import UsersCardFeed from "@/components/lists/UsersCardFeed";
 import Loader from "@/components/shared/Loader";
 import Header from "@/containers/Header";
@@ -12,7 +11,7 @@ const SingleHashtagPage = () => {
   const router = useRouter();
   const hashtagId = router.query.id as string;
   const { data: currentUser } = useCurrentUser();
-  const { hashtag, isLoading, posts, users } = useHashtag(hashtagId);
+  const { hashtag, isLoading, users } = useHashtag(hashtagId);
 
   if (!hashtag || isLoading || !currentUser) {
     return <Loader message="loading hashtag data" />;
@@ -26,7 +25,7 @@ const SingleHashtagPage = () => {
         displayArrow
       />
       <UsersCardFeed users={users} title="People" />
-      <RawPostFeed userId={currentUser.id} posts={posts || []} title="tweets" />
+      <PostFeed type="hashtag" hashtagId={hashtagId} />
     </>
   );
 };

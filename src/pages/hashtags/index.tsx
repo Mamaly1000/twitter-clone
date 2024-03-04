@@ -20,13 +20,17 @@ const HashtagsPage = () => {
       <Header label="Explore" displayArrow />
       <HashtagSearchInput />
       {!router.query.search && (
-        <TrendHashtags MainPage userLocation={location} hashtags={hashtags || []} />
+        <TrendHashtags
+          MainPage
+          userLocation={location}
+          hashtags={hashtags || []}
+        />
       )}
       <HashtagsFeed
         params={{
           search: router.query.search as string,
         }}
-        title="trends for you"
+        title="# trends for you #"
       />
       {router.query.search && <EmptyState resetUrl="hashtags" />}
     </>

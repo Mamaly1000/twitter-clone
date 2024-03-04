@@ -47,48 +47,10 @@ export default async function handler(
         username: true,
       },
     });
-    const posts = await prisma.post.findMany({
-      where: {
-        id: {
-          in: targetHashtag.postIds,
-        },
-      },
-      include: {
-        repost: {
-          include: {
-            user: {
-              select: {
-                bio: true,
-                createdAt: true,
-                email: true,
-                followerIds: true,
-                followingIds: true,
-                id: true,
-                name: true,
-                username: true,
-              },
-            },
-          },
-        },
-        user: {
-          select: {
-            bio: true,
-            createdAt: true,
-            email: true,
-            followerIds: true,
-            followingIds: true,
-            id: true,
-            name: true,
-            username: true,
-          },
-        },
-      },
-    });
 
     return res.status(200).json({
       hashtags: targetHashtag,
       users: users || [],
-      posts: posts || [],
     });
   } catch (error) {
     return res

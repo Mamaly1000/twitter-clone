@@ -1,7 +1,7 @@
 import { useUploadThing } from "@/hooks/useUploadThing";
 import { isBase64Image } from "@/libs/utils";
 import Image from "next/image";
-import React, { useCallback, useState } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { generateClientDropzoneAccept } from "uploadthing/client";
 import Loader from "../shared/Loader";
@@ -12,7 +12,9 @@ const ImageUpload = ({
   disabled,
   onChange,
   label,
+  children,
 }: {
+  children?: ReactNode;
   value: string;
   disabled?: boolean;
   onChange: (base64: string) => void;

@@ -7,8 +7,7 @@ const useHashtag = (id?: string) => {
   const { data, error, mutate, isLoading } = useSWR(url, fetcher);
   return {
     hashtag: data?.hashtags as Hashtag | null,
-    users: (data?.users || []) as User[],
-    posts: (data?.posts || []) as Post[],
+    users: (data?.users || []) as User[], 
     error,
     mutate,
     isLoading,

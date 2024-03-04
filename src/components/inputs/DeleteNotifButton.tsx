@@ -3,7 +3,7 @@ import { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { toast } from "react-toastify";
 import { twMerge } from "tailwind-merge";
-import useNotif from "./useNotif";
+import useNotif from "../../hooks/useNotif";
 
 const DeleteNotifButton = ({
   notifId,

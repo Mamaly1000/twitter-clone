@@ -52,7 +52,7 @@ const TrendHashtags = ({
       </h2>
       <div className="min-w-full flex flex-col items-start justify-start ">
         {hashtags.map((h, i) => (
-          <HashtagCard i={i + 1} main hashtag={h} key={h.id} />
+          <HashtagCard i={i + 1} main hideLocation hashtag={h} key={h.id} />
         ))}
       </div>
       {!MainPage && (

@@ -21,25 +21,27 @@ export default async function handler(
         limit,
         search,
         postId,
+        hashtagId,
       }: {
         search?: PostsType;
         page?: number;
         limit?: number;
         user_id?: string;
         postId?: string;
+        hashtagId?: string;
       } = req.query;
 
       const skip = (+(page || 1) - 1) * +(limit || 15);
 
       let where = {};
 
-      if (user_id && typeof user_id === "string" && user_id !== "undefined") {
+      if (user_id && !search) {
         where = {
           userId: user_id,
         };
       }
 
-      if (currentUser && !user_id) {
+      if (currentUser && !user_id && !search) {
         where = {
           OR: [
             {
@@ -101,6 +103,22 @@ export default async function handler(
             parentId: postId,
           };
         }
+      }
+      if (search === "hashtag" && hashtagId && !user_id) {
+        
+        const targetHashtag = await prisma.hashtag.findUnique({
+          where: {
+            id: hashtagId,
+          },
+        });
+        if (!targetHashtag) {
+          throw new Error("Invalid Hashtag ID");
+        }
+        where = {
+          id: {
+            in: targetHashtag.postIds,
+          },
+        };
       }
       const totalPosts = await prisma.post.count({
         where,

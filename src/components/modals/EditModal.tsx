@@ -11,7 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Input from "../inputs/Input";
 import useUser from "@/hooks/useUser";
-import ImageUpload from "../inputs/ImageUpload";
+import ImageUpload from "../inputs/ImageInput";
 import FieldGenerator from "../inputs/FieldGenerator";
 import TextArea from "../inputs/TextArea";
 import useUserLocation from "@/hooks/useUserLocation";
@@ -19,6 +19,8 @@ import CountrySelect from "../inputs/Select";
 import useCountry, { SingleCountryType } from "@/hooks/useCountry";
 import useUserFields from "@/hooks/useUserFields";
 import useCoverImage from "@/hooks/useCoverImage";
+import UploadedImagesForm from "../forms/UploadedImagesForm";
+import Image from "next/image";
 
 const editSchema = z.object({
   name: z
@@ -166,6 +168,22 @@ const EditModal = () => {
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <ImageUpload
+        onChange={(val) => {
+          form.setValue("profileImage", val);
+        }}
+        disable={isLoading}
+        length={1}
+      >
+        <Image
+          unoptimized
+          src={form.watch("profileImage")}
+          alt="profile image"
+          width={100}
+          height={100}
+          className="object-cover"
+        />
+      </ImageUpload>
+      {/* <ImageUpload
         value={form.watch("profileImage")}
         disabled={isLoading}
         onChange={(image) => {
@@ -178,7 +196,7 @@ const EditModal = () => {
         disabled={isLoading}
         onChange={(image) => form.setValue("coverImage", image)}
         label="Upload cover image"
-      />
+      /> */}
       <Input
         register={form.register("name")}
         name="name"
