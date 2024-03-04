@@ -63,11 +63,11 @@ const NotifCard = ({
       <div className="w-fit max-w-fit flex items-start justify-start flex-col gap-2">
         <NotifImage type={notif.type as any} />
         <DeleteNotifButton
-          size={25}
+          size={20}
           onDeleteEnd={() => {
             setDeleted(true);
           }}
-          className="text-white hover:scale-110 active:scale-90  bg-sky-500 rounded-lg w-[30px] h-[30px]  flex items-center justify-center"
+          className="text-red-500 hover:scale-110 active:scale-90 border-[1px]  border-red-500 rounded-lg w-[20px] h-[20px] md:w-[30px] md:h-[30px]   flex items-center justify-center"
           notifId={notif.id}
         />
       </div>
