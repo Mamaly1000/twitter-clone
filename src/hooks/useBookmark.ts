@@ -12,10 +12,7 @@ const useBookmark = (postId?: string) => {
   const toggleBookmark = useCallback(async () => {
     if (postId) {
       try {
-        await axios.post(`/api/bookmark/${postId}`).then((res) => {
-          toast.success(res.data.message); 
-          postMutate();
-        });
+        await axios.post(`/api/bookmark/${postId}`).then((_res) => postMutate());
       } catch (error) {
         toast.error("something went wrong!");
       }

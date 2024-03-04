@@ -123,7 +123,7 @@ export default async function handler(
     });
 
     return res.status(200).json({
-      message: isLiked ? "liked" : "disliked",
+      message: !isLiked ? "liked" : "disliked",
       updatedPost,
     });
   } catch (error) {

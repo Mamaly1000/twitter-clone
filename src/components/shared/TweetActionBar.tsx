@@ -5,23 +5,22 @@ import { useLoginModal } from "@/hooks/useLoginModal";
 import usePost from "@/hooks/usePost";
 import { useStatus } from "@/hooks/useStatus";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AiOutlineRetweet } from "react-icons/ai";
-import { FaRegComment } from "react-icons/fa";
-import { FiShare } from "react-icons/fi";
+import { FaComment, FaRegComment } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 import AnimatedButton from "../ui/AnimatedButton";
 import { motion } from "framer-motion";
 import { GoHeart, GoHeartFill } from "react-icons/go";
+import { RxBookmark, RxBookmarkFilled } from "react-icons/rx";
+import { FiShare } from "react-icons/fi";
 
 const TweetActionBar = ({
   postId,
   className,
   small = false,
   isComment,
-  mutual = false,
 }: {
-  mutual?: boolean;
   isComment?: boolean;
   small?: boolean;
   postId?: string;
@@ -34,10 +33,13 @@ const TweetActionBar = ({
   const { data: currentUser } = useCurrentUser();
 
   const { post, isLoading: postLoading } = usePost(postId);
-  const { toggleBookmark, BookmarkIcon } = useBookmark(postId);
+  const { toggleBookmark, isBookmarked } = useBookmark(postId);
   const { hasLiked, toggleLike, likeLoading } = useLike({
     postId: post?.id,
   });
+
+  const [likeCount, setLikeCount] = useState(post?.likedIds?.length || 0);
+
   const onLike = useCallback(
     async (ev: any) => {
       ev.stopPropagation();
@@ -46,7 +48,9 @@ const TweetActionBar = ({
         return loginModal.onOpen();
       }
 
-      toggleLike();
+      toggleLike().then((res) => {
+        setLikeCount(res as number);
+      });
     },
     [loginModal, currentUser, toggleLike]
   );
@@ -66,14 +70,19 @@ const TweetActionBar = ({
     [loginModal, currentUser, post]
   );
 
-  const LikeIcon = hasLiked ? GoHeartFill : GoHeart;
+  useEffect(() => {
+    if (post?.likedIds?.length !== 0 || post?.likedIds?.length !== undefined) {
+      setLikeCount(post?.likedIds?.length || 0);
+    }
+  }, [post?.likedIds?.length]);
+
   if (postLoading || !post) {
     return null;
   }
 
   return (
     <>
-      {!small && !mutual && (
+      {!small && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 100 }}
@@ -89,29 +98,33 @@ const TweetActionBar = ({
             iconSize={20}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
             value={post.commentIds.length}
-            Icon={FaRegComment}
+            icons={{ default: FaRegComment, active: FaComment }}
             isComment={isComment}
-            key={"reply-" + postId + post.commentIds.length}
             large
           />
           <AnimatedButton
             value={post.likedIds.length}
-            Icon={LikeIcon}
+            icons={{
+              active: GoHeartFill,
+              default: GoHeart,
+            }}
+            classNames={{
+              active: "text-[#f91880]",
+              default: "text-[#728291]",
+            }}
             className={twMerge(
-              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]",
-              hasLiked || likeLoading ? "text-[#f91880]" : "text-[#728291]"
+              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]"
             )}
             iconSize={20}
             isLoading={likeLoading}
             onClick={onLike}
             isActive={hasLiked}
             isComment={isComment}
-            key={"like-" + postId + post.likedIds.length}
             large
           />
           <AnimatedButton
             onClick={onRepost}
-            Icon={AiOutlineRetweet}
+            icons={{ active: AiOutlineRetweet, default: AiOutlineRetweet }}
             value={post.repostIds.length}
             className={twMerge("hover:text-sky-400  ")}
             large
@@ -126,10 +139,16 @@ const TweetActionBar = ({
             large
             iconSize={20}
             className={twMerge("hover:text-sky-400  ")}
-            Icon={BookmarkIcon}
+            icons={{
+              active: RxBookmarkFilled,
+              default: RxBookmark,
+            }}
+            classNames={{
+              active: "text-sky-500",
+              default: "text-[#728291]",
+            }}
             value={post.bookmarkedIds.length}
             isComment={isComment}
-            key={"bookmark-" + postId + post.bookmarkedIds.length}
           />
           <div
             onClick={(e) => {
@@ -165,28 +184,33 @@ const TweetActionBar = ({
             }}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
             value={post.commentIds.length}
-            Icon={FaRegComment}
+            icons={{ default: FaRegComment, active: FaComment }}
             isComment={isComment}
             iconSize={15}
             key={"reply-" + postId + post.commentIds.length}
           />
           <AnimatedButton
-            value={post.likedIds.length}
-            Icon={LikeIcon}
+            value={likeCount}
             className={twMerge(
-              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]",
-              hasLiked || likeLoading ? "text-[#f91880]" : "text-[#728291]"
+              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]"
             )}
+            icons={{
+              active: GoHeartFill,
+              default: GoHeart,
+            }}
+            classNames={{
+              active: "text-[#f91880]",
+              default: "text-[#728291]",
+            }}
             isLoading={likeLoading}
             onClick={onLike}
             isActive={hasLiked}
             isComment={isComment}
             iconSize={15}
-            key={"like-" + postId + post.likedIds.length}
           />
           <AnimatedButton
             onClick={onRepost}
-            Icon={AiOutlineRetweet}
+            icons={{ active: AiOutlineRetweet, default: AiOutlineRetweet }}
             value={post.repostIds.length}
             className={twMerge("hover:text-sky-400  ")}
             iconSize={15}
@@ -198,77 +222,18 @@ const TweetActionBar = ({
               toggleBookmark();
             }}
             iconSize={15}
-            className={twMerge("hover:text-sky-400  ")}
-            Icon={BookmarkIcon}
+            className={twMerge("hover:text-sky-400")}
+            icons={{
+              active: RxBookmarkFilled,
+              default: RxBookmark,
+            }}
+            classNames={{
+              active: "text-sky-500",
+              default: "text-[#728291]",
+            }}
+            isActive={isBookmarked}
             value={post.bookmarkedIds.length}
             isComment={isComment}
-            key={"bookmark-" + postId + post.bookmarkedIds.length}
-          />
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              navigator.share({
-                title: post.user.name + " tweet; " + post.body,
-                url: `/posts/${post.id}`,
-              });
-            }}
-            className={twMerge("hover:text-sky-400  ")}
-          >
-            <FiShare size={15} />
-          </div>
-        </motion.div>
-      )}
-      {mutual && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 100 }}
-          className={twMerge(
-            "flex flex-row items-center text-[12px] gap-10 mt-1 text-[#687684]"
-          )}
-        >
-          <AnimatedButton
-            onClick={(e) => {
-              e.stopPropagation();
-              statusModal.onClose();
-              router.push(`/reply/${post.id}`);
-            }}
-            className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
-            value={post.commentIds.length}
-            Icon={FaRegComment}
-            isComment={isComment}
-            key={"reply-" + postId + post.commentIds.length}
-          />
-
-          <AnimatedButton
-            value={post.likedIds.length}
-            Icon={LikeIcon}
-            className={twMerge(
-              "flex flex-row items-center gap-2 cursor-pointer transition-all hover:text-[#f91880]",
-              hasLiked || likeLoading ? "text-[#f91880]" : "text-[#728291]"
-            )}
-            isLoading={likeLoading}
-            onClick={onLike}
-            isActive={hasLiked}
-            isComment={isComment}
-            key={"like-" + postId + post.likedIds.length}
-          />
-          <AnimatedButton
-            onClick={onRepost}
-            Icon={AiOutlineRetweet}
-            value={post.repostIds.length}
-            className={twMerge("hover:text-sky-400  ")}
-            isComment={isComment}
-          />
-          <AnimatedButton
-            onClick={(e) => {
-              e.stopPropagation();
-              toggleBookmark();
-            }}
-            className={twMerge("hover:text-sky-400  ")}
-            Icon={BookmarkIcon}
-            value={post.bookmarkedIds.length}
-            isComment={isComment}
-            key={"bookmark-" + postId + post.bookmarkedIds.length}
           />
           <div
             onClick={(e) => {

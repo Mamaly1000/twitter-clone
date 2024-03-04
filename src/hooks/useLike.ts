@@ -21,6 +21,7 @@ const useLike = ({ postId }: { postId?: string }) => {
   }, [post, currentUser]);
 
   const toggleLike = useCallback(async () => {
+    let postLikes = post?.likedIds.length || 0;
     if (!currentUser) {
       return loginModal.onOpen();
     }
@@ -32,14 +33,23 @@ const useLike = ({ postId }: { postId?: string }) => {
         })
         .then((res) => {
           mutatePost();
-          toast.success(res.data.message);
+          postLikes = res.data.updatedPost.likedIds.length;
         });
     } catch (error) {
       toast.error("something went wrong!");
     } finally {
       setLoading(false);
     }
-  }, [currentUser, loginModal, mutatePost, postId, hasLiked, setLoading]);
+    return postLikes;
+  }, [
+    currentUser,
+    loginModal,
+    mutatePost,
+    post?.likedIds,
+    postId,
+    hasLiked,
+    setLoading,
+  ]);
 
   return { toggleLike, hasLiked, likeLoading };
 };
