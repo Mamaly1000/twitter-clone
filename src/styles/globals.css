@@ -50,3 +50,6 @@ html {
 .Toastify__toast-container--bottom-left {
   @apply fixed top-0 left-0 w-full h-fit md:left-5 md:top-[unset] md:bottom-5 md:w-fit md:min-w-[300px];
 }
+button{
+  @apply hover:scale-105 active:scale-90 transition-all
+}

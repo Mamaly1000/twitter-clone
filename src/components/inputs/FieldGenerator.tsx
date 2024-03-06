@@ -15,8 +15,10 @@ import CustomCalendar from "./Calendar";
 import { format } from "date-fns";
 import Link from "next/link";
 import Tabs from "../ui/Tabs";
+import TabContent from "../ui/TabContent";
+export type FIELDTYPES = "LINK" | "BIRTHDAY" | "JOB";
 export const ProfileFieldsTypes: {
-  type: "LINK" | "BIRTHDAY" | "JOB";
+  type: FIELDTYPES;
   label: "link" | "birthday" | "job";
   Icon: IconType;
 }[] = [
@@ -54,6 +56,9 @@ const FieldGenerator = ({
     }[]
   ) => void;
 }) => {
+  const [selectedFieldType, setSelectedFieldType] = useState<FIELDTYPES | "">(
+    ""
+  );
   const [activeField, setActivefield] = useState<null | {
     value: string;
     type: "LINK" | "BIRTHDAY" | "JOB";
@@ -81,10 +86,7 @@ const FieldGenerator = ({
         <Tabs
           onSelect={(val) => {
             if (!disabled) {
-              setActivefield({
-                type: val.label as any,
-                value: val?.value,
-              });
+              setSelectedFieldType(val?.value as any);
             }
           }}
           className="items-center justify-start divide-x-[1px] divide-neutral-800"
@@ -96,72 +98,127 @@ const FieldGenerator = ({
             };
           })}
           currentValue={{
-            label: activeField?.value,
-            value: activeField?.type,
+            label: selectedFieldType.toLocaleLowerCase(),
+            value: selectedFieldType,
           }}
         />
         <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-2">
-          {!!activeField && (
-            <div className="min-w-full flex justify-between gap-2 items-center mt-3">
-              {(activeField.type === "LINK" || activeField.type === "JOB") && (
-                <div className="flex items-center justify-start gap-2 flex-wrap w-5/6">
+          {!!selectedFieldType && (
+            <div className="min-w-full flex justify-between gap-2 items-center mt-3 overflow-hidden">
+              <TabContent display={selectedFieldType === "JOB"}>
+                <div className="flex items-center justify-between gap-2 flex-wrap w-full max-w-full">
                   <Input
                     name="value"
                     onChange={(e) => {
                       setActivefield({
-                        ...activeField,
+                        type: selectedFieldType,
                         value: e.target.value,
                       });
                     }}
-                    placeholder="value"
-                    className="w-[45%]"
+                    placeholder="your current job..."
+                    className="w-[70%]"
                   />
+                  <div className="flex items-center justify-start gap-2">
+                    <button
+                      onClick={() => {
+                        if (activeField && activeField.value.length > 0) {
+                          if (value.some((f) => f.type === activeField.type)) {
+                            const updatedFields = [...value];
+                            const index = updatedFields.findIndex(
+                              (f) => f.type === activeField.type
+                            );
+                            updatedFields[index].value = activeField.value;
+                            onChange(updatedFields);
+                          } else {
+                            onChange([
+                              ...value,
+                              {
+                                type: selectedFieldType,
+                                value: activeField.value,
+                              },
+                            ]);
+                          }
+                          setActivefield(null);
+                          setSelectedFieldType("");
+                        }
+                      }}
+                      className="text-sky-500 w-[40px] h-[40px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
+                    >
+                      <GrAdd size={20} />
+                    </button>
+                  </div>
                 </div>
-              )}
-
-              {activeField.type === "BIRTHDAY" && (
+              </TabContent>
+              <TabContent display={selectedFieldType === "LINK"}>
+                <div className="flex items-center justify-between gap-2 flex-wrap w-full max-w-full">
+                  <Input
+                    name="value"
+                    onChange={(e) => {
+                      setActivefield({
+                        type: selectedFieldType,
+                        value: e.target.value,
+                      });
+                    }}
+                    placeholder="write your community link..."
+                    className="w-[70%]"
+                  />
+                  <div className="flex items-center justify-start gap-2">
+                    <button
+                      onClick={() => {
+                        if (activeField && activeField.value.length > 0) {
+                          if (value.some((f) => f.type === activeField.type)) {
+                            const updatedFields = [...value];
+                            const index = updatedFields.findIndex(
+                              (f) => f.type === activeField.type
+                            );
+                            updatedFields[index].value = activeField.value;
+                            onChange(updatedFields);
+                          } else {
+                            onChange([
+                              ...value,
+                              {
+                                type: selectedFieldType,
+                                value: activeField.value,
+                              },
+                            ]);
+                          }
+                          setActivefield(null);
+                          setSelectedFieldType("");
+                        }
+                      }}
+                      className="text-sky-500 w-[40px] h-[40px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
+                    >
+                      <GrAdd size={20} />
+                    </button>
+                  </div>
+                </div>
+              </TabContent>
+              <TabContent display={selectedFieldType === "BIRTHDAY"}>
                 <CustomCalendar
                   onChange={(date) => {
-                    onChange([
-                      ...value,
-                      {
-                        type: "BIRTHDAY",
-                        value: date.toISOString(),
-                      },
-                    ]);
+                    if (value.some((f) => f.type === selectedFieldType)) {
+                      const updatedFields = [...value];
+                      const index = updatedFields.findIndex(
+                        (f) => f.type === selectedFieldType
+                      );
+                      if (index > 0) {
+                        updatedFields[index].value = date.toISOString();
+                        onChange(updatedFields);
+                      }
+                    } else {
+                      onChange([
+                        ...value,
+                        {
+                          type: "BIRTHDAY",
+                          value: date.toISOString(),
+                        },
+                      ]);
+                    }
                     setActivefield(null);
+                    setSelectedFieldType("");
                   }}
                 />
-              )}
-              {activeField.type !== "BIRTHDAY" && (
-                <div className="flex items-center justify-start gap-2">
-                  <button
-                    onClick={() => {
-                      setActivefield(null);
-                    }}
-                    className="text-red-400  w-[45px] h-[45px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
-                  >
-                    <BiTrash size={25} />
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (activeField.value.length > 0) {
-                        onChange([
-                          ...value,
-                          {
-                            type: activeField.type,
-                            value: activeField.value,
-                          },
-                        ]);
-                        setActivefield(null);
-                      }
-                    }}
-                    className="text-green-400 w-[45px] h-[45px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
-                  >
-                    <GrAdd size={25} />
-                  </button>
-                </div>
-              )}
+              </TabContent>
             </div>
           )}
         </div>
@@ -171,7 +228,7 @@ const FieldGenerator = ({
               key={uuidv4()}
               className="min-w-full flex items-center justify-between gap-2"
             >
-              <div className="flex items-center justify-start gap-1 text-[13px] text-neutral-300">
+              <div className="flex items-center justify-start gap-1 text-[15px] text-neutral-300">
                 <FieldIcon type={f.type} />
                 <span className="flex px-1 cursor-default flex-row items-center justify-start text-white hover:text-sky-400 gap-2   line-clamp-1">
                   {f.type === "BIRTHDAY" &&
@@ -189,9 +246,10 @@ const FieldGenerator = ({
                   const newlist = without(value, f);
                   onChange(newlist);
                 }}
-                className="text-red-400 w-[30px] h-[30px] rounded-md flex items-center justify-center"
+                className="text-red-400 border-[1px] border-neutral-800 w-[30px] h-[30px] rounded-md flex items-center justify-center"
+                disabled={disabled}
               >
-                <BiTrash size={15} />
+                <BiTrash size={16} />
               </button>
             </div>
           ))}

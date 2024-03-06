@@ -13,10 +13,7 @@ import Input from "../inputs/Input";
 import useUser from "@/hooks/useUser";
 import ImageUpload from "../inputs/ImageInput";
 import FieldGenerator from "../inputs/FieldGenerator";
-import TextArea from "../inputs/TextArea";
-import useUserLocation from "@/hooks/useUserLocation";
-import CountrySelect from "../inputs/Select";
-import useCountry, { SingleCountryType } from "@/hooks/useCountry";
+import TextArea from "../inputs/TextArea"; 
 import useUserFields from "@/hooks/useUserFields";
 import useCoverImage from "@/hooks/useCoverImage";
 import Image from "next/image";
@@ -35,26 +32,21 @@ const editSchema = z.object({
   bio: z.string().default("").nullable(),
   profileImage: z.string().default("").nullable(),
   coverImage: z.string().default("").nullable(),
-  location: z.string(),
 });
 
 const EditModal = () => {
   const { isOpen, onClose } = useEditModal();
-  const { getByValue } = useCountry();
   const { data } = useCurrentUser();
-  const { location: userLocation, isLoading: locationLoading } =
-    useUserLocation(data?.id);
   const { mutate: coverimageMutate } = useCoverImage(data?.id);
-  const { fields, isLoading: fieldsLoading } = useUserFields(data?.id);
+  const {
+    fields,
+    isLoading: fieldsLoading,
+    mutate: userFieldsMutate,
+  } = useUserFields(data?.id);
   const { mutate } = useUser(data?.id);
 
   const [isLoading, setLoading] = useState(false);
-  const [location, setLocation] = useState<SingleCountryType>({
-    city: "",
-    label: "",
-    region: "",
-    value: "",
-  });
+
   const [profileFields, setProfileFields] = useState<
     {
       value: string;
@@ -70,7 +62,6 @@ const EditModal = () => {
       bio: "",
       profileImage: "",
       coverImage: "",
-      location: "",
     },
   });
 
@@ -78,37 +69,19 @@ const EditModal = () => {
     if (data) {
       const user = objectGenerator<
         User,
-        | "name"
-        | "username"
-        | "bio"
-        | "profileImage"
-        | "coverImage"
-        | "location",
+        "name" | "username" | "bio" | "profileImage" | "coverImage",
         z.infer<typeof editSchema>
-      >(data, [
-        "name",
-        "username",
-        "bio",
-        "profileImage",
-        "coverImage",
-        "location",
-      ]);
+      >(data, ["name", "username", "bio", "profileImage", "coverImage"]);
+
       form.reset({
         bio: user.bio || "",
         coverImage: user.coverImage || "",
         profileImage: user.profileImage || "",
         name: user.name,
         username: user.username,
-        location: userLocation?.toLowerCase() || "",
       });
     }
-  }, [data, userLocation]);
-
-  useEffect(() => {
-    if (userLocation) {
-      setLocation(getByValue(userLocation)!);
-    }
-  }, [userLocation]);
+  }, [data]);
 
   useEffect(() => {
     if (fields && fields.length > 0) {
@@ -136,28 +109,21 @@ const EditModal = () => {
             profileFields,
           })
           .then((res) => {
+            coverimageMutate();
+            userFieldsMutate();
             mutate();
             toast.success(res.data.message);
             form.reset();
-            coverimageMutate();
-            setLocation({
-              city: "",
-              label: "",
-              region: "",
-              value: "",
-            });
+
             setProfileFields([]);
             onClose();
           });
       } catch (error: any) {
-        if (error.message) {
-          toast.error(error.message);
-        } else if (error.response.data) {
-          toast.error(error.response.data);
+        if (error.response.data) {
+          toast.error(error.response.data.message);
         } else {
           toast.error("something went wrong!");
         }
-        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -221,16 +187,7 @@ const EditModal = () => {
         value={form.watch("bio")}
         placeholder="Bio"
         disabled={isLoading}
-      />
-      <CountrySelect
-        onChange={(val) => {
-          setLocation(val);
-          if (val?.value) {
-            form.setValue("location", val.value);
-          }
-        }}
-        className="min-w-full max-w-full"
-        value={location}
+        className="min-h-[150px]"
       />
       <FieldGenerator
         disabled={isLoading}
@@ -249,7 +206,7 @@ const EditModal = () => {
       onClose={onClose}
       onSubmit={onSubmit}
       body={bodyContent}
-      disabled={isLoading || locationLoading || fieldsLoading}
+      disabled={isLoading || fieldsLoading}
     />
   );
 };

@@ -18,22 +18,38 @@ export default async function handler(
       return res.status(401).json({ message: "Not Signed in" });
     }
 
-    const {
-      name,
-      username,
-      bio,
-      profileImage,
-      coverImage,
-      profileFields,
-      location,
-    } = req.body;
+    const { name, username, bio, profileImage, coverImage, profileFields } =
+      req.body;
 
     if (!!!name || !!!username) {
       return res
         .status(400)
         .json({ message: "name and username cannot be empty!" });
     }
-
+    const existedUserData = await prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            username: {
+              equals: username,
+            },
+          },
+          {
+            name: {
+              equals: name,
+            },
+          },
+        ],
+        NOT: {
+          id: currentUser.currentUser.id,
+        },
+      },
+    });
+    if (existedUserData) {
+      return res.status(405).json({
+        message: "name or username already taken!",
+      });
+    }
     const updatedUser = await prisma.user.update({
       where: {
         id: currentUser.currentUser.id,
@@ -50,37 +66,6 @@ export default async function handler(
           : currentUser.currentUser.coverImage,
       },
     });
-
-    // updating current user location
-    try {
-      const currentUserLocation = await prisma.field.findFirst({
-        where: {
-          userId: updatedUser.id,
-          type: "LOCATION",
-        },
-      });
-      if (!!location && currentUserLocation) {
-        await prisma.field.update({
-          where: {
-            id: currentUserLocation.id,
-          },
-          data: {
-            value: (location as string).toLowerCase(),
-          },
-        });
-      }
-      if (!!location && !currentUserLocation) {
-        await prisma.field.create({
-          data: {
-            value: (location as string).toLowerCase(),
-            type: "LOCATION",
-            userId: currentUser.currentUser.id,
-          },
-        });
-      }
-    } catch (error) {
-      console.log("error in updating user location");
-    }
 
     // handling user fields
     try {
