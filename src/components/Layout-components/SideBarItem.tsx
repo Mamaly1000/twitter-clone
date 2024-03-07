@@ -73,10 +73,10 @@ const SideBarItem = ({
         {!!alert && (
           <span
             className={twMerge(
-              " rounded-full bg-sky-600 absolute top-0 right-0 flex items-center justify-center font-light",
+              " rounded-full bg-sky-600 absolute top-0 text-white right-0 flex items-center justify-center font-light",
               bottomBar
-                ? "min-w-[10px] min-h-[10px] text-[14px] max-w-[10px] max-h-[10px]"
-                : "min-w-[20px] min-h-[20px] text-[14px] max-w-[20px] max-h-[20px]"
+                ? "min-w-[10px] min-h-[10px] text-[12px] max-w-[10px] max-h-[10px]"
+                : "min-w-[22px] min-h-[22px] text-[12px] max-w-[22px] max-h-[22px]"
             )}
           >
             {!bottomBar && (alert > 10 ? `+9` : alert)}
