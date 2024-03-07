@@ -1,8 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import useCurrentUser from "./useCurrentUser";
 import { useLoginModal } from "./useLoginModal";
-import useUser from "./useUser";
-import { User } from "@prisma/client";
+import useUser from "./useUser"; 
 import { toast } from "react-toastify";
 import axios from "axios";
 import { includes } from "lodash";
@@ -11,9 +10,9 @@ import useUsers from "./useUsers";
 
 const useFollow = (userId: string) => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
-  const { user, mutate: mutateFetchedUser } = useUser(userId);
+  const { mutate: mutateFetchedUser } = useUser(userId);
   const { mutate: recommendUsers } = useRecommendedUsers();
-  const { mutate: usersMutate } = useUsers();
+  const { mutate: usersMutate } = useUsers({ type: "all" });
   const [isLoading, setLoading] = useState(false);
   const loginModal = useLoginModal();
 

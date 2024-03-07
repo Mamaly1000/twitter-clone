@@ -8,7 +8,6 @@ import useTrendHashtags from "@/hooks/useTrendHashtags";
 import useUserLocation from "@/hooks/useUserLocation";
 
 const FollowBar = () => {
-  const { users } = useRecommendedUsers();
   const { data: user } = useCurrentUser();
   const { hashtags } = useTrendHashtags();
   const { location } = useUserLocation(user?.id);
@@ -17,7 +16,7 @@ const FollowBar = () => {
       className="p-4 hidden lg:flex col-span-3 items-start justify-start flex-col gap-3  pb-10"
       targetElement={
         <div className="scroll-hidden w-full xl:max-w-[90%] flex flex-col gap-5 max-h-screen h-full min-h-full overflow-y-auto overflow-x-hidden pb-5">
-          <RecommentUserList users={users} />
+          <RecommentUserList />
           <TrendHashtags userLocation={location} hashtags={hashtags || []} />
         </div>
       }

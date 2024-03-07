@@ -1,45 +1,44 @@
 import { debounce } from "lodash";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import qs from "query-string";
-const UsersSearchInput = () => {
+import useUsers, { usersParams } from "@/hooks/useUsers";
+import useScrollAnimation from "@/hooks/useScrollAnimation";
+import { motion } from "framer-motion";
+import SearchInput from "../inputs/SearchInput";
+const UsersSearchInput = ({ params }: { params?: usersParams }) => {
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setLoading] = useState(false);
-  const debouncedSearch = debounce((value) => {
-    const query = {
-      search: value,
-    };
+  const { scrolled, isScrolling } = useScrollAnimation({});
+  const { usersLoading } = useUsers(params);
+
+  const onSearch = debounce((val) => {
     const url = qs.stringifyUrl({
       url: "/users",
-      query,
+      query: {
+        search: val,
+      },
     });
     router.push(url);
   }, 1000);
 
-  useEffect(() => {
-    if (searchTerm.length !== 0) {
-      debouncedSearch(searchTerm);
-    }
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [searchTerm]);
-
-  const handleSearchChange = useCallback((e: any) => {
-    setSearchTerm(e.target.value);
-  }, []);
   return (
-    <div className="min-w-full flex items-center justify-between">
-      <input
-        disabled={isLoading}
-        onChange={handleSearchChange}
-        value={searchTerm}
-        placeholder={"search @user"}
-        type={"text"}
-        className="w-full p-4 text-lg bg-black border-2 border-neutral-800 outline-none text-white focus:border-sky-500 focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed "
+    <motion.div
+      animate={{
+        top: scrolled && isScrolling ? 0 : "60px",
+      }}
+      className="min-w-full z-10 sticky py-2 bg-black max-h-full flex items-center justify-between px-3 my-3 border-b-[1px] border-neutral-800"
+    >
+      <SearchInput
+        disabled={usersLoading}
+        onChange={(e) => {
+          onSearch(e.target.value);
+        }}
+        autoFocus
+        size={30}
+        placeholder={"search @someone"}
+        inputClassName="min-w-[calc(100%-32px)] max-w-[calc(100%-32px)] text-lg bg-black"
       />
-    </div>
+    </motion.div>
   );
 };
 

@@ -10,7 +10,9 @@ const SearchInput = ({
   placeholder,
   inputClassName,
   disabled,
+  autoFocus,
 }: {
+  autoFocus?: boolean;
   disabled?: boolean;
   className?: string;
   size?: number;
@@ -22,7 +24,7 @@ const SearchInput = ({
   return (
     <section
       className={twMerge(
-        "flex items-center justify-start gap-2 p-[10px] rounded-full border-[1px] border-sky-500 text-sm  min-w-full max-w-full disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed",
+        "flex items-center justify-start gap-2 p-[10px] rounded-[50px] border-[1.21px] border-sky-500 text-sm  min-w-full max-w-full disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed",
         className
       )}
     >
@@ -32,6 +34,7 @@ const SearchInput = ({
           "placeholder:text-[#71767b] bg-black outline-none focus-within:outline-none focus:outline-none focus-visible:outline-none border-none pe-2 capitalize text-white",
           inputClassName
         )}
+        autoFocus={autoFocus}
         disabled={disabled}
         name={name}
         onChange={onChange}

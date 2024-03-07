@@ -1,17 +1,16 @@
 import React from "react";
-import UsersList from "./UsersList";
-import { User } from "@prisma/client";
+import UsersList from "./UsersList"; 
 import Link from "next/link";
 import { isEmpty } from "lodash";
 import { motion } from "framer-motion";
+import useUsers from "@/hooks/useUsers";
+import Loader from "../shared/Loader";
 
-const RecommentUserList = ({
-  users,
-  title,
-}: {
-  users: User[];
-  title?: string;
-}) => {
+const RecommentUserList = ({ title }: { title?: string }) => {
+  const { users, usersLoading } = useUsers({ type: "recommended" });
+  if (usersLoading) {
+    return <Loader size={15} type="bounce" />;
+  }
   if (isEmpty(users)) {
     return null;
   }
@@ -30,7 +29,11 @@ const RecommentUserList = ({
       <h2 className="min-w-full text-left text-[20px] capitalize font-[800] leading-6 text-[#e7e9ea]">
         {title || "Who to follow"}
       </h2>
-      <UsersList users={users} />
+      <UsersList
+        params={{
+          type: "recommended",
+        }}
+      />
       <Link
         href={"/users"}
         className="text-sky-500 text-[15px] font-bold hover:text-opacity-60"

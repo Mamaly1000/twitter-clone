@@ -33,6 +33,7 @@ const HashtagSearchInput = () => {
         onChange={(e) => {
           onSearch(e.target.value);
         }}
+        autoFocus
         size={30}
         placeholder={"search #twitter"}
         inputClassName="min-w-[calc(100%-32px)] max-w-[calc(100%-32px)] text-lg bg-black"

@@ -1,18 +1,24 @@
 import React from "react";
-import { User } from "@prisma/client";
 import RecommendedUserCard from "../cards/RecommendedUserCard";
 import { isEmpty } from "lodash";
 import { twMerge } from "tailwind-merge";
+import useUsers, { usersParams } from "@/hooks/useUsers";
+import UsersPagination from "../shared/UsersPagination";
+import Loader from "../shared/Loader";
 
 const UsersList = ({
-  users,
   title,
   main,
+  params,
 }: {
+  params?: usersParams;
   main?: boolean;
   title?: string;
-  users: User[];
 }) => {
+  const { users, usersLoading } = useUsers(params);
+  if (usersLoading) {
+    return <Loader size={15} type="bounce" />;
+  }
   if (isEmpty(users)) {
     return (
       <div className="text-neutral-600 text-center p-6 text-xl">No Users</div>
@@ -35,6 +41,7 @@ const UsersList = ({
           <RecommendedUserCard main={main} key={user.id} user={user} />
         ))}
       </div>
+      {main && <UsersPagination params={params} />}
     </section>
   );
 };

@@ -1,8 +1,7 @@
 import useUsers from "@/hooks/useUsers";
 import { User } from "@prisma/client";
 import React, { useCallback, useEffect, useState } from "react";
-import { debounce } from "lodash";
-import Button from "../inputs/Button";
+import { debounce } from "lodash"; 
 
 const MentionsList = ({
   mentions,
@@ -21,7 +20,7 @@ const MentionsList = ({
     }[]
   ) => void;
 }) => {
-  const { users } = useUsers();
+  const { users } = useUsers({ type: "all" });
   const [usersByIds, setUsersByIds] = useState<Array<undefined | User | null>>(
     []
   );

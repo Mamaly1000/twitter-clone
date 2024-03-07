@@ -3,7 +3,6 @@ import { useLoginModal } from "@/hooks/useLoginModal";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { IconType } from "react-icons";
-import { FaCircle } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
 import { motion } from "framer-motion";
 interface Props {
