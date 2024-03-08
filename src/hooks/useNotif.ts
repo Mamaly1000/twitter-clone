@@ -1,11 +1,15 @@
 import fetcher from "@/libs/fetcher";
-import { useEffect, useState } from "react"; 
+import { useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 import qs from "query-string";
 import { debounce } from "lodash";
 import { useInView } from "react-intersection-observer";
+import { notifTypes } from "@/components/shared/NotifImage";
 
-const useNotif = () => {
+export type notifQueryType = {
+  type?: notifTypes;
+};
+const useNotif = (params?: notifQueryType) => {
   const { inView, ref } = useInView();
   const [pagination, setPagination] = useState<{
     hasPrev: boolean;
@@ -34,6 +38,7 @@ const useNotif = () => {
         query: {
           limit: 15,
           page: index + 1,
+          type: params?.type,
         },
       });
       return query;

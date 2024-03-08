@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/libs/prisma";
 import serverAuth from "@/libs/serverAuth";
+import { notifTypes } from "@/components/shared/NotifImage";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,23 +19,26 @@ export default async function handler(
     const {
       page,
       limit,
+      type,
     }: {
+      type?: notifTypes;
       page?: number;
       limit?: number;
     } = req.query;
 
     const skip = (+(page || 1) - 1) * +(limit || 15);
-    const totalNotifs = await prisma.notification.count({
-      where: {
-        userId: userData.currentUser.id,
-      },
-    });
-    const maxPages = Math.ceil(totalNotifs / +(limit || 15));
+    let where: any = {
+      userId: userData.currentUser.id,
+    };
+    if (type) {
+      where = {
+        ...where,
+        type,
+      };
+    }
 
     const notifications = await prisma.notification.findMany({
-      where: {
-        userId: userData.currentUser.id,
-      },
+      where,
       take: +(limit || 15) + 1,
       skip: skip || 0,
       orderBy: { createdAt: "desc" },
@@ -79,6 +83,12 @@ export default async function handler(
         },
       },
     });
+    const totalNotifs = await prisma.notification.count({
+      where: {
+        userId: userData.currentUser.id,
+      },
+    });
+    const maxPages = Math.ceil(totalNotifs / +(limit || 15));
 
     const isNextPage = notifications.length > +(limit || 15); // Check if there are more items than the limit
     if (isNextPage) {

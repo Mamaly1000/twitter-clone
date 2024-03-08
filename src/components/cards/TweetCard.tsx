@@ -254,7 +254,12 @@ const TweetCard = ({
                   dangerouslySetInnerHTML={{ __html: formatString(post.body) }}
                 ></p>
               )}
-              {!!!status && <TweetImageList postId={post.id} />}
+              {!!!status && (
+                <TweetImageList
+                  hasMedia={!!(post?.mediaIds.length > 0)}
+                  postId={post.id}
+                />
+              )}
               {/* repost-container */}
               {!!post.repost && !!post.repost.user && !!post.repostId && (
                 <div
@@ -303,7 +308,7 @@ const TweetCard = ({
                         )}
                       ></p>
                     )}
-                    <TweetImageList
+                    <TweetImageList 
                       className="max-w-full min-w-full"
                       postId={post.repost.postId}
                     />

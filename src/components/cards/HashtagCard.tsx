@@ -52,7 +52,7 @@ const HashtagCard = ({
       onClick={onClick}
       className={twMerge(
         "min-w-full max-w-full py-2 flex flex-col items-start justify-start gap-1  min-h-fit cursor-pointer hover:opacity-60",
-        main && " border-b-[1px] border-neutral-800"
+        main && "px-3 border-b-[1px] border-neutral-800"
       )}
     >
       {location && !hideLocation && (

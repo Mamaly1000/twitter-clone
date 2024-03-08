@@ -1,10 +1,13 @@
 import usePosts, { PostsType } from "@/hooks/usePosts";
 import { Post } from "@prisma/client";
-import React from "react";
+import React, { useMemo } from "react";
 import TweetCard from "../cards/TweetCard";
 import Loader from "../shared/Loader";
 import Pagination from "../shared/Pagination";
 import { twMerge } from "tailwind-merge";
+import SkeletonTweetCard from "../SkeletonCards/SkeletonTweetCard";
+import { isEmpty } from "lodash";
+import Each from "../shared/Each";
 
 const PostFeed = ({
   id,
@@ -19,25 +22,45 @@ const PostFeed = ({
 }) => {
   const { posts, isLoading } = usePosts({ id, type, hashtagId });
 
-  if (!posts || isLoading) {
-    return <Loader message="Loading Tweets" />;
-  }
-  if (posts?.length === 0) {
-    <div className="text-neutral-600 text-center p-6 text-xl">No Tweets</div>;
-  }
-  return (
-    <div
-      className={twMerge(
-        "flex flex-col items-start justify-start gap-0 min-w-full max-w-full relative z-0",
-        className
-      )}
-    >
-      {(posts as Post[]).map((post) => (
-        <TweetCard post={post} key={post.id} userId={id} />
-      ))}
-      <Pagination params={{ id, type }} />
-    </div>
-  );
+  const content = useMemo(() => {
+    if (isEmpty(posts) && !isLoading) {
+      return (
+        <div className="text-neutral-600 text-center p-6 text-xl">
+          No Tweets
+        </div>
+      );
+    }
+    if (isEmpty(posts) && isLoading) {
+      return (
+        <div
+          className={twMerge(
+            "flex flex-col items-start justify-start gap-0 min-w-full max-w-full relative z-0",
+            className
+          )}
+        >
+          <Each
+            of={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+            render={(_irem, index) => <SkeletonTweetCard key={index} />}
+          />
+        </div>
+      );
+    }
+    return (
+      <div
+        className={twMerge(
+          "flex flex-col items-start justify-start gap-0 min-w-full max-w-full relative z-0",
+          className
+        )}
+      >
+        {(posts as Post[]).map((post) => (
+          <TweetCard post={post} key={post.id} userId={id} />
+        ))}
+        <Pagination params={{ id, type }} />
+      </div>
+    );
+  }, [posts, isLoading]);
+
+  return content;
 };
 
 export default PostFeed;

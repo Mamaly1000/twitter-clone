@@ -105,7 +105,6 @@ export default async function handler(
         }
       }
       if (search === "hashtag" && hashtagId && !user_id) {
-        
         const targetHashtag = await prisma.hashtag.findUnique({
           where: {
             id: hashtagId,
@@ -156,6 +155,7 @@ export default async function handler(
                 select: {
                   createdAt: true,
                 },
+              
               },
             },
           },

@@ -3,16 +3,22 @@ import { useStatus } from "@/hooks/useStatus";
 import Image from "next/image";
 import React from "react";
 import { twMerge } from "tailwind-merge";
+import MediaSkeletonCard from "../SkeletonCards/MediaSkeletonCard";
 
 const TweetImageList = ({
   postId,
   className,
+  hasMedia = false,
 }: {
+  hasMedia?: boolean;
   className?: string;
   postId: string;
 }) => {
-  const { Medias } = useMedias(postId);
+  const { Medias, isLoading } = useMedias(hasMedia ? postId : null);
   const statusModal = useStatus();
+  if (hasMedia && isLoading) {
+    return <MediaSkeletonCard />;
+  }
   return (
     Medias.length > 0 && (
       <div

@@ -1,10 +1,9 @@
-import useCurrentUser from "@/hooks/useCurrentUser";
-import useNotif from "@/hooks/useNotif";
+import useNotif, { notifQueryType } from "@/hooks/useNotif";
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 
-const NotifPagination = () => {
-  const { isLoading, ref, pagination } = useNotif();
+const NotifPagination = ({ params }: { params?: notifQueryType }) => {
+  const { isLoading, ref, pagination } = useNotif(params);
   const [hasMore, setHasMore] = useState(true);
   useEffect(() => {
     if (pagination && pagination.hasNext) {
