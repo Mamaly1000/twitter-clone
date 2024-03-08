@@ -1,21 +1,22 @@
-import { Hashtag } from "@prisma/client";
 import { isEmpty } from "lodash";
-import React, { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import HashtagCard from "../cards/HashtagCard";
 import Link from "next/link";
 import useCountry from "@/hooks/useCountry";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
+import Each from "./Each";
+import HashtagSkeletonCard from "../SkeletonCards/HashtagSkeletonCard";
+import useTrendHashtags from "@/hooks/useTrendHashtags";
 
 const TrendHashtags = ({
-  hashtags,
   userLocation,
   MainPage = false,
 }: {
   MainPage?: boolean;
   userLocation?: string | null;
-  hashtags: Hashtag[];
 }) => {
+  const { hashtags, isLoading } = useTrendHashtags();
   const { getByValue } = useCountry();
   const location = useMemo(() => {
     if (userLocation) {
@@ -24,9 +25,34 @@ const TrendHashtags = ({
     }
     return null;
   }, [userLocation]);
-  if (isEmpty(hashtags)) {
-    return null;
-  }
+  const Content: ReactNode = useMemo(() => {
+    if (!isLoading && isEmpty(hashtags)) {
+      return (
+        <p className="text-sm capitalize text-neutral-300 min-w-full text-center min-h-[150px] flex items-center justify-center">
+          there is not trend hashtags
+        </p>
+      );
+    }
+    if (isLoading && isEmpty(hashtags)) {
+      return (
+        <div className="min-w-full flex flex-col items-start justify-start gap-0 border-t-[1px] border-neutral-800">
+          <Each
+            of={[1, 2, 3, 4, 5]}
+            render={(_item, index) => (
+              <HashtagSkeletonCard key={index} main hideLocation />
+            )}
+          />
+        </div>
+      );
+    }
+    return (
+      <div className="min-w-full flex flex-col items-start justify-start ">
+        {hashtags.map((h, i) => (
+          <HashtagCard i={i + 1} main hideLocation hashtag={h} key={h.id} />
+        ))}
+      </div>
+    );
+  }, [hashtags, isLoading]);
   return (
     <motion.div
       initial={{
@@ -50,11 +76,7 @@ const TrendHashtags = ({
       >
         {location} trends
       </h2>
-      <div className="min-w-full flex flex-col items-start justify-start ">
-        {hashtags.map((h, i) => (
-          <HashtagCard i={i + 1} main hideLocation hashtag={h} key={h.id} />
-        ))}
-      </div>
+      {Content}
       {!MainPage && (
         <Link
           href={"/hashtags"}

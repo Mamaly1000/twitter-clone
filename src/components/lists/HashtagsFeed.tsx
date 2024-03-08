@@ -4,6 +4,8 @@ import Loader from "../shared/Loader";
 import HashtagCard from "../cards/HashtagCard";
 import HashtagPagination from "../shared/HashtagPagination";
 import useHashtags from "@/hooks/useHashtags";
+import HashtagSkeletonCard from "../SkeletonCards/HashtagSkeletonCard";
+import Each from "../shared/Each";
 
 const HashtagsFeed = ({
   title,
@@ -20,7 +22,16 @@ const HashtagsFeed = ({
   const { isLoading, hashtags } = useHashtags();
 
   if (isEmpty(hashtags) || isLoading) {
-    return <Loader message="please wait" />;
+    return (
+      <div className="min-w-full flex flex-col items-start justify-start gap-0 border-t-[1px] border-neutral-800">
+        <Each
+          of={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+          render={(_item, index) => (
+            <HashtagSkeletonCard key={index} hideLocation={hideLocation} main />
+          )}
+        />
+      </div>
+    );
   }
 
   return (
