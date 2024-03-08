@@ -50,6 +50,29 @@ html {
 .Toastify__toast-container--bottom-left {
   @apply fixed top-0 left-0 w-full h-fit md:left-5 md:top-[unset] md:bottom-5 md:w-fit md:min-w-[300px];
 }
-button{
-  @apply hover:scale-105 active:scale-90 transition-all
+button {
+  @apply hover:scale-105 active:scale-90 transition-all;
+}
+.skeleton {
+  animation: skeleton-loading 2s linear infinite alternate-reverse;
+  cursor: progress;
+  background: linear-gradient(
+    90deg,
+    rgba(65, 65, 65, 1) 0%,
+    rgba(106, 106, 106, 1) 31%,
+    rgba(106, 106, 106, 1) 33%,
+    rgba(65, 65, 65, 1) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  background-position: 0 50%;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 0 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }

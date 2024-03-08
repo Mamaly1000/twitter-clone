@@ -15,6 +15,7 @@ import AnimatedNumber from "../ui/AnimatedNumber";
 import { getShortUnit } from "@/libs/utils";
 import useMeasure from "react-use-measure";
 import { motion } from "framer-motion";
+import { useHoverUser } from "@/hooks/useHoverUser";
 
 const TweetCard = ({
   post,
@@ -29,6 +30,8 @@ const TweetCard = ({
     repost?: Repost & { user?: User; post: Post };
   };
 }) => {
+  const { id: hoveredUserId, postId: hoveredPostId } = useHoverUser();
+
   const [ref, { height }] = useMeasure();
   const [mutualReplies, setMutuals] = useState(false);
 
@@ -86,7 +89,11 @@ const TweetCard = ({
     <article
       onClick={goToPost}
       className={twMerge(
-        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0  overflow-hidden"
+        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0 relative ",
+        hoveredUserId === post.userId && post.id === hoveredPostId && !isComment
+          ? "z-[900] "
+          : "z-[1]",
+        isComment && "overflow-hidden"
       )}
     >
       <div
@@ -133,14 +140,16 @@ const TweetCard = ({
           {/* tweet avatar section */}
           <div
             className={twMerge(
-              "flex relative",
+              "flex relative z-10",
               isComment
                 ? "flex-row items-start justify-start gap-4"
                 : "flex-col items-center justify-center gap-1"
             )}
           >
-            <div className="z-10 relative flex items-center justify-center">
+            <div className=" relative z-[1] flex items-center justify-center">
               <Avatar
+                isTweet
+                postId={post.id}
                 className={twMerge(
                   " relative  border-[2px] border-opacity-50",
                   mutualReplies && !isComment && "border-[#333639]",
@@ -148,6 +157,7 @@ const TweetCard = ({
                     !!post.parentId &&
                     "relative z-10 border-[#333639] border-[2px]  "
                 )}
+                isComment={isComment}
                 hasBorder
                 userId={post.user.id}
               />
@@ -187,10 +197,10 @@ const TweetCard = ({
           <div
             ref={ref}
             className={twMerge(
-              "max-h-fit",
+              "max-h-fit relative z-0",
               isComment
-                ? "w-full max-w-full"
-                : "overflow-hidden min-w-[calc(100%-52px)] max-w-[calc(100%-52px)]"
+                ? "w-full max-w-full "
+                : " min-w-[calc(100%-52px)] max-w-[calc(100%-52px)]"
             )}
           >
             {!!!isComment && (

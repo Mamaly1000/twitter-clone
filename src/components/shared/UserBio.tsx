@@ -11,10 +11,10 @@ import useFollow from "@/hooks/useFollow";
 import { includes } from "lodash";
 import { User } from "@prisma/client";
 import Loader from "./Loader";
-import FieldIcon from "./FieldIcon";
 import FieldValue from "./FieldValue";
 import { formatString } from "@/libs/wordDetector";
 import MutualFollowers from "../lists/MutualFollowers";
+import UserSkeletonBio from "../SkeletonCards/UserSkeletonBio";
 
 interface UserBioProps {
   userId: string;
@@ -37,7 +37,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
   }, [fetchedUser?.createdAt]);
 
   if (!currentUser || currentUserLoading || !fetchedUser || userLoading) {
-    return <Loader message="loading user data" />;
+    return <UserSkeletonBio />;
   }
   return (
     <div className="border-b-[1px] border-neutral-800 pb-4">

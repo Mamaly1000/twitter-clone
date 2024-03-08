@@ -1,4 +1,4 @@
-import useCoverImage from "@/hooks/useCoverImage"; 
+import useCoverImage from "@/hooks/useCoverImage";
 import { User } from "@prisma/client";
 import Image from "next/image";
 import React, { useCallback } from "react";
@@ -9,8 +9,20 @@ import Button from "../inputs/Button";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useEditModal } from "@/hooks/useEditModal";
 import { useRouter } from "next/router";
+import MutualFollowers from "../lists/MutualFollowers";
+import { mutualFollower } from "@/hooks/useUser";
+import { twMerge } from "tailwind-merge";
 
-const LargeUserCard = ({ user }: { user: User }) => {
+const LargeUserCard = ({
+  user,
+  main,
+}: {
+  main?: boolean;
+  user: User & {
+    mutualFollowers: mutualFollower[];
+    mutualFollowersCount: number;
+  };
+}) => {
   const router = useRouter();
   const { data: currentUser } = useCurrentUser();
   const { coverImage } = useCoverImage(user.id);
@@ -32,7 +44,10 @@ const LargeUserCard = ({ user }: { user: User }) => {
   return (
     <article
       onClick={goToUser}
-      className="min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-800 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-50"
+      className={twMerge(
+        "min-w-[300px] max-w-[300px] min-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-800 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-50",
+        main ? "max-h-fit" : "max-h-[300px]"
+      )}
     >
       <div className="aspect-video min-w-full max-w-full overflow-hidden rounded-t-lg min-h-[130px] max-h-[130px] relative">
         <Image
@@ -48,7 +63,7 @@ const LargeUserCard = ({ user }: { user: User }) => {
             userId={user.id}
             className="absolute min-w-[70px] min-h-[70px] top-[-45px] border-[1px] border-black left-3"
           />
-          {currentUser.id === user.id ? (
+          {currentUser?.id === user.id ? (
             <Button
               secondary
               onClick={(e) => {
@@ -82,6 +97,24 @@ const LargeUserCard = ({ user }: { user: User }) => {
           {user.bio}
         </p>
       </div>
+      {main && (
+        <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-2 pb-3 px-3">
+          <div className="items-center justify-start gap-2 flex ">
+            <div className="flex flex-row items-center gap-1">
+              <p className="text-white">{user?.followingIds?.length}</p>
+              <p className="text-neutral-500">Following</p>
+            </div>
+            <div className="flex flex-row items-center gap-1">
+              <p className="text-white">{user!.followerIds.length || 0}</p>
+              <p className="text-neutral-500">Followers</p>
+            </div>
+          </div>
+          <MutualFollowers
+            others={user?.mutualFollowersCount}
+            followers={user?.mutualFollowers}
+          />
+        </div>
+      )}
     </article>
   );
 };

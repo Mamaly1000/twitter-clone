@@ -11,7 +11,7 @@ const SingleHashtagPage = () => {
   const router = useRouter();
   const hashtagId = router.query.id as string;
   const { data: currentUser } = useCurrentUser();
-  const { hashtag, isLoading, users } = useHashtag(hashtagId);
+  const { hashtag, isLoading } = useHashtag(hashtagId);
 
   if (!hashtag || isLoading || !currentUser) {
     return <Loader message="loading hashtag data" />;
@@ -24,8 +24,15 @@ const SingleHashtagPage = () => {
         subHeader={`${hashtag?.postIds?.length} tweets`}
         displayArrow
       />
-      <UsersCardFeed users={users} title="People" />
-      <PostFeed type="hashtag" hashtagId={hashtagId} />
+      <UsersCardFeed
+        params={{ hashtagId: hashtag.id, type: "hashtag" }}
+        title="People"
+      />
+      <PostFeed
+        className="border-t-[1px] border-neutral-800"
+        type="hashtag"
+        hashtagId={hashtagId}
+      />
     </>
   );
 };

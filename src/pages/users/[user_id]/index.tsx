@@ -1,13 +1,11 @@
-import FollowingsFeed from "@/components/lists/FollowingsFeed";
 import PostFeed from "@/components/lists/PostFeed ";
-import FollowersList from "@/components/lists/followersList";
-import Loader from "@/components/shared/Loader";
+import UsersList from "@/components/lists/UsersList"; 
 import UserBio from "@/components/shared/UserBio";
 import UserHero from "@/components/shared/UserHero";
 import TabContent from "@/components/ui/TabContent";
 import Tabs from "@/components/ui/Tabs";
 import Header from "@/containers/Header";
-import { PostsType } from "@/hooks/usePosts"; 
+import { PostsType } from "@/hooks/usePosts";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -30,18 +28,17 @@ export const profileTabs: {
 export type profileTabsType = PostsType | "tweets" | "followings" | "followers";
 
 const UserPage = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [profileTab, setProfileTab] = useState(profileTabs[0]);
   const userId = router.query.user_id as string;
-  const { user, isLoading } = useUser(userId);
-  if (!user || isLoading) return <Loader message="loading user profile!" />;
+  const { user } = useUser(userId);
 
   return (
     <>
       <Header
         displayArrow
-        label={user.name || "User profile"}
-        subHeader={`${user.posts.length} tweets`}
+        label={user?.name || "User profile"}
+        subHeader={`${user?.posts?.length} tweets`}
       />
       <UserHero id={userId} />
       <UserBio userId={userId} />
@@ -60,7 +57,7 @@ const UserPage = () => {
       </TabContent>
       <TabContent display={profileTab.label === "media"}>
         <PostFeed type="media" id={userId} />
-      </TabContent>{" "}
+      </TabContent>
       <TabContent display={profileTab.label === "bookmark"}>
         <PostFeed type="bookmark" id={userId} />
       </TabContent>
@@ -68,10 +65,10 @@ const UserPage = () => {
         <PostFeed type="replies" id={userId} />
       </TabContent>
       <TabContent display={profileTab.label === "followers"}>
-        <FollowersList id={userId} />
-      </TabContent>{" "}
+        <UsersList params={{ userId: userId, type: "followers" }} main />
+      </TabContent>
       <TabContent display={profileTab.label === "followings"}>
-        <FollowingsFeed id={userId} />
+        <UsersList params={{ userId: userId, type: "followings" }} main />
       </TabContent>
     </>
   );

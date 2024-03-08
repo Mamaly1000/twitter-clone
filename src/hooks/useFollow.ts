@@ -1,18 +1,20 @@
 import { useCallback, useMemo, useState } from "react";
 import useCurrentUser from "./useCurrentUser";
 import { useLoginModal } from "./useLoginModal";
-import useUser from "./useUser"; 
+import useUser from "./useUser";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { includes } from "lodash";
-import useRecommendedUsers from "./useRecommendedUsers";
 import useUsers from "./useUsers";
 
 const useFollow = (userId: string) => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
   const { mutate: mutateFetchedUser } = useUser(userId);
-  const { mutate: recommendUsers } = useRecommendedUsers();
   const { mutate: usersMutate } = useUsers({ type: "all" });
+  const { mutate: recommendedUsersMutate } = useUsers({
+    type: "recommended",
+    userId: currentUser?.id,
+  });
   const [isLoading, setLoading] = useState(false);
   const loginModal = useLoginModal();
 
@@ -28,8 +30,8 @@ const useFollow = (userId: string) => {
             toast.success(res.data.message);
             mutateCurrentUser();
             mutateFetchedUser();
-            recommendUsers();
             usersMutate();
+            recommendedUsersMutate();
           });
         } catch (error) {
           toast.error("something went wrong!");
@@ -44,10 +46,10 @@ const useFollow = (userId: string) => {
       userId,
       mutateCurrentUser,
       mutateFetchedUser,
-      recommendUsers,
       usersMutate,
       setLoading,
       isLoading,
+      recommendedUsersMutate,
     ]
   );
 

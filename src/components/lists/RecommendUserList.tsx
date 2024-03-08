@@ -1,19 +1,9 @@
 import React from "react";
-import UsersList from "./UsersList"; 
+import UsersList from "./UsersList";
 import Link from "next/link";
-import { isEmpty } from "lodash";
 import { motion } from "framer-motion";
-import useUsers from "@/hooks/useUsers";
-import Loader from "../shared/Loader";
 
 const RecommentUserList = ({ title }: { title?: string }) => {
-  const { users, usersLoading } = useUsers({ type: "recommended" });
-  if (usersLoading) {
-    return <Loader size={15} type="bounce" />;
-  }
-  if (isEmpty(users)) {
-    return null;
-  }
   return (
     <motion.div
       initial={{

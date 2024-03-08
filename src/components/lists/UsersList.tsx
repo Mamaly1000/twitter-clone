@@ -5,6 +5,8 @@ import { twMerge } from "tailwind-merge";
 import useUsers, { usersParams } from "@/hooks/useUsers";
 import UsersPagination from "../shared/UsersPagination";
 import Loader from "../shared/Loader";
+import Each from "../shared/Each";
+import SmallUserCardSkeleton from "../SkeletonCards/SmallUserCardSkeleton";
 
 const UsersList = ({
   title,
@@ -17,7 +19,14 @@ const UsersList = ({
 }) => {
   const { users, usersLoading } = useUsers(params);
   if (usersLoading) {
-    return <Loader size={15} type="bounce" />;
+    return (
+      <Each
+        of={!main ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+        render={(_item, index) => (
+          <SmallUserCardSkeleton main={main} key={index} />
+        )}
+      />
+    );
   }
   if (isEmpty(users)) {
     return (

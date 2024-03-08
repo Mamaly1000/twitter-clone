@@ -51,6 +51,8 @@ const MutualReplies = ({
             <Avatar
               userId={mutualReplies[0].user.id}
               className="relative z-10 border-[#333639] border-[1px] border-opacity-50"
+              isTweet
+              postId={mutualReplies[0]?.id}
             />
             <hr className="w-[2px] absolute -top-[43px] rounded-full min-h-[40px] z-0 bg-[#333639] border-none transition-all" />
           </div>

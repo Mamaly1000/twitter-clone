@@ -30,27 +30,8 @@ export default async function handler(
       return res.status(404).json({ message: "Not Found" });
     }
 
-    const users = await prisma.user.findMany({
-      where: {
-        id: {
-          in: targetHashtag.userIds,
-        },
-      },
-      select: {
-        bio: true,
-        createdAt: true,
-        email: true,
-        followerIds: true,
-        followingIds: true,
-        id: true,
-        name: true,
-        username: true,
-      },
-    });
-
     return res.status(200).json({
       hashtags: targetHashtag,
-      users: users || [],
     });
   } catch (error) {
     return res

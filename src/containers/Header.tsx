@@ -49,7 +49,7 @@ const Header = ({
           >
             {label}
             {!!subHeader && (
-              <p className="text-[12px] text-[#72767A] ">{subHeader}</p>
+              <span className="text-[12px] text-[#72767A] ">{subHeader}</span>
             )}
           </h1>
         </div>

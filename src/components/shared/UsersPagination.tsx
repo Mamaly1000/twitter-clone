@@ -3,8 +3,15 @@ import useNotif from "@/hooks/useNotif";
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
 import useUsers, { usersParams } from "@/hooks/useUsers";
+import { twMerge } from "tailwind-merge";
 
-const UsersPagination = ({ params }: { params: usersParams }) => {
+const UsersPagination = ({
+  params,
+  horizantal,
+}: {
+  horizantal?: boolean;
+  params: usersParams;
+}) => {
   const { usersLoading, ref, pagination } = useUsers(params);
   const [hasMore, setHasMore] = useState(true);
   useEffect(() => {
@@ -18,7 +25,11 @@ const UsersPagination = ({ params }: { params: usersParams }) => {
     hasMore &&
     !(+pagination.maxPages === +pagination.currentPage) && (
       <section
-        className="min-w-full p-0 m-0 flex flex-col justify-center items-center w-full max-h-[100px] "
+        className={twMerge(
+          "min-w-full p-0 m-0 flex flex-col justify-center items-center w-full max-h-[100px]",
+          horizantal &&
+            "min-w-[150px] min-h-[150px] max-h-[150px] max-w-[150px] flex items-center justify-center"
+        )}
         ref={ref}
       >
         <Loader

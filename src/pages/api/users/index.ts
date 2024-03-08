@@ -71,7 +71,7 @@ export default async function handler(
         };
       }
     }
-    if (currentUser && type !== "single-user") {
+    if (currentUser && type !== "single-user" && !userId && !hashtagId) {
       if (type === "recommended") {
         where = {
           id: {
@@ -131,6 +131,7 @@ export default async function handler(
       take: type === "recommended" ? 5 : +(limit || 15) + 1,
       skip: skip || 0,
     });
+
     const isNextPage = users.length > +(limit || 15); // Check if there are more items than the limit
     if (isNextPage) {
       users.pop();

@@ -4,12 +4,15 @@ import React from "react";
 import TweetCard from "../cards/TweetCard";
 import Loader from "../shared/Loader";
 import Pagination from "../shared/Pagination";
+import { twMerge } from "tailwind-merge";
 
 const PostFeed = ({
   id,
   type,
   hashtagId,
+  className,
 }: {
+  className?: string;
   hashtagId?: string;
   type?: PostsType;
   id?: string;
@@ -23,7 +26,12 @@ const PostFeed = ({
     <div className="text-neutral-600 text-center p-6 text-xl">No Tweets</div>;
   }
   return (
-    <div className="flex flex-col items-start justify-start gap-0 min-w-full max-w-full relative z-0">
+    <div
+      className={twMerge(
+        "flex flex-col items-start justify-start gap-0 min-w-full max-w-full relative z-0",
+        className
+      )}
+    >
       {(posts as Post[]).map((post) => (
         <TweetCard post={post} key={post.id} userId={id} />
       ))}

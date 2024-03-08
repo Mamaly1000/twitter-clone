@@ -1,14 +1,22 @@
 import { User } from "@prisma/client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { twMerge } from "tailwind-merge";
 import Avatar from "../shared/Avatar";
 import Button from "../inputs/Button";
 import useFollow from "@/hooks/useFollow";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { useRouter } from "next/router"; 
+import { useRouter } from "next/router";
 import { useEditModal } from "@/hooks/useEditModal";
 import { includes } from "lodash";
 import { HiOutlineUserAdd } from "react-icons/hi";
+import { format } from "date-fns";
+import { formatString } from "@/libs/wordDetector";
 
 const RecommendedUserCard = ({
   user,
@@ -28,6 +36,13 @@ const RecommendedUserCard = ({
   }, [user.id, router]);
   const [scrollWidth, setScrollWidth] = useState(260);
   const cardRef: React.LegacyRef<HTMLDivElement> | undefined = useRef(null);
+
+  const createdAt = useMemo(() => {
+    if (!user.createdAt) {
+      return null;
+    }
+    return format(user.createdAt, "yy/M/d");
+  }, [user.createdAt]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,19 +70,48 @@ const RecommendedUserCard = ({
     >
       <div
         key={user.id}
-        className={twMerge("flex flex-row gap-4 cursor-default ")}
+        className={twMerge(
+          "flex flex-row gap-4 cursor-default ",
+          main && "w-full md:w-fit"
+        )}
       >
-        <Avatar
-          className="min-w-[48px] max-w-[48px] w-[48px] h-[48px] max-h-[48px] min-h-[48px] "
-          userId={user.id}
-        />
-        <div className="flex flex-col ">
-          <p className="text-[#D9D9D9] font-semibold text-[15px] capitalize line-clamp-1">
-            {user.name}
-          </p>
-          <p className="text-[#6E767D] text-[15px] text-nowrap line-clamp-1">
-            @{user.username}
-          </p>
+        <Avatar userId={user.id} />
+        <div
+          className={twMerge(
+            "flex flex-col items-start justify-start gap-2 ",
+            main && " min-w-[calc(100%-56px)] max-w-[calc(100%-56px)]"
+          )}
+        >
+          <div
+            className={twMerge(
+              "flex min-w-full max-w-full justify-start gap-2",
+              main
+                ? "flex-wrap items-center justify-between md:justify-start"
+                : "flex-col items-start"
+            )}
+          >
+            <p className="text-[#D9D9D9] font-semibold text-[15px] capitalize line-clamp-1 flex flex-wrap items-center justify-start gap-2">
+              {user.name}
+              <span className="text-[#6E767D] text-[15px] text-nowrap line-clamp-1">
+                @{user.username}
+              </span>
+            </p>
+
+            {main && (
+              <span className="text-sm text-[#6E767D] float-right">
+                {createdAt}
+              </span>
+            )}
+          </div>
+          {main && (
+            <p
+              className={twMerge(
+                " line-clamp-1 text-sm text-neutral-400 capitalize font-light",
+                main ? " " : "hidden"
+              )}
+              dangerouslySetInnerHTML={{ __html: formatString(user.bio || "") }}
+            ></p>
+          )}
         </div>
       </div>
       {main ? (
@@ -78,6 +122,8 @@ const RecommendedUserCard = ({
               e.stopPropagation();
               editModal.onOpen();
             }}
+            outline
+            className="hidden md:block"
             disabled={isLoading}
           >
             Edit
@@ -91,7 +137,7 @@ const RecommendedUserCard = ({
             secondary={!isFollowing}
             outline={isFollowing}
             disabled={isLoading}
-            className="text-[13px] whitespace-nowrap min-w-[120px] "
+            className="text-[13px] whitespace-nowrap min-w-[120px] hidden md:block"
           >
             {isFollowing
               ? "Unfollow"
@@ -104,11 +150,11 @@ const RecommendedUserCard = ({
         <Button
           secondary
           outline
-          className="w-10 h-10 rounded-full flex items-center justify-center text-[#d9d9d9]  p-1 max-w-10"
+          className="min-w-10 min-h-10 rounded-full flex items-center justify-center text-[#d9d9d9]  p-1 max-w-10"
           disabled={isLoading}
           onClick={toggleFollow}
         >
-          <HiOutlineUserAdd  />
+          <HiOutlineUserAdd />
         </Button>
       )}
     </div>
