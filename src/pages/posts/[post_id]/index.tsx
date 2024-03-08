@@ -19,15 +19,13 @@ const PostPage = () => {
     <>
       <Header label="Tweet" displayArrow />
       <TweetCard isComment post={post} />
-      <CreatePost
-        isComment 
-        placeholder="add a reply..."
-        postId={post.id}
-      />
+      <CreatePost isComment placeholder="add a reply..." postId={post.id} />
       <CommentFeed
         postId={post.id}
         author={post.user.username!}
-        comments={post?.comments}
+        params={{
+          postId: post?.id,
+        }}
         userId={user.id}
       />
     </>

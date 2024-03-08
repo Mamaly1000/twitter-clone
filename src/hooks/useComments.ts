@@ -1,27 +1,15 @@
 import fetcher from "@/libs/fetcher";
-import { User } from "@prisma/client";
-import { debounce } from "lodash";
+import { Comment } from "@prisma/client";
 import { useEffect, useState } from "react";
 import useSWRInfinite from "swr/infinite";
 import qs from "query-string";
 import { useInView } from "react-intersection-observer";
-export type UsersTypes =
-  | "all"
-  | "followers"
-  | "followings"
-  | "single-user"
-  | "recommended"
-  | "hashtag"
-  | "mentions";
-export type usersParams =
-  | {
-      search?: string | undefined;
-      userId?: string | undefined;
-      type?: UsersTypes | undefined;
-      hashtagId?: string;
-    }
-  | undefined;
-const useUsers = (params?: usersParams) => {
+import { debounce } from "lodash";
+
+export type commentsQueryType = {
+  postId?: string;
+};
+const useComments = (params?: commentsQueryType) => {
   const { inView, ref } = useInView();
   const [pagination, setPagination] = useState<{
     hasPrev: boolean;
@@ -47,20 +35,17 @@ const useUsers = (params?: usersParams) => {
     size,
     setSize,
     mutate,
-    isLoading: usersLoading,
+    isLoading: commentLoading,
   } = useSWRInfinite<{
-    users: User[];
+    comments: Comment[];
     pagination: any;
   }>(
     (index) => {
       let query = qs.stringifyUrl({
-        url: "/api/users",
+        url: "/api/comments",
         query: {
-          userId: params?.userId,
           page: index + 1,
-          search: params?.search?.trim(),
-          type: params?.type || "all",
-          hashtagId: params?.hashtagId,
+          postId: params?.postId,
         },
       });
       return query;
@@ -101,18 +86,18 @@ const useUsers = (params?: usersParams) => {
     }
   }, [setPagination, data]);
 
-  const users: User[] = data
-    ? [].concat(...(data.map((page) => page.users) as any))
+  const comments: Comment[] = data
+    ? [].concat(...(data.map((page) => page.comments) as any))
     : [];
 
   return {
-    users: (!!users && users.length > 0 ? users : []) as User[],
+    comments: comments as Array<Comment>,
     error,
-    usersLoading,
+    isLoading: commentLoading,
     mutate,
     pagination,
     ref,
   };
 };
 
-export default useUsers;
+export default useComments;

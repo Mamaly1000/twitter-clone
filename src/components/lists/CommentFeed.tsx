@@ -1,18 +1,20 @@
 import React from "react";
-import { Comment } from "@prisma/client";
 import CommentCard from "../cards/CommentCard";
+import useComments, { commentsQueryType } from "@/hooks/useComments";
+import CommentPagiantion from "../shared/CommentPagination";
 
 const CommentFeed = ({
-  comments,
   userId,
   author,
   postId,
+  params,
 }: {
+  params?: commentsQueryType;
   postId: string;
   author: string;
   userId: string;
-  comments?: Comment[];
 }) => {
+  const { comments } = useComments(params);
   if (comments?.length === 0) {
     <div className="text-neutral-600 text-center p-6 text-xl">No Replies</div>;
   }
@@ -29,6 +31,7 @@ const CommentFeed = ({
           postId={postId}
         />
       ))}
+      <CommentPagiantion params={params} />
     </div>
   );
 };

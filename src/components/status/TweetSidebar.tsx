@@ -42,10 +42,12 @@ const TweetSidebar = ({
               placeholder="what is your reply?"
             />
             <CommentFeed
-              postId={post.id}
               author={post.user.username!}
-              comments={post?.comments}
               userId={user.id}
+              postId={post.id}
+              params={{
+                postId: post?.id,
+              }}
             />
           </>
         )}
@@ -84,8 +86,10 @@ const TweetSidebar = ({
             <CommentFeed
               postId={post.id}
               author={post.user.username!}
-              comments={post?.comments}
               userId={user.id}
+              params={{
+                postId: post?.id,
+              }}
             />
           </>
         )}

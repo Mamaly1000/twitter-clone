@@ -31,6 +31,23 @@ export default async function handler(
     const skip = (+(page || 1) - 1) * +(limit || 15);
     const currentUser = await serverAuth(req, res);
     let where = {};
+    if (type === "mentions") {
+      const allUsers = await prisma.user.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          username: true,
+        },
+      });
+      if (currentUser) {
+        return res.status(200).json({
+          users: allUsers,
+          pagination: null,
+        });
+      }
+    }
     if (hashtagId && type === "hashtag") {
       const targetHashtag = await prisma.hashtag.findUnique({
         where: {

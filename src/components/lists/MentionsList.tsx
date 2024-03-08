@@ -1,12 +1,11 @@
 import useUsers from "@/hooks/useUsers";
 import { User } from "@prisma/client";
-import React, { useCallback, useEffect, useState } from "react";
-import { debounce } from "lodash"; 
+import React, { useEffect, useMemo, useState } from "react";
+import { debounce } from "lodash";
 
 const MentionsList = ({
   mentions,
   onChange,
-  onAdd,
 }: {
   onAdd?: (val: string) => void;
   mentions: {
@@ -20,13 +19,12 @@ const MentionsList = ({
     }[]
   ) => void;
 }) => {
-  const { users } = useUsers({ type: "all" });
+  const { users } = useUsers({ type: "mentions" });
   const [usersByIds, setUsersByIds] = useState<Array<undefined | User | null>>(
     []
   );
-
-  const handleMentions = useCallback(() => {
-    if (users) {
+  const mentionDebounce = debounce(() => {
+    if (users && mentions.length > 0) {
       const mentionsIds = mentions.map((mention) => ({
         id: users.find((user) =>
           user!.username
@@ -45,20 +43,17 @@ const MentionsList = ({
       setUsersByIds(foundedUsersByIds.filter((i) => !!i));
       onChange(validMentionIds);
     }
-  }, [mentions, users]);
-
-  const mentionValidator = debounce(() => {
-    handleMentions();
-  }, 5000);
+  }, 3000);
+  useMemo(() => {
+    mentionDebounce();
+  }, [mentions, users, mentionDebounce]);
 
   useEffect(() => {
-    if (mentions.length > 0) {
-      handleMentions();
+    if (mentions.length === 0) {
+      setUsersByIds([]);
+      onChange([]);
     }
-    return () => {
-      mentionValidator.cancel();
-    };
-  }, [mentions, users]);
+  }, [mentions]);
 
   return (
     mentions.length > 0 && (

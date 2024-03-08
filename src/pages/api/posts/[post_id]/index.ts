@@ -50,29 +50,6 @@ export default async function handler(
       where: {
         parentId: post.id,
       },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-            id: true,
-            username: true,
-          },
-        },
-        post: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
     });
 
     return res.status(200).json({ ...post, comments: postsComments });

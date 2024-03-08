@@ -1,4 +1,3 @@
-import { followerType } from "@/hooks/useFollowers";
 import { User } from "@prisma/client";
 import React, { useCallback, useMemo } from "react";
 import Avatar from "../shared/Avatar";
@@ -10,6 +9,17 @@ import Button from "../inputs/Button";
 import { useEditModal } from "@/hooks/useEditModal";
 import { includes } from "lodash";
 import { BiCalendar } from "react-icons/bi";
+
+export type followerType = {
+  id: string;
+  name: string | null;
+  username: string | null;
+  bio: string | null;
+  email: string | null;
+  createdAt: Date;
+  followingIds: string[];
+  followerIds: string[];
+};
 
 const UserCard = ({
   user,

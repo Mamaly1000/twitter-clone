@@ -20,9 +20,9 @@ import { useUploadedImages } from "@/hooks/useUploadedImages";
 import UploadedImagesForm from "./UploadedImagesForm";
 import CircularProgressBar from "../ui/CircularProgressBar";
 import { motion } from "framer-motion";
-import useMeasure from "react-use-measure";
 import { twMerge } from "tailwind-merge";
 import EmojiWidget from "./EmojiWidget";
+import useComments from "@/hooks/useComments";
 const createPostSchema = z.object({
   body: z.string().optional(),
   mentionIds: z.array(z.string()),
@@ -54,6 +54,7 @@ const CreatePost = ({
     id: params?.id,
     type: params?.type,
   });
+  const { mutate: commentsMutate } = useComments({ postId });
   const { mutate: mutatePost } = usePost(postId as string);
   const [isLoading, setLoading] = useState(false);
 
@@ -147,17 +148,18 @@ const CreatePost = ({
               medias: Images.images,
             })
             .then((res: any) => {
-              mutatePosts();
-              mutatePost();
               toast.success(res.data.message);
-              form.reset();
-              setHashtags([]);
+              commentsMutate();
               Images.onRemove([]);
+              setHashtags([]);
               setMentions([]);
+              form.reset();
               router.push(`/posts/${res.data.comment.parentId}`);
             });
-        } catch (error) {
-          console.log(error);
+        } catch (error: any) {
+          if (error.response.data.message) {
+            toast.error(error.response.data.message);
+          }
           toast.error("something went wrong!");
         } finally {
           setLoading(false);
