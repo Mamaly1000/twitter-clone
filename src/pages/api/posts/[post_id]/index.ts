@@ -46,13 +46,8 @@ export default async function handler(
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    const postsComments = await prisma.comment.findMany({
-      where: {
-        parentId: post.id,
-      },
-    });
 
-    return res.status(200).json({ ...post, comments: postsComments });
+    return res.status(200).json(post);
   } catch (error) {
     return res
       .status(500)

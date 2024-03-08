@@ -50,7 +50,7 @@ const Avatar = ({
       onLeave();
       setHover(val);
     }
-  }, 2000);
+  }, 500);
 
   if (!user) return null;
   return (

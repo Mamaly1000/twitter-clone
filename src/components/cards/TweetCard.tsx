@@ -25,10 +25,12 @@ const TweetCard = ({
   status?: boolean;
   isComment?: boolean;
   userId?: string;
-  post: Post & {
-    user?: any;
-    repost?: Repost & { user?: User; post: Post };
-  };
+  post?:
+    | (Post & {
+        user?: any;
+        repost?: Repost & { user?: User; post: Post };
+      })
+    | null;
 }) => {
   const { id: hoveredUserId, postId: hoveredPostId } = useHoverUser();
 
@@ -44,47 +46,50 @@ const TweetCard = ({
     (ev: any) => {
       ev.stopPropagation();
       statusModal.onClose();
-      router.push(`/users/${post.user.id}`);
+      router.push(`/users/${post?.user.id}`);
     },
-    [router, post.user.id]
+    [router, post?.user.id]
   );
 
   const goToPost = useCallback(() => {
     statusModal.onClose();
-    router.push(`/posts/${post.id}`);
-  }, [router, post.id]);
+    router.push(`/posts/${post?.id}`);
+  }, [router, post?.id]);
 
   const goToParentPost = useCallback(() => {
-    if (post.parentId) {
+    if (post?.parentId) {
       statusModal.onClose();
-      router.push(`/posts/${post.parentId}`);
+      router.push(`/posts/${post?.parentId}`);
     }
-  }, [router, post.parentId]);
+  }, [router, post?.parentId]);
 
   const createdAt = useMemo(() => {
     if (!post?.createdAt) {
       return null;
     }
     if (isComment) {
-      return format(post.createdAt, "HH:mm . dd/MM/yy");
+      return format(post?.createdAt, "HH:mm . dd/MM/yy");
     }
-    const cd = formatDistanceToNowStrict(new Date(post.createdAt)).split(" ");
+    const cd = formatDistanceToNowStrict(new Date(post?.createdAt)).split(" ");
     return cd[0] + "" + getShortUnit(cd[1]);
-  }, [post.createdAt]);
+  }, [post?.createdAt]);
 
   const repostCreateAt = useMemo(() => {
-    if (!post!.repost?.post?.createdAt || !post?.repost) {
+    if (!post?.repost?.post?.createdAt || !post?.repost) {
       return null;
     }
-    return formatDistanceToNowStrict(new Date(post.repost.post.createdAt));
+    return formatDistanceToNowStrict(new Date(post?.repost?.post?.createdAt));
   }, [post?.repost?.post?.createdAt]);
 
   const tweetdirection = useMemo(() => {
     return getStringDirectionality(post?.body || "");
-  }, [post.body]);
+  }, [post?.body]);
   const reTweetdirection = useMemo(() => {
-    return getStringDirectionality(post.repost?.body || "");
-  }, [post.repost?.body]);
+    return getStringDirectionality(post?.repost?.body || "");
+  }, [post?.repost?.body]);
+  if (!post) {
+    return null;
+  }
   return (
     <article
       onClick={goToPost}

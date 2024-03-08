@@ -67,7 +67,12 @@ const CommentCard = ({
     >
       <div className="flex flex-row items-start gap-3">
         <div className="w-fit flex items-center justify-start flex-col relative ">
-          <Avatar userId={comment.user.id} className="relative z-[2]" />
+          <Avatar
+            isTweet
+            postId={comment.id}
+            userId={comment.user.id}
+            className="relative z-[2]"
+          />
           <div className="absolute flex flex-col items-center justify-center gap-1 z-[1]">
             <motion.hr
               className="w-[1.8px] rounded-md bg-neutral-300 bg-opacity-30 border-none transition-all  z-10"
