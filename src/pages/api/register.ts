@@ -10,6 +10,9 @@ export default async function handler(
   }
   try {
     const { email, username, password, name, location } = req.body;
+    if (!email || !username || !password || !name || !location) {
+      return res.status(404).json({ message: "missing fields" });
+    }
     const existedUser = await prisma.user.findUnique({
       where: {
         email,

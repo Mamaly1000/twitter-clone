@@ -5,11 +5,14 @@ import useUser from "@/hooks/useUser";
 import UserFeedSkeletonCard from "../SkeletonCards/UserFeedSkeletonCard";
 import { twMerge } from "tailwind-merge";
 import { AnimatePresence, motion } from "framer-motion";
+import { DebouncedFunc } from "lodash";
 
 const HoveredUserCard = ({
   className,
   isUnique,
+  debounce,
 }: {
+  debounce: DebouncedFunc<(val: any) => void>;
   isUnique?: boolean;
   className?: string;
 }) => {
@@ -24,8 +27,9 @@ const HoveredUserCard = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onPointerEnter={(e) => {
-            setHover(true); 
             e.stopPropagation();
+            debounce.cancel();
+            setHover(true);
             onHover({
               userId: id,
               postId,

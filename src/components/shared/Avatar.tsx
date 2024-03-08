@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 import { twMerge } from "tailwind-merge";
 import placeholder from "../../../public/placeholder.png";
 import useProfileImage from "@/hooks/useProfileImage";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import HoveredUserCard from "../cards/HoveredUserCard";
 import { useHoverUser } from "@/hooks/useHoverUser";
 import { debounce } from "lodash";
@@ -45,15 +45,12 @@ const Avatar = ({
     },
     [router, userId]
   );
-  const onDebounce = debounce((val) => {  
-    onLeave();
-    setHover(val);
-  }, 2000);
-  const OnCloseHoveredUserCard = useCallback(() => {
+  const onDebounce = debounce((val) => {
     if (!isHovering) {
-      onDebounce(false);
+      onLeave();
+      setHover(val);
     }
-  }, [onDebounce, isHovering]);
+  }, 2000);
 
   if (!user) return null;
   return (
@@ -66,7 +63,9 @@ const Avatar = ({
             setHover(false);
           }
         }}
-        onPointerLeave={OnCloseHoveredUserCard}
+        onPointerLeave={() => {
+          onDebounce(false);
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         onClick={onClick}
@@ -99,6 +98,7 @@ const Avatar = ({
             !isComment
           )
         }
+        debounce={onDebounce}
         className="top-[45px] left-0"
       />
     </>
