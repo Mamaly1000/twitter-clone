@@ -16,12 +16,14 @@ import { twMerge } from "tailwind-merge";
 const LargeUserCard = ({
   user,
   main,
+  mutuals,
 }: {
-  main?: boolean;
-  user: User & {
+  mutuals?: {
     mutualFollowers: mutualFollower[];
     mutualFollowersCount: number;
   };
+  main?: boolean;
+  user: User;
 }) => {
   const router = useRouter();
   const { data: currentUser } = useCurrentUser();
@@ -97,7 +99,7 @@ const LargeUserCard = ({
           {user.bio}
         </p>
       </div>
-      {main && (
+      {main && mutuals && (
         <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-2 pb-3 px-3">
           <div className="items-center justify-start gap-2 flex ">
             <div className="flex flex-row items-center gap-1">
@@ -110,8 +112,8 @@ const LargeUserCard = ({
             </div>
           </div>
           <MutualFollowers
-            others={user?.mutualFollowersCount}
-            followers={user?.mutualFollowers}
+            others={mutuals?.mutualFollowersCount}
+            followers={mutuals?.mutualFollowers}
           />
         </div>
       )}

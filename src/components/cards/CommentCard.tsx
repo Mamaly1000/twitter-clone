@@ -137,7 +137,10 @@ const CommentCard = ({
               )}
             ></p>
           )}
-          <TweetImageList postId={comment.postId} />
+          <TweetImageList
+            hasMedia={!!(comment.post.mediaIds.length > 0)}
+            postId={comment.postId}
+          />
           <TweetActionBar
             className="min-w-full max-w-full"
             small

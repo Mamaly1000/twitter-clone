@@ -27,7 +27,7 @@ const Avatar = ({
   isLarge?: boolean;
   hasBorder?: boolean;
 }) => {
-  const { user } = useProfileImage(userId);
+  const { user, isLoading } = useProfileImage(userId);
   const router = useRouter();
   const {
     onHover,
@@ -52,41 +52,51 @@ const Avatar = ({
     }
   }, 500);
 
-  if (!user) return null;
   return (
     <>
-      <motion.div
-        onPointerEnter={(e) => {
-          e.stopPropagation();
-          if (isTweet) {
-            onHover({ userId, postId: postId! });
-            setHover(false);
-          }
-        }}
-        onPointerLeave={() => {
-          onDebounce(false);
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        onClick={onClick}
-        className={twMerge(
-          "rounded-full hover:opacity-90 transition-all cursor-pointer relative z-[1] ",
-          hasBorder ? "border-4 border-black" : "",
-          isLarge
-            ? "min-h-32 min-w-32 max-h-32 max-w-32"
-            : "w-[40px] h-[40px] min-w-[40px] max-h-[40px] max-w-[40px] min-h-[40px] w- ",
-          className,
-          repost &&
-            "min-w-[20px] max-h-[20px] min-h-[20px] max-w-[20px] border-[1px] border-black"
-        )}
-      >
-        <Image
-          fill
-          src={user?.profileImage || placeholder.src}
-          alt={user?.username || "profile image"}
-          className="rounded-full object-cover"
-        />
-      </motion.div>
+      {!isLoading && user ? (
+        <motion.div
+          onPointerEnter={(e) => {
+            e.stopPropagation();
+            if (isTweet) {
+              onHover({ userId, postId: postId! });
+              setHover(false);
+            }
+          }}
+          onPointerLeave={() => {
+            onDebounce(false);
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={onClick}
+          className={twMerge(
+            "rounded-full hover:opacity-90 transition-all cursor-pointer relative z-[1] ",
+            hasBorder ? "border-4 border-black" : "",
+            isLarge
+              ? "min-h-32 min-w-32 max-h-32 max-w-32"
+              : "w-[40px] h-[40px] min-w-[40px] max-h-[40px] max-w-[40px] min-h-[40px] w- ",
+            className,
+            repost &&
+              "min-w-[20px] max-h-[20px] min-h-[20px] max-w-[20px] border-[1px] border-black"
+          )}
+        >
+          <Image
+            fill
+            src={user?.profileImage || placeholder.src}
+            alt={user?.username || "profile image"}
+            className="rounded-full object-cover"
+          />
+        </motion.div>
+      ) : (
+        <div
+          className={twMerge(
+            "rounded-full drop-shadow-2xl relative skeleton ",
+            isLarge ? "min-h-32 min-w-32" : "min-h-[40px] min-w-[40px]",
+            repost && "min-w-[20px] min-h-[20px]",
+            className,"border-black"
+          )}
+        ></div>
+      )}
 
       <HoveredUserCard
         isUnique={

@@ -308,7 +308,8 @@ const TweetCard = ({
                         )}
                       ></p>
                     )}
-                    <TweetImageList 
+                    <TweetImageList
+                      hasMedia
                       className="max-w-full min-w-full"
                       postId={post.repost.postId}
                     />

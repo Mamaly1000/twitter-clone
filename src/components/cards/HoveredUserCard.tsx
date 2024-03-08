@@ -45,7 +45,14 @@ const HoveredUserCard = ({
           )}
         >
           {!isLoading && user ? (
-            <LargeUserCard main user={user} />
+            <LargeUserCard
+              mutuals={{
+                mutualFollowers: user.mutualFollowers,
+                mutualFollowersCount: user.mutualFollowersCount,
+              }}
+              main
+              user={user}
+            />
           ) : (
             <UserFeedSkeletonCard main />
           )}

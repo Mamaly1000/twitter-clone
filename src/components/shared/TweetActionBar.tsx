@@ -14,6 +14,8 @@ import { motion } from "framer-motion";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { RxBookmark, RxBookmarkFilled } from "react-icons/rx";
 import { FiShare } from "react-icons/fi";
+import SkeletonActionsBar from "../SkeletonCards/SkeletonActionsBar";
+import { isEmpty } from "lodash";
 
 const TweetActionBar = ({
   postId,
@@ -76,11 +78,7 @@ const TweetActionBar = ({
     }
   }, [post?.likedIds?.length]);
 
-  if (postLoading || !post) {
-    return null;
-  }
-
-  return (
+  return !postLoading && post ? (
     <>
       {!small && (
         <motion.div
@@ -248,6 +246,14 @@ const TweetActionBar = ({
             <FiShare size={15} />
           </div>
         </motion.div>
+      )}
+    </>
+  ) : (
+    <>
+      {!small ? (
+        <SkeletonActionsBar className={className} large />
+      ) : (
+        <SkeletonActionsBar />
       )}
     </>
   );
