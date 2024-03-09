@@ -5,9 +5,10 @@ import Link from "next/link";
 import useCountry from "@/hooks/useCountry";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
-import Each from "./Each";
+import Each from "../shared/Each";
 import HashtagSkeletonCard from "../SkeletonCards/HashtagSkeletonCard";
 import useTrendHashtags from "@/hooks/useTrendHashtags";
+import EmptyMessage from "../shared/EmptyMessage";
 
 const TrendHashtags = ({
   userLocation,
@@ -28,9 +29,7 @@ const TrendHashtags = ({
   const Content: ReactNode = useMemo(() => {
     if (!isLoading && isEmpty(hashtags)) {
       return (
-        <p className="text-sm capitalize text-neutral-300 min-w-full text-center min-h-[150px] flex items-center justify-center">
-          there is not trend hashtags
-        </p>
+        <EmptyMessage type="hashtag">there is not trend hashtags!</EmptyMessage>
       );
     }
     if (isLoading && isEmpty(hashtags)) {
@@ -48,7 +47,13 @@ const TrendHashtags = ({
     return (
       <div className="min-w-full flex flex-col items-start justify-start ">
         {hashtags.map((h, i) => (
-          <HashtagCard i={i + 1} main={MainPage} hideLocation hashtag={h} key={h.id} />
+          <HashtagCard
+            i={i + 1}
+            main={MainPage}
+            hideLocation
+            hashtag={h}
+            key={h.id}
+          />
         ))}
       </div>
     );

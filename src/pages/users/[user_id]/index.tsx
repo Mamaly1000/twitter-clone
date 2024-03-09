@@ -1,5 +1,5 @@
 import PostFeed from "@/components/lists/PostFeed ";
-import UsersList from "@/components/lists/UsersList"; 
+import UsersList from "@/components/lists/UsersList";
 import UserBio from "@/components/shared/UserBio";
 import UserHero from "@/components/shared/UserHero";
 import TabContent from "@/components/ui/TabContent";
@@ -65,10 +65,18 @@ const UserPage = () => {
         <PostFeed type="replies" id={userId} />
       </TabContent>
       <TabContent display={profileTab.label === "followers"}>
-        <UsersList params={{ userId: userId, type: "followers" }} main />
+        <UsersList
+          emptyType="users"
+          params={{ userId: userId, type: "followers" }}
+          main
+        />
       </TabContent>
       <TabContent display={profileTab.label === "followings"}>
-        <UsersList params={{ userId: userId, type: "followings" }} main />
+        <UsersList
+          emptyType="users"
+          params={{ userId: userId, type: "followings" }}
+          main
+        />
       </TabContent>
     </>
   );

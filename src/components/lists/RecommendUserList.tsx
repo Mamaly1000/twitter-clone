@@ -20,6 +20,7 @@ const RecommentUserList = ({ title }: { title?: string }) => {
         {title || "Who to follow"}
       </h2>
       <UsersList
+        emptyType="users"
         params={{
           type: "recommended",
         }}

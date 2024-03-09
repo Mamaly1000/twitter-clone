@@ -2,11 +2,11 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import useNotif, { notifQueryType } from "@/hooks/useNotif";
 import React, { useEffect } from "react";
 import NotifCard from "../cards/NotifCard";
-import Loader from "../shared/Loader";
 import NotifPagination from "../shared/NotifPagination";
 import SkeletonNotifCard from "../SkeletonCards/SkeletonNotifCard";
 import { isEmpty } from "lodash";
 import Each from "../shared/Each";
+import EmptyMessage from "../shared/EmptyMessage";
 
 const NotificationsFeed = ({ params }: { params?: notifQueryType }) => {
   const { mutate: userMutate } = useCurrentUser();
@@ -29,9 +29,9 @@ const NotificationsFeed = ({ params }: { params?: notifQueryType }) => {
 
   if (!isLoading && isEmpty(notifs)) {
     return (
-      <div className="text-neutral-600 text-center p-6 text-xl">
-        No notifications
-      </div>
+      <EmptyMessage type="notification">
+        there is not notifications!
+      </EmptyMessage>
     );
   }
 

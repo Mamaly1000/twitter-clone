@@ -39,8 +39,9 @@ const HashtagCard = ({
   const onClick = useCallback(() => {
     if (!user) {
       loginModal.onOpen();
+    } else {
+      router.push(`/hashtags/${hashtag.id}`);
     }
-    router.push(`/hashtags/${hashtag.id}`);
   }, [loginModal, user, hashtag.id, router]);
 
   const direction = useMemo(() => {

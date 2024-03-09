@@ -24,7 +24,7 @@ export default async function handler(
     let where = {};
     if (userLocation) {
       where = {
-        location: userLocation.value.toLowerCase() || null,
+        location: userLocation.value.toLowerCase(),
       };
     }
 

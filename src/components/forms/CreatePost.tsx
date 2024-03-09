@@ -23,6 +23,8 @@ import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import EmojiWidget from "./EmojiWidget";
 import useComments from "@/hooks/useComments";
+import Image from "next/image";
+import wellcomeImage from "../../../public/images/wellcomeImage.svg";
 const createPostSchema = z.object({
   body: z.string().optional(),
   mentionIds: z.array(z.string()),
@@ -282,9 +284,12 @@ const CreatePost = ({
           <UploadedImagesForm />
         </motion.div>
       ) : (
-        <div className="py-8 px-5">
+        <div className="py-8 px-5 flex flex-col items-center justify-center gap-3">
           <h1 className="text-white text-2xl text-center mb-4 font-bold">
-            Welcome to Twitter
+            Welcome to{" "}
+            <span className="text-sky-500 drop-shadow-2xl font-extrabold">
+              Twitter
+            </span>
           </h1>
           <div className="flex flex-row items-center justify-center gap-4">
             <Button onClick={loginModal.onOpen}>Login</Button>
@@ -292,6 +297,13 @@ const CreatePost = ({
               Register
             </Button>
           </div>
+          <Image
+            width={300}
+            height={300}
+            src={wellcomeImage.src}
+            alt="wellcomeImage"
+            className="pt-4"
+          />
         </div>
       )}
     </motion.div>

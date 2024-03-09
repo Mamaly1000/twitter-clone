@@ -1,7 +1,7 @@
 import HashtagsFeed from "@/components/lists/HashtagsFeed";
 import HashtagSearchInput from "@/components/search-components/HashtagSearchInput";
 import EmptyState from "@/components/shared/EmptyState";
-import TrendHashtags from "@/components/shared/TrendHashtags";
+import TrendHashtags from "@/components/lists/TrendHashtags";
 import Header from "@/containers/Header";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useUserLocation from "@/hooks/useUserLocation";
@@ -10,7 +10,7 @@ import React from "react";
 
 const HashtagsPage = () => {
   const router = useRouter();
-  const { data: currentUser } = useCurrentUser(); 
+  const { data: currentUser } = useCurrentUser();
   const { location } = useUserLocation(currentUser?.id);
 
   return (
@@ -21,6 +21,7 @@ const HashtagsPage = () => {
         <TrendHashtags MainPage userLocation={location} />
       )}
       <HashtagsFeed
+        emptyType={!!router.query.search ? "hashtag-search" : "hashtag"}
         params={{ search: router.query.search as string }}
         title="# trends for you #"
       />

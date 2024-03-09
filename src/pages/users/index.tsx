@@ -26,6 +26,7 @@ const UsersPage = () => {
       <Suspense>
         <UsersList
           main
+          emptyType={!!router.query.search ? "user-search" : "users"}
           params={{ type: "all", search: router.query.search as string }}
           title="people"
         />

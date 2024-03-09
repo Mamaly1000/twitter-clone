@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import prisma from "@/libs/prisma";
-import serverAuth from "@/libs/serverAuth";
+import prisma from "@/libs/prisma"; 
 import { uniq } from "lodash";
 
 export default async function handler(
@@ -12,12 +11,6 @@ export default async function handler(
     return res.status(405).end();
   }
   try {
-    const currentUser = await serverAuth(req, res);
-
-    if (!currentUser) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
     const hashtagId = req.query.id as string;
     if (!hashtagId || typeof hashtagId !== "string") {
       throw new Error("Invalid query parameter");

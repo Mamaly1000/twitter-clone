@@ -1,6 +1,6 @@
 import React from "react";
 import RecommentUserList from "@/components/lists/RecommendUserList";
-import TrendHashtags from "@/components/shared/TrendHashtags";
+import TrendHashtags from "@/components/lists/TrendHashtags";
 import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useUserLocation from "@/hooks/useUserLocation";

@@ -4,6 +4,8 @@ import useComments, { commentsQueryType } from "@/hooks/useComments";
 import CommentPagiantion from "../shared/CommentPagination";
 import CommentSkeletonCard from "../SkeletonCards/CommentSkeletonCard";
 import Each from "../shared/Each";
+import { isEmpty } from "lodash";
+import EmptyMessage from "../shared/EmptyMessage";
 
 const CommentFeed = ({
   userId,
@@ -18,8 +20,12 @@ const CommentFeed = ({
 }) => {
   const { comments, isLoading } = useComments(params);
 
-  if (!isLoading && comments?.length === 0) {
-    <div className="text-neutral-600 text-center p-6 text-xl">No Replies</div>;
+  if (!isLoading && isEmpty(comments)) {
+    return (
+      <EmptyMessage type="comment">
+        there is not reply for this tweet!
+      </EmptyMessage>
+    );
   }
 
   return isLoading ? (

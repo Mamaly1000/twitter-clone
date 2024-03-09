@@ -1,17 +1,19 @@
 import { isEmpty } from "lodash";
-import React from "react";
-import Loader from "../shared/Loader";
+import React from "react"; 
 import HashtagCard from "../cards/HashtagCard";
 import HashtagPagination from "../shared/HashtagPagination";
 import useHashtags from "@/hooks/useHashtags";
 import HashtagSkeletonCard from "../SkeletonCards/HashtagSkeletonCard";
 import Each from "../shared/Each";
+import EmptyMessage from "../shared/EmptyMessage";
 
 const HashtagsFeed = ({
   title,
   params,
   hideLocation,
+  emptyType,
 }: {
+  emptyType?: "hashtag-search" | "hashtag";
   hideLocation?: boolean;
   params?: {
     search?: string | undefined;
@@ -20,6 +22,14 @@ const HashtagsFeed = ({
   title: string;
 }) => {
   const { isLoading, hashtags } = useHashtags();
+
+  if (isEmpty(hashtags) && !isLoading) {
+    return (
+      <EmptyMessage type={emptyType as any}>
+        there is not hashtags!
+      </EmptyMessage>
+    );
+  }
 
   if (isEmpty(hashtags) || isLoading) {
     return (

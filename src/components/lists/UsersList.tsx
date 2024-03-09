@@ -3,22 +3,24 @@ import RecommendedUserCard from "../cards/RecommendedUserCard";
 import { isEmpty } from "lodash";
 import { twMerge } from "tailwind-merge";
 import useUsers, { usersParams } from "@/hooks/useUsers";
-import UsersPagination from "../shared/UsersPagination";
-import Loader from "../shared/Loader";
+import UsersPagination from "../shared/UsersPagination"; 
 import Each from "../shared/Each";
 import SmallUserCardSkeleton from "../SkeletonCards/SmallUserCardSkeleton";
+import EmptyMessage from "../shared/EmptyMessage";
 
 const UsersList = ({
   title,
   main,
   params,
+  emptyType,
 }: {
+  emptyType?: "users" | "user-search";
   params?: usersParams;
   main?: boolean;
   title?: string;
 }) => {
   const { users, usersLoading } = useUsers(params);
-  if (usersLoading) {
+  if (usersLoading && isEmpty(users)) {
     return (
       <Each
         of={!main ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
@@ -28,9 +30,9 @@ const UsersList = ({
       />
     );
   }
-  if (isEmpty(users)) {
+  if (isEmpty(users) && !usersLoading) {
     return (
-      <div className="text-neutral-600 text-center p-6 text-xl">No Users</div>
+      <EmptyMessage type={emptyType as any}>there is not users!</EmptyMessage>
     );
   }
   return (

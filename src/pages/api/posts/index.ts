@@ -14,7 +14,7 @@ export default async function handler(
   }
   try {
     if (req.method === "GET") {
-      const currentUser = await serverAuth(req, res);
+      const currentUser = await serverAuth(req, res); 
       const {
         page,
         user_id,
@@ -155,7 +155,6 @@ export default async function handler(
                 select: {
                   createdAt: true,
                 },
-              
               },
             },
           },

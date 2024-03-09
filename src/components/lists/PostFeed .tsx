@@ -8,6 +8,7 @@ import { twMerge } from "tailwind-merge";
 import SkeletonTweetCard from "../SkeletonCards/SkeletonTweetCard";
 import { isEmpty } from "lodash";
 import Each from "../shared/Each";
+import EmptyMessage from "../shared/EmptyMessage";
 
 const PostFeed = ({
   id,
@@ -24,11 +25,7 @@ const PostFeed = ({
 
   const content = useMemo(() => {
     if (isEmpty(posts) && !isLoading) {
-      return (
-        <div className="text-neutral-600 text-center p-6 text-xl">
-          No Tweets
-        </div>
-      );
+      return <EmptyMessage type="tweet">there is not tweets!</EmptyMessage>;
     }
     if (isEmpty(posts) && isLoading) {
       return (
