@@ -5,7 +5,7 @@ import EmojisContainer from "./EmojisContainer";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
 
 const EmojiWidget = ({ onChange }: { onChange: (val: string) => void }) => {
-  const { scrolled } = useScrollAnimation({ delay: 2000 });
+  const { scrolled } = useScrollAnimation({ delay: 2000, maxPosition: 300 });
   const [disPlayWidget, setDisplayWidget] = useState(false);
   useMemo(() => {
     if (scrolled) {

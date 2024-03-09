@@ -63,7 +63,7 @@ const BottomBar = () => {
           isActive={item.isActive}
         />
       ))}
-      <SideBarItem
+      {/* <SideBarItem
         item={{
           icon: HiOutlineUser,
           label: "Profile",
@@ -78,7 +78,7 @@ const BottomBar = () => {
         }}
         isActive={!!pathname?.endsWith("users/" + currentUser?.id)}
         labelClassName="hidden sm:block"
-      />
+      /> */}
       <SideBarTweetButton className="absolute top-[-60px] right-2 m-0 w-[45px] h-[45px] p-2 " />
     </motion.section>
   );

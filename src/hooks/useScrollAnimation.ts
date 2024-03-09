@@ -1,15 +1,22 @@
 import { useScroll } from "framer-motion";
 import React, { useCallback, useEffect, useState } from "react";
 
-const useScrollAnimation = ({ delay = 1000 }: { delay?: number }) => {
-  const { scrollY } = useScroll();
+const useScrollAnimation = ({
+  delay = 1000,
+  maxPosition,
+}: {
+  delay?: number;
+  maxPosition?: number;
+}) => {
+  const scrollYposition = maxPosition || 150;
+  const { scrollY, scrollX } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const handleScroll = useCallback(() => {
-    if (150 < scrollY.get()) {
+    if (scrollYposition < scrollY.get()) {
       setScrolled(true);
     }
-    if (150 > scrollY.get()) {
+    if (scrollYposition > scrollY.get()) {
       setScrolled(false);
     }
   }, [scrollY, scrolled]);
@@ -44,6 +51,7 @@ const useScrollAnimation = ({ delay = 1000 }: { delay?: number }) => {
     scrolled,
     scrollY,
     isScrolling,
+    scrollX,
   };
 };
 

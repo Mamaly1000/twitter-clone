@@ -1,4 +1,9 @@
+import Avatar from "@/components/shared/Avatar";
+import SideBarLogo from "@/components/shared/SideBarLogo";
+import useCurrentUser from "@/hooks/useCurrentUser";
+import { useLoginModal } from "@/hooks/useLoginModal";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
+import useSidebar from "@/hooks/useSidebar";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
@@ -9,13 +14,22 @@ const Header = ({
   label,
   displayArrow = false,
   subHeader,
+  displayProfile,
+  main,
+  profilePage,
 }: {
+  profilePage?: boolean;
+  main?: boolean;
+  displayProfile?: boolean;
   subHeader?: string;
   displayArrow?: boolean;
   label: string;
 }) => {
-  const { scrolled, isScrolling } = useScrollAnimation({});
+  const { scrolled, isScrolling, scrollX } = useScrollAnimation({});
   const router = useRouter();
+  const sidebar = useSidebar();
+  const loginModal = useLoginModal();
+  const { data: user } = useCurrentUser();
 
   const handleBack = useCallback(() => {
     router.back();
@@ -23,7 +37,7 @@ const Header = ({
   return (
     <motion.div
       className={twMerge(
-        "border-b-[1px] top-0 left-0 sticky border-neutral-800 p-5 transition-all z-50",
+        "border-b-[1px] top-0 left-0 sticky border-neutral-800 px-5 py-2 transition-all z-50",
         scrolled ? " backdrop-blur-sm" : " "
       )}
       animate={{
@@ -33,7 +47,12 @@ const Header = ({
       }}
     >
       <div className="flex flex-row items-center justify-between gap-2 text-sky-500">
-        <div className="max-w-fit flex items-center justify-start gap-2">
+        <div
+          className={twMerge(
+            "min-w-full max-w-full flex items-center gap-3",
+            main ? "justify-between" : "justify-start"
+          )}
+        >
           {displayArrow && (
             <BiArrowBack
               onClick={handleBack}
@@ -41,17 +60,57 @@ const Header = ({
               className="cursor-pointer hover:opacity-70 transition"
             />
           )}
-          <h1
-            className={twMerge(
-              "text-white text-xl font-semibold capitalize flex flex-col items-start justify-start leading-[20px]",
-              scrolled ? " font-semibold" : ""
-            )}
-          >
-            {label}
-            {!!subHeader && (
-              <span className="text-[12px] text-[#72767A] ">{subHeader}</span>
-            )}
-          </h1>
+          {displayProfile && user && (
+            <>
+              <Avatar
+                onClick={() => {
+                  if (user) {
+                    sidebar.onOpen();
+                  } else {
+                    loginModal.onOpen();
+                  }
+                }}
+                userId={user.id}
+                className="md:hidden w-[35px] h-[35px]"
+              />
+              <Avatar
+                onClick={() => {
+                  if (user) {
+                    router.push(`/users/${user.id}`);
+                  } else {
+                    loginModal.onOpen();
+                  }
+                }}
+                userId={user.id}
+                className="hidden md:block min-w-[35px] min-h-[35px] max-w-[35px] max-h-[35px]"
+              />
+            </>
+          )}
+          {!main ? (
+            <h1
+              className={twMerge(
+                "text-white text-xl font-semibold capitalize flex flex-col items-start justify-start leading-[20px]",
+                scrolled ? " font-semibold" : ""
+              )}
+            >
+              {label}
+              {!!subHeader && (
+                <span className="text-[12px] text-[#72767A] ">{subHeader}</span>
+              )}
+            </h1>
+          ) : (
+            <>
+              <SideBarLogo className="py-0 w-[35px] h-[35px] md:hidden" />
+              <h1
+                className={twMerge(
+                  "text-white hidden text-xl font-semibold capitalize md:flex flex-col items-start justify-start leading-[20px]",
+                  scrolled ? " font-semibold" : ""
+                )}
+              >
+                {label}
+              </h1>
+            </>
+          )}
         </div>
       </div>
     </motion.div>

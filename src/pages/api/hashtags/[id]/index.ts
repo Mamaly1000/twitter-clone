@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "@/libs/prisma";
 import serverAuth from "@/libs/serverAuth";
+import { uniq } from "lodash";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,8 +31,28 @@ export default async function handler(
       return res.status(404).json({ message: "Not Found" });
     }
 
+    const hashtagsPosts = await prisma.post.findMany({
+      where: {
+        id: { in: targetHashtag.postIds },
+      },
+    });
+    const updatedHashtag = await prisma.hashtag.update({
+      where: {
+        id: targetHashtag.id,
+      },
+      data: {
+        postIds: hashtagsPosts.map((p) => p.id),
+        userIds: uniq(hashtagsPosts.map((p) => p.userId)),
+        count: hashtagsPosts.length,
+      },
+    });
+
+    if (!updatedHashtag) {
+      throw new Error(`Failed to update Hashtag ${hashtagId}`);
+    }
+
     return res.status(200).json({
-      hashtags: targetHashtag,
+      hashtags: updatedHashtag,
     });
   } catch (error) {
     return res

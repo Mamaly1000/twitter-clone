@@ -18,7 +18,9 @@ const Avatar = ({
   isTweet,
   postId,
   isComment,
+  onClick,
 }: {
+  onClick?: () => void;
   isComment?: boolean;
   postId?: string;
   isTweet?: boolean;
@@ -41,13 +43,15 @@ const Avatar = ({
   } = useHoverUser();
   const { postId: dropDownPostId } = useSelectedDropdown();
 
-  const onClick = useCallback(
+  const onClickHandler = useCallback(
     (e: any) => {
       e.stopPropagation();
-      const url = `/users/${userId}`;
-      router.push(url);
+      if (!onClick) {
+        const url = `/users/${userId}`;
+        router.push(url);
+      } else onClick();
     },
-    [router, userId]
+    [router, userId, onClick]
   );
   const onDebounce = debounce((val) => {
     if (!isHovering) {
@@ -72,7 +76,7 @@ const Avatar = ({
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={onClick}
+          onClick={onClickHandler}
           className={twMerge(
             "rounded-full hover:opacity-90 transition-all cursor-pointer relative z-[1] ",
             hasBorder ? "border-4 border-black" : "",
