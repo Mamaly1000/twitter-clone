@@ -16,6 +16,12 @@ import { getShortUnit } from "@/libs/utils";
 import useMeasure from "react-use-measure";
 import { motion } from "framer-motion";
 import { useHoverUser } from "@/hooks/useHoverUser";
+import DropDown, { DropDownItemType } from "../ui/DropDown";
+import { BiDotsHorizontal, BiShare } from "react-icons/bi";
+import { useSelectedDropdown } from "@/hooks/useSelectDropdown";
+import useFollow from "@/hooks/useFollow";
+import { FiDelete } from "react-icons/fi";
+import { SlUserFollow, SlUserUnfollow } from "react-icons/sl";
 
 const TweetCard = ({
   post,
@@ -33,6 +39,11 @@ const TweetCard = ({
     | null;
 }) => {
   const { id: hoveredUserId, postId: hoveredPostId } = useHoverUser();
+  const {
+    postId: selectedDropdownPostId,
+    onSelect,
+    onClose: onClosePostDropDown,
+  } = useSelectedDropdown();
 
   const [ref, { height }] = useMeasure();
   const [mutualReplies, setMutuals] = useState(false);
@@ -41,27 +52,51 @@ const TweetCard = ({
   const statusModal = useStatus();
 
   const { data: currentUser } = useCurrentUser();
+  const {
+    isFollowing,
+    toggleFollow,
+    isLoading: followingLoading,
+  } = useFollow(post?.userId);
 
   const goToUser = useCallback(
     (ev: any) => {
       ev.stopPropagation();
-      statusModal.onClose();
-      router.push(`/users/${post?.user.id}`);
+      if (selectedDropdownPostId === post?.id) {
+        onClosePostDropDown();
+      } else {
+        statusModal.onClose();
+        router.push(`/users/${post?.user.id}`);
+      }
     },
-    [router, post?.user.id]
+    [router, post?.user.id, selectedDropdownPostId, onClosePostDropDown]
   );
 
   const goToPost = useCallback(() => {
-    statusModal.onClose();
-    router.push(`/posts/${post?.id}`);
-  }, [router, post?.id]);
+    if (selectedDropdownPostId === post?.id) {
+      onClosePostDropDown();
+    } else {
+      statusModal.onClose();
+      router.push(`/posts/${post?.id}`);
+    }
+  }, [router, post?.id, selectedDropdownPostId, onClosePostDropDown]);
 
   const goToParentPost = useCallback(() => {
-    if (post?.parentId) {
-      statusModal.onClose();
-      router.push(`/posts/${post?.parentId}`);
+    if (selectedDropdownPostId === post?.id) {
+      onClosePostDropDown();
+    } else {
+      if (post?.parentId) {
+        statusModal.onClose();
+
+        router.push(`/posts/${post?.parentId}`);
+      }
     }
-  }, [router, post?.parentId]);
+  }, [
+    router,
+    post?.parentId,
+    statusModal,
+    selectedDropdownPostId,
+    onClosePostDropDown,
+  ]);
 
   const createdAt = useMemo(() => {
     if (!post?.createdAt) {
@@ -87,6 +122,68 @@ const TweetCard = ({
   const reTweetdirection = useMemo(() => {
     return getStringDirectionality(post?.repost?.body || "");
   }, [post?.repost?.body]);
+  const onDropDown = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.stopPropagation();
+      if (selectedDropdownPostId !== post?.id && post?.id) {
+        onSelect(post?.id);
+      } else {
+        onClosePostDropDown();
+      }
+    },
+    [post?.id, selectedDropdownPostId, onClosePostDropDown, onSelect]
+  );
+  const DropDownOptions: DropDownItemType[] = useMemo(() => {
+    return [
+      !!(post?.userId === currentUser?.id)
+        ? [
+            {
+              Icon: BiShare,
+              label: "share tweet",
+              onClick: () =>
+                navigator.share({
+                  title: post?.body,
+                  url: `/posts/${post?.id}`,
+                }),
+            },
+            {
+              Icon: FiDelete,
+              label: "delete tweet",
+              onClick: () =>
+                navigator.share({
+                  title: post?.body,
+                  url: `/posts/${post?.id}`,
+                }),
+              disabled: true,
+            },
+          ]
+        : [
+            {
+              Icon: BiShare,
+              label: "share tweet",
+              onClick: () =>
+                navigator.share({
+                  title: post?.body,
+                  url: `/posts/${post?.id}`,
+                }),
+            },
+            {
+              Icon: isFollowing ? SlUserUnfollow : SlUserFollow,
+              label: isFollowing
+                ? `unfollow @${post?.user?.username}`
+                : `follow @${post?.user?.username}`,
+              onClick: toggleFollow,
+              disabled: followingLoading,
+            },
+          ],
+    ].flat();
+  }, [
+    post?.userId,
+    currentUser?.id,
+    isFollowing,
+    toggleFollow,
+    followingLoading,
+  ]);
   if (!post) {
     return null;
   }
@@ -95,8 +192,11 @@ const TweetCard = ({
       onClick={goToPost}
       className={twMerge(
         "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0 relative ",
-        hoveredUserId === post.userId && post.id === hoveredPostId && !isComment
-          ? "z-[900] "
+        (hoveredUserId === post.userId &&
+          post.id === hoveredPostId &&
+          !isComment) ||
+          selectedDropdownPostId === post.id
+          ? "z-[100] "
           : "z-[1]",
         isComment && "overflow-hidden"
       )}
@@ -147,7 +247,7 @@ const TweetCard = ({
             className={twMerge(
               "flex relative z-10",
               isComment
-                ? "flex-row items-start justify-start gap-4"
+                ? "flex-row min-w-full max-w-full items-start justify-start gap-4"
                 : "flex-col items-center justify-center gap-1"
             )}
           >
@@ -171,24 +271,30 @@ const TweetCard = ({
               )}
             </div>
             {!!isComment && (
-              <div className="flex flex-col items-start justify-start capitalize">
-                <p
-                  onClick={goToUser}
-                  className=" text-[#d9d9d9] font-semibold cursor-pointer hover:underline text-nowrap  "
-                >
-                  {post.user.name}
-                </p>
-                <span
-                  onClick={goToUser}
-                  className=" text-neutral-500 cursor-pointer hover:underline text-nowrap "
-                >
-                  @{post.user.username}
-                </span>
-                {!!!isComment && (
-                  <span className="text-neutral-500 text-sm text-nowrap">
-                    {createdAt}
+              <div className="min-w-[calc(100%-56px)] max-w-[calc(100%-56px)] relative capitalize flex items-center justify-between">
+                <div className="max-w-[60%] line-clamp-1 text-nowrap whitespace-nowrap flex flex-col items-start justify-start ">
+                  <p
+                    onClick={goToUser}
+                    className=" text-[#d9d9d9] font-semibold cursor-pointer hover:underline text-nowrap  "
+                  >
+                    {post.user.name}
+                  </p>
+                  <span
+                    onClick={goToUser}
+                    className=" text-neutral-500 cursor-pointer hover:underline text-nowrap "
+                  >
+                    @{post.user.username}
                   </span>
-                )}
+                </div>
+                <DropDown
+                  onDropDown={onDropDown}
+                  display={selectedDropdownPostId === post?.id}
+                  onClose={onClosePostDropDown}
+                  position="right-0 top-0 "
+                  options={DropDownOptions}
+                >
+                  <BiDotsHorizontal />
+                </DropDown>
               </div>
             )}
             {!!!isComment && mutualReplies && (
@@ -208,26 +314,41 @@ const TweetCard = ({
                 : " min-w-[calc(100%-52px)] max-w-[calc(100%-52px)]"
             )}
           >
+            {/* tweet header section when iscomment is false */}
             {!!!isComment && (
-              <div className="flex flex-wrap text-[15px] items-center gap-[6px] line-clamp-1 min-w-full max-w-full">
-                <p
-                  onClick={goToUser}
-                  className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-[#d9d9d9]"
-                >
-                  {post.user.name}
-                </p>
-                <span
-                  onClick={goToUser}
-                  className="text-[#687684] cursor-pointer hover:underline hidden md:block text-nowrap "
-                >
-                  @{post.user.username}
-                </span>
-                {!!!isComment && (
+              <div
+                className={twMerge(
+                  " text-[15px] items-center justify-between gap-[6px] line-clamp-1 min-w-full max-w-full overflow-visible flex relative  flex-row",
+                  selectedDropdownPostId === post?.id ? "z-[999]" : "z-10"
+                )}
+              >
+                <div className="w-fit max-w-[85%] flex items-center flex-wrap justify-start gap-1">
+                  <p
+                    onClick={goToUser}
+                    className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-[#d9d9d9]"
+                  >
+                    {post.user.name}
+                  </p>
+                  <span
+                    onClick={goToUser}
+                    className="text-[#687684] cursor-pointer hover:underline hidden md:block text-nowrap "
+                  >
+                    @{post.user.username}
+                  </span>
                   <span className="text-[#687684] text-nowrap">
                     {" "}
                     · {createdAt}
                   </span>
-                )}
+                </div>
+                <DropDown
+                  onDropDown={onDropDown}
+                  display={selectedDropdownPostId === post?.id}
+                  onClose={onClosePostDropDown}
+                  position="right-0 top-0 "
+                  options={DropDownOptions}
+                >
+                  <BiDotsHorizontal />
+                </DropDown>
               </div>
             )}
             {/* tweet body and repost section */}
@@ -243,7 +364,7 @@ const TweetCard = ({
                     isComment
                       ? "text-lg capitalize min-w-full max-w-full" +
                           tweetdirection.className
-                      : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap overflow-hidden max-w-full min-w-full " +
+                      : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap max-w-full min-w-full " +
                           tweetdirection.className,
                     post.repostId ? "" : "mb-3",
                     !isComment && "line-clamp-4 md:line-clamp-5"
@@ -366,7 +487,14 @@ const TweetCard = ({
                 </span>
               </div>
             )}
-            <TweetActionBar isComment={isComment} small postId={post.id} />
+            <TweetActionBar
+              className={twMerge(
+                selectedDropdownPostId === post?.id ? "z-0" : ""
+              )}
+              isComment={isComment}
+              small
+              postId={post.id}
+            />
           </div>
         </div>
       </div>

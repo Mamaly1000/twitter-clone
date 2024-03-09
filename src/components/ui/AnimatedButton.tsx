@@ -14,7 +14,9 @@ const AnimatedButton = ({
   large,
   icons,
   classNames,
+  disable,
 }: {
+  disable?: boolean;
   icons: {
     active: IconType;
     default: IconType;
@@ -39,24 +41,26 @@ const AnimatedButton = ({
   const [activedCount, setActivedCount] = useState(
     isActive ? (value - 1 < 0 ? 0 : value - 1) : value + 1
   );
-  const toggleLike = (e: any) => {
+  const onToggle = (e: any) => {
     e.stopPropagation();
-    setClicked(!clicked);
-    setActive(!actived);
-    setActivedCount(
-      clicked
-        ? actived
-          ? value + 1
-          : value - 1
-        : actived
-        ? value - 1 < 0
-          ? 0
-          : value - 1
-        : value + 1
-    );
+    if (!disable) {
+      setClicked(!clicked);
+      setActive(!actived);
+      setActivedCount(
+        clicked
+          ? actived
+            ? value + 1
+            : value - 1
+          : actived
+          ? value - 1 < 0
+            ? 0
+            : value - 1
+          : value + 1
+      );
 
-    if (onClick) {
-      onClick(e);
+      if (onClick) {
+        onClick(e);
+      }
     }
   };
 
@@ -76,7 +80,7 @@ const AnimatedButton = ({
         "w-10 h-10 max-w-10 relative max-h-10 rounded-lg text-[#728291] overflow-hidden flex items-center justify-center gap-2",
         className
       )}
-      onClick={toggleLike}
+      onClick={onToggle}
       disabled={isLoading}
     >
       {actived ? (

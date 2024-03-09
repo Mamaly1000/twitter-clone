@@ -5,7 +5,7 @@ import { useLoginModal } from "@/hooks/useLoginModal";
 import usePost from "@/hooks/usePost";
 import { useStatus } from "@/hooks/useStatus";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineRetweet } from "react-icons/ai";
 import { FaComment, FaRegComment } from "react-icons/fa";
 import { twMerge } from "tailwind-merge";
@@ -16,6 +16,7 @@ import { RxBookmark, RxBookmarkFilled } from "react-icons/rx";
 import { FiShare } from "react-icons/fi";
 import SkeletonActionsBar from "../SkeletonCards/SkeletonActionsBar";
 import { isEmpty } from "lodash";
+import { useSelectedDropdown } from "@/hooks/useSelectDropdown";
 
 const TweetActionBar = ({
   postId,
@@ -32,6 +33,9 @@ const TweetActionBar = ({
   const loginModal = useLoginModal();
   const statusModal = useStatus();
 
+  const { postId: selectedDropdownPostId, onClose: onClosePostDropDown } =
+    useSelectedDropdown();
+
   const { data: currentUser } = useCurrentUser();
 
   const { post, isLoading: postLoading } = usePost(postId);
@@ -42,34 +46,43 @@ const TweetActionBar = ({
 
   const [likeCount, setLikeCount] = useState(post?.likedIds?.length || 0);
 
+  const dropDownDisable = useMemo(() => {
+    return !!(selectedDropdownPostId === post?.id);
+  }, [selectedDropdownPostId, post?.id]);
+
   const onLike = useCallback(
     async (ev: any) => {
       ev.stopPropagation();
-
-      if (!currentUser) {
-        return loginModal.onOpen();
+      if (dropDownDisable) {
+        onClosePostDropDown();
+      } else {
+        if (!currentUser) {
+          return loginModal.onOpen();
+        }
+        toggleLike().then((res) => {
+          setLikeCount(res as number);
+        });
       }
-
-      toggleLike().then((res) => {
-        setLikeCount(res as number);
-      });
     },
-    [loginModal, currentUser, toggleLike]
+    [loginModal, currentUser, toggleLike, dropDownDisable]
   );
 
   const onRepost = useCallback(
     (e: any) => {
       e.stopPropagation();
-      if (!currentUser || !post) {
-        loginModal.onOpen();
-      }
-
-      if (post?.id) {
-        statusModal.onClose();
-        router.push(`/repost/${post.id}`);
+      if (dropDownDisable) {
+        onClosePostDropDown();
+      } else {
+        if (!currentUser || !post) {
+          loginModal.onOpen();
+        }
+        if (post?.id) {
+          statusModal.onClose();
+          router.push(`/repost/${post.id}`);
+        }
       }
     },
-    [loginModal, currentUser, post]
+    [loginModal, currentUser, post, dropDownDisable]
   );
 
   useEffect(() => {
@@ -90,8 +103,12 @@ const TweetActionBar = ({
           <AnimatedButton
             onClick={(e) => {
               e.stopPropagation();
-              statusModal.onClose();
-              router.push(`/reply/${post.id}`);
+              if (dropDownDisable) {
+                onClosePostDropDown();
+              } else {
+                statusModal.onClose();
+                router.push(`/reply/${post.id}`);
+              }
             }}
             iconSize={20}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
@@ -132,7 +149,11 @@ const TweetActionBar = ({
           <AnimatedButton
             onClick={(e) => {
               e.stopPropagation();
-              toggleBookmark();
+              if (dropDownDisable) {
+                onClosePostDropDown();
+              } else {
+                toggleBookmark();
+              }
             }}
             large
             iconSize={20}
@@ -151,10 +172,14 @@ const TweetActionBar = ({
           <div
             onClick={(e) => {
               e.stopPropagation();
-              navigator.share({
-                title: post.user.name + " tweet; " + post.body,
-                url: `/posts/${post.id}`,
-              });
+              if (dropDownDisable) {
+                onClosePostDropDown();
+              } else {
+                navigator.share({
+                  title: post.user.name + " tweet; " + post.body,
+                  url: `/posts/${post.id}`,
+                });
+              }
             }}
             className={twMerge("hover:text-sky-400  ")}
           >
@@ -177,9 +202,14 @@ const TweetActionBar = ({
           <AnimatedButton
             onClick={(e) => {
               e.stopPropagation();
-              statusModal.onClose();
-              router.push(`/reply/${post.id}`);
+              if (dropDownDisable) {
+                onClosePostDropDown();
+              } else {
+                statusModal.onClose();
+                router.push(`/reply/${post.id}`);
+              }
             }}
+            disable={dropDownDisable}
             className="flex flex-row items-center gap-2 cursor-pointer transition hover:text-sky-500"
             value={post.commentIds.length}
             icons={{ default: FaRegComment, active: FaComment }}
@@ -205,6 +235,7 @@ const TweetActionBar = ({
             isActive={hasLiked}
             isComment={isComment}
             iconSize={15}
+            disable={dropDownDisable}
           />
           <AnimatedButton
             onClick={onRepost}
@@ -212,12 +243,17 @@ const TweetActionBar = ({
             value={post.repostIds.length}
             className={twMerge("hover:text-sky-400  ")}
             iconSize={15}
+            disable={dropDownDisable}
             isComment={isComment}
           />
           <AnimatedButton
             onClick={(e) => {
               e.stopPropagation();
-              toggleBookmark();
+              if (dropDownDisable) {
+                onClosePostDropDown();
+              } else {
+                toggleBookmark();
+              }
             }}
             iconSize={15}
             className={twMerge("hover:text-sky-400")}
@@ -229,6 +265,7 @@ const TweetActionBar = ({
               active: "text-sky-500",
               default: "text-[#728291]",
             }}
+            disable={dropDownDisable}
             isActive={isBookmarked}
             value={post.bookmarkedIds.length}
             isComment={isComment}
@@ -236,10 +273,14 @@ const TweetActionBar = ({
           <div
             onClick={(e) => {
               e.stopPropagation();
-              navigator.share({
-                title: post.user.name + " tweet; " + post.body,
-                url: `/posts/${post.id}`,
-              });
+              if (dropDownDisable) {
+                onClosePostDropDown();
+              } else {
+                navigator.share({
+                  title: post.user.name + " tweet; " + post.body,
+                  url: `/posts/${post.id}`,
+                });
+              }
             }}
             className={twMerge("hover:text-sky-400  ")}
           >

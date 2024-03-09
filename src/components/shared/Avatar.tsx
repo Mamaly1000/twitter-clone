@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import HoveredUserCard from "../cards/HoveredUserCard";
 import { useHoverUser } from "@/hooks/useHoverUser";
 import { debounce } from "lodash";
+import { useSelectedDropdown } from "@/hooks/useSelectDropdown";
 const Avatar = ({
   userId,
   isLarge = false,
@@ -29,6 +30,7 @@ const Avatar = ({
 }) => {
   const { user, isLoading } = useProfileImage(userId);
   const router = useRouter();
+
   const {
     onHover,
     id,
@@ -37,6 +39,8 @@ const Avatar = ({
     isHovering,
     setHover,
   } = useHoverUser();
+  const { postId: dropDownPostId } = useSelectedDropdown();
+
   const onClick = useCallback(
     (e: any) => {
       e.stopPropagation();
@@ -91,9 +95,12 @@ const Avatar = ({
         <div
           className={twMerge(
             "rounded-full drop-shadow-2xl relative skeleton ",
-            isLarge ? "min-h-32 min-w-32" : "min-h-[40px] min-w-[40px]",
-            repost && "min-w-[20px] min-h-[20px]",
-            className,"border-black"
+            isLarge
+              ? "min-h-32 min-w-32 max-h-32 max-w-32"
+              : "min-h-[40px] min-w-[40px] max-h-[40px] max-w-[40px]",
+            repost && "min-w-[20px] min-h-[20px] max-w-[20px] max-h-[20px]",
+            className,
+            "border-black"
           )}
         ></div>
       )}
@@ -105,7 +112,8 @@ const Avatar = ({
             userId === id &&
             postId &&
             postId === hoveredPostId &&
-            !isComment
+            !isComment &&
+            dropDownPostId !== postId
           )
         }
         debounce={onDebounce}

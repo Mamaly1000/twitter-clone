@@ -7,7 +7,7 @@ import axios from "axios";
 import { includes } from "lodash";
 import useUsers from "./useUsers";
 
-const useFollow = (userId: string) => {
+const useFollow = (userId?: string) => {
   const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
   const { mutate: mutateFetchedUser } = useUser(userId);
   const { mutate: usersMutate } = useUsers({ type: "all" });
