@@ -8,7 +8,7 @@ const UserHero = ({ id }: { id: string }) => {
   const { coverImage } = useCoverImage(id);
   return coverImage ? (
     <div>
-      <div className="bg-neutral-700 h-44 relative">
+      <div className="dark:bg-neutral-700 bg-neutral-500 h-44 relative">
         {coverImage && (
           <Image
             src={coverImage.imageUrl}
@@ -19,7 +19,7 @@ const UserHero = ({ id }: { id: string }) => {
         )}
         <div className="absolute -bottom-16 left-4">
           <Avatar
-            className="border-[3px] border-black "
+            className="border-[5px] dark:border-black border-light"
             userId={id}
             isLarge
             hasBorder

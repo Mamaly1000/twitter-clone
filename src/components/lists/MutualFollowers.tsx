@@ -3,7 +3,7 @@ import React from "react";
 import Avatar from "../shared/Avatar";
 import { twMerge } from "tailwind-merge";
 import { formatString } from "../../libs/wordDetector";
-
+// TODO => implement the light theme to mutual user profile section
 const MutualFollowers = ({
   followers,
   others = 0,
@@ -39,7 +39,7 @@ const MutualFollowers = ({
                 `, and ${others} ${others > 2 ? "others" : "more"}`
               }`
             ),
-          }}    
+          }}
           className="max-w-[55%] gap-[2px] sm:max-w-[60%] md:max-w-[70%] flex flex-wrap gap-y-1 items-start justify-start text-[#72767A] font-[400] leading-[13px] text-[13px]"
         ></p>
       </section>

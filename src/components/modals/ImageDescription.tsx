@@ -10,7 +10,7 @@ const ImageDescription = () => {
   const [text, setText] = useState("");
   const body = (
     <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-3">
-      <div className="max-w-full min-h-[250px] mx-auto bg-neutral-500   relative overflow-hidden aspect-video">
+      <div className="max-w-full  min-w-full mx-auto bg-neutral-500   relative overflow-hidden aspect-video">
         {uploadedImages.selectedImage && (
           <Image alt={text} fill src={uploadedImages.selectedImage?.url} />
         )}

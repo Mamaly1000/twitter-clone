@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Button from "../inputs/Button";
-import { BsEmojiSmile, BsEmojiSunglasses } from "react-icons/bs";
+import { BsEmojiSmile } from "react-icons/bs";
 import EmojisContainer from "./EmojisContainer";
 import useScrollAnimation from "@/hooks/useScrollAnimation";
 
@@ -23,7 +23,11 @@ const EmojiWidget = ({ onChange }: { onChange: (val: string) => void }) => {
       >
         <BsEmojiSmile size={22} className="text-sky-500" />
       </Button>
-      <EmojisContainer onChange={onChange} show={disPlayWidget} />
+      <EmojisContainer
+        onClose={() => setDisplayWidget(false)}
+        onChange={onChange}
+        show={disPlayWidget}
+      />
     </>
   );
 };

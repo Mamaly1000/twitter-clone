@@ -1,3 +1,4 @@
+"use client";
 import React, { ReactNode } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import { useCallback } from "react";
@@ -7,6 +8,7 @@ declare global {
 import { CiImageOn } from "react-icons/ci";
 import Button from "./Button";
 import { toast } from "react-toastify";
+import { useTheme } from "next-themes";
 
 const ImageUpload = ({
   onChange,
@@ -21,6 +23,8 @@ const ImageUpload = ({
   length?: number;
   onChange: (value: string) => void;
 }) => {
+  const { resolvedTheme } = useTheme();
+
   const handleUpload = useCallback(
     (results: any) => {
       onChange(results.info.secure_url);
@@ -35,21 +39,38 @@ const ImageUpload = ({
       options={{
         maxFiles: length,
         styles: {
-          palette: {
-            window: "#000000",
-            sourceBg: "#000000",
-            windowBorder: "#8E9FBF",
-            tabIcon: "#FFFFFF",
-            inactiveTabIcon: "#8E9FBF",
-            menuIcons: "#2AD9FF",
-            link: "#08C0FF",
-            action: "#336BFF",
-            inProgress: "#00BFFF",
-            complete: "#33ff00",
-            error: "#EA2727",
-            textDark: "#000000",
-            textLight: "#FFFFFF",
-          },
+          palette:
+            resolvedTheme === "dark"
+              ? {
+                  window: "#000000",
+                  sourceBg: "#000000",
+                  windowBorder: "#8E9FBF",
+                  tabIcon: "#FFFFFF",
+                  inactiveTabIcon: "#8E9FBF",
+                  menuIcons: "#2AD9FF",
+                  link: "#08C0FF",
+                  action: "#336BFF",
+                  inProgress: "#00BFFF",
+                  complete: "#33ff00",
+                  error: "#EA2727",
+                  textDark: "#000000",
+                  textLight: "#FFFFFF",
+                }
+              : {
+                  window: "#FFFFFF",
+                  windowBorder: "#0EA5E9",
+                  tabIcon: "#0EA5E9",
+                  menuIcons: "#717274",
+                  textDark: "#000000",
+                  textLight: "#FFFFFF",
+                  link: "#0EA5E9",
+                  action: "#FF620C",
+                  inactiveTabIcon: "#BABABA",
+                  error: "#F44235",
+                  inProgress: "#0EA5E9",
+                  complete: "#0EA5E9",
+                  sourceBg: "#E4EBF1",
+                },
         },
         resourceType: "image",
         clientAllowedFormats: ["webp", "png", "jpeg"],
@@ -58,6 +79,7 @@ const ImageUpload = ({
       onError={(error: any) => {
         toast.error(error?.status);
       }}
+      key={resolvedTheme}
     >
       {({ open }) => {
         return children ? (

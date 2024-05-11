@@ -17,7 +17,6 @@ const Header = ({
   subHeader,
   displayProfile,
   main,
-  profilePage,
 }: {
   profilePage?: boolean;
   main?: boolean;
@@ -26,7 +25,7 @@ const Header = ({
   displayArrow?: boolean;
   label: string;
 }) => {
-  const { scrolled, isScrolling, scrollX } = useScrollAnimation({});
+  const { scrolled, isScrolling } = useScrollAnimation({});
   const router = useRouter();
   const sidebar = useSidebar();
   const loginModal = useLoginModal();

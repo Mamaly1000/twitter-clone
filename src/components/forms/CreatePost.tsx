@@ -195,7 +195,7 @@ const CreatePost = ({
       )}
     >
       {currentUser ? (
-        <motion.div className="flex flex-col justify-start items-start gap-1 text-white  px-5 py-3">
+        <motion.div className="flex flex-col justify-start items-start gap-1 text-text-primary dark:text-white  px-5 py-3">
           <div className="min-w-full max-w-full flex items-start justify-start gap-4">
             <div>
               <Avatar userId={currentUser?.id} />
@@ -207,7 +207,7 @@ const CreatePost = ({
                     direction: direction.dir,
                   }}
                   className={twMerge(
-                    "min-w-full p-2 to-emerald-50 text-white font-semibold",
+                    "min-w-full p-2 to-emerald-50 text-text-primary dark:text-white font-semibold",
                     direction.className
                   )}
                   dangerouslySetInnerHTML={{
@@ -225,7 +225,7 @@ const CreatePost = ({
                 onChange={onChange}
                 value={form.watch("body")}
                 className={twMerge(
-                  "disabled:opacity-80 peer resize-none mt-3 w-full bg-light dark:bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-white max-w-full overflow-hidden  placeholder:capitalize",
+                  "disabled:opacity-80 peer resize-none mt-3 w-full bg-light dark:bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-text-primary dark:text-white max-w-full overflow-hidden  placeholder:capitalize",
                   direction.className
                 )}
                 maxLength={300}
@@ -234,7 +234,7 @@ const CreatePost = ({
               <hr className="peer-focus:w-full w-[0px] bg-sky-500 border-none h-[1.4px] transition-all duration-500" />
             </div>
           </div>
-          <hr className="min-w-full max-h-[1.3px] min-h-[1.3px] bg-neutral-800 border-none" />
+          <hr className="min-w-full max-h-[1.3px] min-h-[1.3px] bg-neutral-300 dark:bg-neutral-800 border-none" />
           {/* tweet action bar */}
           <div className="flex items-center justify-between w-full gap-4 relative mt-1 z-10">
             <section className="max-w-fit flex items-center justify-start gap-1 flex-wrap">
@@ -285,7 +285,7 @@ const CreatePost = ({
         </motion.div>
       ) : (
         <div className="py-8 px-5 flex flex-col items-center justify-center gap-3">
-          <h1 className="text-white text-2xl text-center mb-4 font-bold">
+          <h1 className="text-text-primary dark:text-white text-2xl text-center mb-4 font-bold">
             Welcome to{" "}
             <span className="text-sky-500 drop-shadow-2xl font-extrabold">
               Twitter

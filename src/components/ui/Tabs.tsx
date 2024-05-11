@@ -38,8 +38,10 @@ const Tabs = ({
         <button
           key={option.value}
           className={twMerge(
-            "relative z-10 min-w-fit flex items-center justify-center px-5 w-max py-4 text-neutral-400 capitalize text-[14px]  font-semibold disabled:cursor-default disabled:opacity-60",
-            currentValue?.value === option.value ? "text-white  " : " ",
+            "relative z-10 min-w-fit flex items-center justify-center px-5 w-max py-4 text-neutral-400 capitalize text-[14px] font-semibold disabled:cursor-default disabled:opacity-60",
+            currentValue?.value === option.value
+              ? "text-black dark:text-white  "
+              : " ",
             optionClassName
           )}
           onClick={(e) => {
@@ -59,7 +61,7 @@ const Tabs = ({
           ></span>
         </button>
       ))}
-      <span className="border-b-[1px] border-b-neutral-800 absolute z-0 min-w-full min-h-[3px] bottom-0"></span>
+      <span className="border-b-[1px] border-b-neutral-300 dark:border-b-neutral-800 absolute z-0 min-w-full min-h-[3px] bottom-0"></span>
     </section>
   );
 };

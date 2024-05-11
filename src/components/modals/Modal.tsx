@@ -79,7 +79,7 @@ const Modal = ({
           >
             {/*header*/}
             <div className="flex items-center justify-between p-10 rounded-t">
-              <h3 className="text-[20px] md:text-3xl font-semibold text-white capitalize">
+              <h3 className="text-[20px] md:text-3xl font-semibold dark:text-white text-text-primary capitalize">
                 {title}
               </h3>
               <button
@@ -87,7 +87,7 @@ const Modal = ({
               p-1 
               ml-auto
               border-0 
-              text-white 
+              dark:text-white text-text-primary 
               hover:opacity-70
               transition
             "

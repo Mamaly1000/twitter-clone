@@ -10,9 +10,8 @@ import { useEditModal } from "@/hooks/useEditModal";
 import useFollow from "@/hooks/useFollow";
 import { includes } from "lodash";
 import { User } from "@prisma/client";
-import Loader from "./Loader";
 import FieldValue from "./FieldValue";
-import { formatString } from "@/libs/wordDetector";
+import { formatNumbersWithCommas, formatString } from "@/libs/wordDetector";
 import MutualFollowers from "../lists/MutualFollowers";
 import UserSkeletonBio from "../SkeletonCards/UserSkeletonBio";
 
@@ -62,14 +61,14 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
       </div>
       <div className="mt-8 px-4">
         <div className="flex flex-col">
-          <p className="text-white text-2xl font-semibold">
+          <p className="text-text-primary dark:text-white text-2xl font-semibold">
             {fetchedUser?.name}
           </p>
           <p className="text-md text-neutral-500">@{fetchedUser?.username}</p>
         </div>
         <div className="flex flex-col mt-4">
           <p
-            className="text-white"
+            className="dark:text-white text-text-primary"
             dangerouslySetInnerHTML={{
               __html: formatString(fetchedUser?.bio || ""),
             }}
@@ -90,6 +89,7 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
               items-center 
               gap-2    
               text-[#72767A]
+              
           "
             >
               <BiCalendar size={15} />
@@ -99,11 +99,19 @@ const UserBio: React.FC<UserBioProps> = ({ userId }) => {
         </div>
         <div className="flex flex-row items-center mt-4 gap-6">
           <div className="flex flex-row items-center gap-1">
-            <p className="text-white">{fetchedUser?.followingIds?.length}</p>
+            <p className="dark:text-white text-black">
+              {formatNumbersWithCommas(
+                (fetchedUser?.followingIds?.length || 0) + ""
+              )}
+            </p>
             <p className="text-neutral-500">Following</p>
           </div>
           <div className="flex flex-row items-center gap-1">
-            <p className="text-white">{fetchedUser!.followerIds.length || 0}</p>
+            <p className="dark:text-white text-black">
+              {formatNumbersWithCommas(
+                (fetchedUser!.followerIds.length || 0) + ""
+              )}
+            </p>
             <p className="text-neutral-500">Followers</p>
           </div>
         </div>
