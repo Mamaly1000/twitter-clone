@@ -47,7 +47,12 @@ const LargeUserCard = ({
     <article
       onClick={goToUser}
       className={twMerge(
-        "min-w-[300px] max-w-[300px] min-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-300 dark:border-neutral-800 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-50",
+        `min-w-[300px] max-w-[300px] min-h-[300px] 
+        rounded-lg drop-shadow-2xl p-0 relative 
+        border-[1px] border-neutral-300 dark:border-neutral-800 cursor-pointer
+         dark:hover:bg-neutral-800 dark:hover:bg-opacity-50
+         hover:bg-slate-200 hover:bg-opacity-50
+         `,
         main ? "max-h-fit" : "max-h-[300px]"
       )}
     >
@@ -63,7 +68,7 @@ const LargeUserCard = ({
         <div className="min-w-full max-w-full flex items-center justify-end gap-2 px-3  relative">
           <Avatar
             userId={user.id}
-            className="absolute min-w-[70px] min-h-[70px] top-[-45px] border-[1px] border-black left-3"
+            className="absolute min-w-[70px] min-h-[70px] top-[-45px] border-[3px] left-3"
           />
           {currentUser?.id === user.id ? (
             <Button
@@ -79,7 +84,7 @@ const LargeUserCard = ({
             <Button
               disabled={followingLoading}
               onClick={toggleFollow}
-              className="bg-[#d9d9d9] text-black font-[400] text-[15px] border-none"
+              className=" font-[400] bg-black border-slate-200"
             >
               {isFollowing
                 ? "following"
@@ -90,12 +95,12 @@ const LargeUserCard = ({
           )}
         </div>
         <div className="min-w-full flex flex-col items-start justify-start px-3">
-          <p className="text-white text-[15px] capitalize font-semibold">
+          <p className=" text-text-primary dark:text-white text-[15px] capitalize font-semibold">
             {user?.name}
           </p>
           <p className="text-[12px] text-neutral-500">@{user?.username}</p>
         </div>
-        <p className="min-w-full text-neutral-300 text-sm max-w-full overflow-hidden text-left line-clamp-2 px-3">
+        <p className="min-w-full text-neutral-500 dark:text-neutral-300 text-sm max-w-full overflow-hidden text-left line-clamp-2 px-3">
           {user.bio}
         </p>
       </div>
@@ -103,12 +108,20 @@ const LargeUserCard = ({
         <div className="min-w-full max-w-full flex flex-col items-start justify-start gap-2 pb-3 px-3">
           <div className="items-center justify-start gap-2 flex ">
             <div className="flex flex-row items-center gap-1">
-              <p className="text-white">{user?.followingIds?.length}</p>
-              <p className="text-neutral-500">Following</p>
+              <p className="text-text-primary dark:text-white">
+                {user?.followingIds?.length}
+              </p>
+              <p className="text-neutral-400 dark:text-neutral-500">
+                Following
+              </p>
             </div>
             <div className="flex flex-row items-center gap-1">
-              <p className="text-white">{user!.followerIds.length || 0}</p>
-              <p className="text-neutral-500">Followers</p>
+              <p className="text-text-primary dark:text-white">
+                {user!.followerIds.length || 0}
+              </p>
+              <p className="text-neutral-400 dark:text-neutral-500">
+                Followers
+              </p>
             </div>
           </div>
           <MutualFollowers

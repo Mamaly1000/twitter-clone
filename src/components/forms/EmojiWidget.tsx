@@ -1,17 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import Button from "../inputs/Button";
 import { BsEmojiSmile } from "react-icons/bs";
 import EmojisContainer from "./EmojisContainer";
-import useScrollAnimation from "@/hooks/useScrollAnimation";
 
 const EmojiWidget = ({ onChange }: { onChange: (val: string) => void }) => {
-  const { scrolled } = useScrollAnimation({ delay: 2000, maxPosition: 300 });
   const [disPlayWidget, setDisplayWidget] = useState(false);
-  useMemo(() => {
-    if (scrolled) {
-      setDisplayWidget(false);
-    }
-  }, [scrolled, setDisplayWidget]);
+
   return (
     <>
       <Button

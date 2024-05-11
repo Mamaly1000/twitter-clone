@@ -61,7 +61,7 @@ const Tabs = ({
           ></span>
         </button>
       ))}
-      <span className="border-b-[1px] border-b-neutral-300 dark:border-b-neutral-800 absolute z-0 min-w-full min-h-[3px] bottom-0"></span>
+      <span className="border-b-[1px]neutral-300 dark:border-b-neutral-800 absolute z-0 min-w-full min-h-[3px] bottom-0"></span>
     </section>
   );
 };

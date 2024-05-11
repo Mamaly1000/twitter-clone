@@ -24,9 +24,9 @@ const UsersSearchInput = ({ params }: { params?: usersParams }) => {
   return (
     <motion.div
       animate={{
-        top: scrolled && isScrolling ? 0 : "60px",
+        top: scrolled && isScrolling ? 0 : "50px",
       }}
-      className="min-w-full z-10 sticky py-2 bg-light dark:bg-black max-h-full flex items-center justify-between px-3 my-3 border-b-[1px] border-neutral-800"
+      className="min-w-full z-10 sticky py-2 bg-light dark:bg-black max-h-full flex items-center justify-between px-3 mb-3 border-b-[1px] border-neutral-300 dark:border-neutral-800 "
     >
       <SearchInput
         disabled={usersLoading}

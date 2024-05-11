@@ -50,7 +50,7 @@ const UserCard = ({
   return (
     <article
       onClick={goToUser}
-      className="min-w-full max-w-full border-b-[1px] border-b-neutral-800 p-3 flex justify-between items-start gap-2 hover:bg-neutral-800 hover:bg-opacity-60 cursor-pointer"
+      className="min-w-full max-w-full border-b-[1px] border-neutral-300 dark:border-neutral-800 p-3 flex justify-between items-start gap-2 hover:bg-neutral-800 hover:bg-opacity-60 cursor-pointer"
     >
       <section className="flex max-w-[65%] overflow-hidden gap-2 items-start justify-start">
         <Avatar userId={user.id} />

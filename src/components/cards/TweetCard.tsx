@@ -444,7 +444,7 @@ const TweetCard = ({
               )}
             </div>
             {isComment && (
-              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-800 py-3">
+              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-300 dark:border-t-neutral-800 py-3">
                 <span className="flex items-center justify-center gap-1">
                   <AnimatedNumber
                     key={post.id + post.repostIds.toString()}
@@ -466,7 +466,7 @@ const TweetCard = ({
               </div>
             )}
             {isComment && (
-              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-800 py-3">
+              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-300 dark:border-t-neutral-800 py-3">
                 <span className="flex items-center justify-center gap-1">
                   <AnimatedNumber
                     key={post.id + post.likedIds.toString()}

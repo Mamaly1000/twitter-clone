@@ -22,7 +22,7 @@ const SingleHashtagPage = () => {
         title="People"
       />
       <PostFeed
-        className="border-t-[1px] border-neutral-800"
+        className="border-t-[1px] border-neutral-300 dark:border-neutral-800"
         type="hashtag"
         hashtagId={hashtagId}
       />

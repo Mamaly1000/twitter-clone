@@ -37,7 +37,7 @@ const Header = ({
   return (
     <motion.div
       className={twMerge(
-        "border-b-[1px] top-0 left-0 sticky   bg-light dark:bg-black border-neutral-300 dark:border-neutral-800 px-2 md:px-5 py-2 transition-all z-50",
+        "border-b-[1px] top-0 left-0 sticky   bg-light dark:bg-black border-neutral-300 dark:border-neutral-800 px-2 md:px-5 py-4 transition-all z-50",
         scrolled ? " backdrop-blur-sm" : " "
       )}
       animate={{

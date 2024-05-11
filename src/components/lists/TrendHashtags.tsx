@@ -34,7 +34,7 @@ const TrendHashtags = ({
     }
     if (isLoading && isEmpty(hashtags)) {
       return (
-        <div className="min-w-full flex flex-col items-start justify-start gap-0 border-t-[1px] border-neutral-800">
+        <div className="min-w-full flex flex-col items-start justify-start gap-0 border-t-[1px] border-neutral-300 dark:border-neutral-800">
           <Each
             of={[1, 2, 3, 4, 5]}
             render={(_item, index) => (
@@ -61,11 +61,11 @@ const TrendHashtags = ({
   return (
     <motion.div
       initial={{
-        translateX: 100,
+        translateY: 100,
         opacity: 0,
       }}
       animate={{
-        translateX: 0,
+        translateY: 0,
         opacity: 100,
       }}
       className={twMerge(

@@ -16,7 +16,7 @@ const HashtagsPage = () => {
   return (
     <>
       <Header label="Explore" displayArrow />
-      <HashtagSearchInput />
+      <HashtagSearchInput key={router.query.search + ""} />
       {!router.query.search && (
         <TrendHashtags MainPage userLocation={location} />
       )}
