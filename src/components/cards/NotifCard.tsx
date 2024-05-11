@@ -111,7 +111,7 @@ const NotifCard = ({
       }}
       key={notif.id}
       className={twMerge(
-        "flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-300 dark:border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all",
+        "flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-300 dark:border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all hover:bg-neutral-100/50  dark:hover:bg-neutral-800/50",
         !notif.isSeen ? "bg-sky-900 bg-opacity-40" : ""
       )}
     >
@@ -123,14 +123,16 @@ const NotifCard = ({
           {/* notif header */}
           <div className="flex min-w-full max-w-full  flex-row line-clamp-1 text-nowrap whitespace-nowrap items-start justify-start gap-2">
             <Avatar userId={notif.actionUserId} />
-            <div className="flex items-start justify-start flex-col text-white min-w-[calc(100%-91px)] max-w-[calc(100%-91px)]">
+            <div className="flex items-start justify-start flex-col text-text-primary dark:text-white min-w-[calc(100%-91px)] max-w-[calc(100%-91px)]">
               <p className="flex items-center justify-start gap-1 flex-wrap text-lg capitalize">
                 {notif.user.name}
-                <span className="text-neutral-300 text-[12px] hover:underline">
+                <span className="dark:text-neutral-300 text-neutral-500 text-[12px] hover:underline">
                   @{notif.user.username}
                 </span>
               </p>
-              <p className="text-[12px] text-neutral-300">{notif.user.email}</p>
+              <p className="text-[12px] text-neutral-500 dark:text-neutral-300">
+                {notif.user.email}
+              </p>
             </div>
             <DropDown
               onDropDown={onDropDown}
@@ -147,27 +149,27 @@ const NotifCard = ({
           <div className="flex flex-col items-start justify-start min-w-full max-w-full ">
             {/* notif body */}
             <p
-              className="text-neutral-300 capitalize text-[15px] text-wrap max-w-full min-w-full line-clamp-3"
+              className="text-neutral-700 dark:text-neutral-300 capitalize text-[15px] text-wrap max-w-full min-w-full line-clamp-3"
               dangerouslySetInnerHTML={{ __html: formatString(notif.body) }}
             ></p>
             {notif.post && (
               <div
                 className={twMerge(
                   "min-w-full max-w-full ",
-                  "p-2 rounded-lg mt-2 flex flex-col text-start justify-start border-[1px] border-neutral-800"
+                  "p-2 rounded-lg mt-2 flex flex-col text-start justify-start border-[1px] border-neutral-300 dark:border-neutral-800"
                 )}
               >
                 {/* notif post header */}
                 <div className="min-w-full max-w-full flex flex-col md:flex-row items-start justify-start gap-2 pt-2 pb-1">
                   <Avatar userId={notif.post.userId} />
-                  <div className="flex items-start justify-start flex-col text-sm text-white">
+                  <div className="flex items-start justify-start flex-col text-sm dark:text-white text-text-primary">
                     <p className="flex items-center justify-start gap-1 flex-wrap capitalize">
                       {notif.post.user.name}
-                      <span className="text-neutral-300 text-[10px] hover:underline">
+                      <span className="text-neutral-500 dark:text-neutral-300 text-[10px] hover:underline">
                         @{notif.post.user.username}
                       </span>
                     </p>
-                    <p className="text-[11px] text-neutral-300">
+                    <p className="text-[11px] text-neutral-500 dark:text-neutral-300">
                       {notif.post.user.email}
                     </p>
                   </div>
@@ -178,7 +180,7 @@ const NotifCard = ({
                       direction: direction.dir,
                     }}
                     className={twMerge(
-                      "text-neutral-200 min-w-full text-sm max-w-full text-wrap line-clamp-3",
+                      "  text-neutral-700 dark:text-neutral-200 min-w-full text-sm max-w-full text-wrap line-clamp-3",
                       direction.className
                     )}
                     dangerouslySetInnerHTML={{
@@ -195,7 +197,7 @@ const NotifCard = ({
             )}
           </div>
         </div>
-        <span className="min-w-[50px]  md:pt-2 max-w-[50px] text-neutral-500 text-sm flex items-center justify-start md:justify-end gap-1">
+        <span className="min-w-[50px]  md:pt-2 max-w-[50px] dark:text-neutral-500 text-neutral-700 text-sm flex items-center justify-start md:justify-end gap-1">
           <BsClock size={15} />
           {createdAt}
         </span>

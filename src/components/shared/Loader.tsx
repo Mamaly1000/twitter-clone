@@ -30,7 +30,7 @@ const Loader = ({
         <BounceLoader speedMultiplier={speed || 1} color={color} size={size} />
       )}
       {message && (
-        <p className="capitalize font-semibold text-center text-white">
+        <p className="capitalize font-semibold text-center text-text-primary dark:text-white">
           {message}
         </p>
       )}

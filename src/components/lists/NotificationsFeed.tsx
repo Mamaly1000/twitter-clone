@@ -30,7 +30,7 @@ const NotificationsFeed = ({ params }: { params?: notifQueryType }) => {
   if (!isLoading && isEmpty(notifs)) {
     return (
       <EmptyMessage type="notification">
-        there is not notifications!
+        there is no notification!
       </EmptyMessage>
     );
   }
