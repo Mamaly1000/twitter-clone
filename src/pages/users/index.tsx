@@ -14,9 +14,7 @@ const UsersPage = () => {
   return (
     <>
       <Header label="users" displayArrow />
-      <UsersSearchInput
-        params={{ type: "all", search: router.query.search as string }}
-      />
+      <UsersSearchInput key={router.query?.search + ""} />
       {!router.query.search && (
         <UsersCardFeed
           params={{ type: "followers", userId: user?.id }}

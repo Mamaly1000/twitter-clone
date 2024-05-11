@@ -16,7 +16,7 @@ const HashtagSearchInput = () => {
     const url = qs.stringifyUrl({
       url: "/hashtags",
       query:
-        search.length === 0 || val === ""
+        search.length === 0 || String(val).trim() === ""
           ? {}
           : {
               search: val,

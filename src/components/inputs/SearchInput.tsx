@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React from "react";
 import { FiSearch } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
