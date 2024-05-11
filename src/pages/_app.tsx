@@ -1,5 +1,6 @@
 import Layout from "@/containers/Layout";
 import ModalsProvider from "@/providers/ModalsProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import ToastProvider from "@/providers/ToastProvider";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -25,11 +26,13 @@ export default function App({
 }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <ModalsProvider />
-      <ToastProvider />
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ModalsProvider />
+        <ToastProvider />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
     </SessionProvider>
   );
 }

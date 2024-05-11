@@ -5,21 +5,21 @@
 body,
 html {
   scroll-behavior: smooth;
-  @apply h-full bg-light dark:bg-black;
+  max-height: 100vh !important;
+  @apply bg-light dark:bg-black overflow-hidden;
 }
 * {
   @apply transition-all;
 }
 *::-webkit-scrollbar {
-  @apply bg-neutral-800;
-  width: 5px;
-  max-width: 5px;
-  max-width: 5px;
-  height: 5px;
-  border-radius: 10px;
+  @apply bg-neutral-300 dark:bg-neutral-800;
+  width: 10px;
+  max-width: 10px;
+  max-width: 10px;
+  height: 10px;
 }
 *::-webkit-scrollbar-thumb {
-  @apply bg-sky-500 rounded-full bg-opacity-40;
+  @apply bg-sky-500 hover:bg-opacity-100 bg-opacity-40;
 }
 .rdrDay .rdrDayNumber span {
   color: #ffffff !important;
@@ -39,7 +39,7 @@ html {
   height: 5px;
 }
 ::selection {
-  @apply bg-sky-700 cursor-default transition-all;
+  @apply dark:bg-sky-700 bg-sky-300 cursor-default transition-all;
 }
 .scroll-hidden::-webkit-scrollbar {
   @apply hidden;
