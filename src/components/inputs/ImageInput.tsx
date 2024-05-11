@@ -69,7 +69,7 @@ const ImageUpload = ({
                 toast.warning("please wait");
               }
             }}
-            className="relative cursor-pointer opacity-70 hover:opacity-100 w-full min-w-full max-w-full overflow-hidden min-h-[200px] aspect-video max-h-[200px] rounded-lg border-[1px] border-neutral-800 border-dashed bg-neutral-600 disabled:cursor-not-allowed disabled:animate-pulse"
+            className="relative cursor-pointer opacity-70 hover:opacity-100 w-full min-w-full max-w-full overflow-hidden min-h-[200px] aspect-video max-h-[200px] rounded-lg border-[1px] border-neutral-300 dark:border-neutral-800 border-dashed bg-neutral-600 disabled:cursor-not-allowed disabled:animate-pulse"
           >
             {label && (
               <span className="absolute top-0 left-0 rounded-tr-none rounded-bl-none rounded-lg bg-neutral-800 flex items-center justify-center text-sm capitalize text-[#e7e9ea] font-semibold px-3 py-2 z-10">

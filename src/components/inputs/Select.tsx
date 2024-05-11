@@ -56,33 +56,40 @@ const CountrySelect = ({
           control: (base) =>
             twMerge(
               base.className,
-              "p-3 border-2 border-neutral-300 bg-black overflow-hidden"
+              "p-3 border-2 border-neutral-300 bg-light dark:bg-black overflow-hidden"
             ),
           input: (base) =>
-            twMerge(base.className, " text-lg bg-black text-white"),
-          option: (base) => twMerge(base.className, " text-lg bg-black"),
+            twMerge(
+              base.className,
+              " text-lg bg-light dark:bg-black text-white"
+            ),
+          option: (base) =>
+            twMerge(base.className, " text-lg bg-light dark:bg-black"),
           valueContainer: (base) =>
             twMerge(
               base.className,
-              " bg-black text-white text-[12px] flex-row min-w-[70%] max-w-[70%] "
+              " bg-light dark:bg-black text-white text-[12px] flex-row min-w-[70%] max-w-[70%] "
             ),
           placeholder: (base) => twMerge(base.className, " text-neutral-300"),
-          container: (base) => twMerge(base.className, " bg-black"),
+          container: (base) =>
+            twMerge(base.className, " bg-light dark:bg-black"),
           indicatorsContainer: (base) =>
             twMerge(
               base.className,
-              " bg-black text-neutral-300 hover:text-neutral-100"
+              " bg-light dark:bg-black text-neutral-300 hover:text-neutral-100"
             ),
-          singleValue: (base) => twMerge(base.className, " bg-black"),
-          multiValueLabel: (base) => twMerge(base.className, " bg-black"),
-          menu: (base) => twMerge(base.className, " bg-black"),
+          singleValue: (base) =>
+            twMerge(base.className, " bg-light dark:bg-black"),
+          multiValueLabel: (base) =>
+            twMerge(base.className, " bg-light dark:bg-black"),
+          menu: (base) => twMerge(base.className, " bg-light dark:bg-black"),
           menuList: (base) =>
             twMerge(
               base.className,
-              " bg-black border-[1px] border-neutral-800 rounded-md"
+              " bg-light dark:bg-black border-[1px] border-neutral-300 dark:border-neutral-800 rounded-md"
             ),
-          menuPortal: () => twMerge(" bg-black text-red-400"),
-          group: (base) => twMerge(base.className + " bg-black"),
+          menuPortal: () => twMerge(" bg-light dark:bg-black text-red-400"),
+          group: (base) => twMerge(base.className + " bg-light dark:bg-black"),
         }}
         theme={(theme) => ({
           ...theme,

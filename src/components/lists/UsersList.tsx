@@ -3,7 +3,7 @@ import RecommendedUserCard from "../cards/RecommendedUserCard";
 import { isEmpty } from "lodash";
 import { twMerge } from "tailwind-merge";
 import useUsers, { usersParams } from "@/hooks/useUsers";
-import UsersPagination from "../shared/UsersPagination"; 
+import UsersPagination from "../shared/UsersPagination";
 import Each from "../shared/Each";
 import SmallUserCardSkeleton from "../SkeletonCards/SmallUserCardSkeleton";
 import EmptyMessage from "../shared/EmptyMessage";
@@ -32,13 +32,13 @@ const UsersList = ({
   }
   if (isEmpty(users) && !usersLoading) {
     return (
-      <EmptyMessage type={emptyType as any}>there is not users!</EmptyMessage>
+      <EmptyMessage type={emptyType as any}>there is no users!</EmptyMessage>
     );
   }
   return (
     <section className="flex flex-col items-start justify-start gap-3 min-w-full max-w-full min-h-fit ">
       {!!title && (
-        <h5 className="min-w-full text-left capitalize text-white font-semibold text-2xl mt-10 px-3">
+        <h5 className="min-w-full text-left capitalize text-text-primary dark:text-white font-semibold text-2xl mt-10 px-3">
           {title}
         </h5>
       )}

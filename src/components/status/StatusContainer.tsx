@@ -26,7 +26,7 @@ const StatusContainer = () => {
   return (
     <section
       className={twMerge(
-        "min-w-full fixed top-0 left-0 min-h-screen max-h-screen max-w-full grid grid-cols-12 z-50 bg-black  text-[#d9d9d9] ",
+        "min-w-full fixed top-0 left-0 min-h-screen max-h-screen max-w-full grid grid-cols-12 z-50 bg-light dark:bg-black  text-[#d9d9d9] ",
         visible ? " bg-opacity-80 opacity-100" : "opacity-0"
       )}
     >

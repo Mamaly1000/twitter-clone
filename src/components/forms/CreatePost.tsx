@@ -190,7 +190,7 @@ const CreatePost = ({
   return (
     <motion.div
       className={twMerge(
-        "border-b-[1px] border-neutral-800 relative z-20 max-w-full min-w-full",
+        "border-b-[1px] border-neutral-300 dark:border-neutral-800 relative z-20 max-w-full min-w-full",
         mainPage ? "hidden md:block" : ""
       )}
     >
@@ -225,7 +225,7 @@ const CreatePost = ({
                 onChange={onChange}
                 value={form.watch("body")}
                 className={twMerge(
-                  "disabled:opacity-80 peer resize-none mt-3 w-full bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-white max-w-full overflow-hidden  placeholder:capitalize",
+                  "disabled:opacity-80 peer resize-none mt-3 w-full bg-light dark:bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-white max-w-full overflow-hidden  placeholder:capitalize",
                   direction.className
                 )}
                 maxLength={300}

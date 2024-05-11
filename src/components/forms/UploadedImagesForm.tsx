@@ -20,7 +20,7 @@ const UploadedImagesForm = () => {
         {Images.images.map((image) => (
           <div
             key={image.url}
-            className="min-w-[200px] min-h-[200px] max-h-[200px] overflow-hidden rounded-lg border-[1px] border-neutral-800 relative"
+            className="min-w-[200px] min-h-[200px] max-h-[200px] overflow-hidden rounded-lg border-[1px] border-neutral-300 dark:border-neutral-800 relative"
           >
             <Image
               unoptimized

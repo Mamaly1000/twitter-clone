@@ -47,7 +47,7 @@ const MediaSlider = ({
               src={media.url}
             />
             {!!media.description && (
-              <p className="min-w-full text-sm capitalize font-bold text-[#d9d9d9] absolute bottom-0 left-0 p-2 bg-black border-b-[1px] border-neutral-800">
+              <p className="min-w-full text-sm capitalize font-bold text-[#d9d9d9] absolute bottom-0 left-0 p-2 bg-light dark:bg-black border-b-[1px] border-neutral-800">
                 * {media.description}
               </p>
             )}

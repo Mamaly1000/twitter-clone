@@ -111,7 +111,7 @@ const NotifCard = ({
       }}
       key={notif.id}
       className={twMerge(
-        "flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all",
+        "flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-300 dark:border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all",
         !notif.isSeen ? "bg-sky-900 bg-opacity-40" : ""
       )}
     >

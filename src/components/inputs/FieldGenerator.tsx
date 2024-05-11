@@ -73,7 +73,7 @@ const FieldGenerator = ({
   return (
     <div
       className={twMerge(
-        "min-w-full flex flex-col items-start justify-start gap-3 p-3 capitalize text-neutral-200 text-[15px] border-[1px] border-neutral-800 rounded-md transition-all",
+        "min-w-full flex flex-col items-start justify-start gap-3 p-3 capitalize text-neutral-200 text-[15px] border-[1px] border-neutral-300 dark:border-neutral-800 rounded-md transition-all",
         disabled ? "opacity-50 cursor-not-allowed" : ""
       )}
       onClick={(e) => {
@@ -142,7 +142,7 @@ const FieldGenerator = ({
                           setSelectedFieldType("");
                         }
                       }}
-                      className="text-sky-500 w-[40px] h-[40px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
+                      className="text-sky-500 w-[40px] h-[40px] rounded-full border-[1px] border-neutral-300 dark:border-neutral-800 flex items-center justify-center"
                     >
                       <GrAdd size={20} />
                     </button>
@@ -186,7 +186,7 @@ const FieldGenerator = ({
                           setSelectedFieldType("");
                         }
                       }}
-                      className="text-sky-500 w-[40px] h-[40px] rounded-full border-[1px] border-neutral-800 flex items-center justify-center"
+                      className="text-sky-500 w-[40px] h-[40px] rounded-full border-[1px] border-neutral-300 dark:border-neutral-800 flex items-center justify-center"
                     >
                       <GrAdd size={20} />
                     </button>
@@ -246,7 +246,7 @@ const FieldGenerator = ({
                   const newlist = without(value, f);
                   onChange(newlist);
                 }}
-                className="text-red-400 border-[1px] border-neutral-800 w-[30px] h-[30px] rounded-md flex items-center justify-center"
+                className="text-red-400 border-[1px] border-neutral-300 dark:border-neutral-800 w-[30px] h-[30px] rounded-md flex items-center justify-center"
                 disabled={disabled}
               >
                 <BiTrash size={16} />

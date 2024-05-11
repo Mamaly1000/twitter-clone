@@ -7,7 +7,7 @@ const SkeletonTweetCard = ({ isComment }: { isComment?: boolean }) => {
   return (
     <article
       className={twMerge(
-        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0 relative ",
+        "min-w-full max-w-full border-b-[1px] border-neutral-300 dark:border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0 relative ",
         isComment && "overflow-hidden"
       )}
     >

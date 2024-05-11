@@ -29,7 +29,7 @@ const TrendHashtags = ({
   const Content: ReactNode = useMemo(() => {
     if (!isLoading && isEmpty(hashtags)) {
       return (
-        <EmptyMessage type="hashtag">there is not trend hashtags!</EmptyMessage>
+        <EmptyMessage type="hashtag">there is no trend hashtags!</EmptyMessage>
       );
     }
     if (isLoading && isEmpty(hashtags)) {
@@ -69,13 +69,15 @@ const TrendHashtags = ({
         opacity: 100,
       }}
       className={twMerge(
-        " text-[#D9D9D9]   min-w-full flex flex-col items-start justify-start gap-3",
-        !MainPage ? "rounded-xl bg-[#16181C] p-4" : "rounded-none bg-black "
+        "min-w-full flex flex-col items-start justify-start gap-3",
+        !MainPage
+          ? "rounded-xl bg-transparent dark:bg-[#16181C] p-4 border-[1px] dark:border-[#16181C] border-neutral-300 "
+          : "rounded-none  bg-light dark:bg-black "
       )}
     >
       <h2
         className={twMerge(
-          "min-w-full text-left text-[20px] capitalize font-[800] leading-6 text-[#e7e9ea]",
+          "min-w-full text-left text-[20px] capitalize font-[800] leading-6 text-text-primary dark:text-[#e7e9ea]",
           MainPage ? "px-3 pt-4" : ""
         )}
       >

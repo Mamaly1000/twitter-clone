@@ -2,7 +2,7 @@ import React from "react";
 
 const UserSkeletonBio = () => {
   return (
-    <div className="border-b-[1px] border-neutral-800 pb-4">
+    <div className="border-b-[1px] border-neutral-300 dark:border-neutral-800 pb-4">
       <div className="flex justify-end p-2">
         <button className=" min-w-[120px] min-h-[30px] skeleton hidden md:block rounded-full"></button>
       </div>

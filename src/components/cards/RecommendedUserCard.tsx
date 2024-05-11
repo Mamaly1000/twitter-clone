@@ -47,7 +47,7 @@ const RecommendedUserCard = ({
   useEffect(() => {
     const handleResize = () => {
       if (cardRef) {
-        setScrollWidth(cardRef.current!.offsetWidth);
+        setScrollWidth(cardRef.current!.clientWidth);
       }
     };
     if (cardRef) {
@@ -64,7 +64,7 @@ const RecommendedUserCard = ({
       className={twMerge(
         "min-w-full flex items-center justify-between gap-2 max-w-full overflow-hidden",
         main
-          ? "px-3 border-b-[1px] border-neutral-800 py-2 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-60"
+          ? "px-3 border-b-[1px] border-neutral-300 dark:border-neutral-800 py-2 cursor-pointer dark:hover:bg-neutral-800  hover:bg-neutral-300 hover:bg-opacity-60 dark:hover:bg-opacity-60"
           : "px-0"
       )}
     >
@@ -72,31 +72,38 @@ const RecommendedUserCard = ({
         key={user.id}
         className={twMerge(
           "flex flex-row gap-4 cursor-default ",
-          main && "w-full md:w-fit"
+          main && "w-full md:w-fit",
+          !main && "max-w-[300px]"
         )}
       >
         <Avatar userId={user.id} />
         <div
           className={twMerge(
-            "flex flex-col items-start justify-start gap-2 ",
-            main && " min-w-[calc(100%-56px)] max-w-[calc(100%-56px)]"
+            "flex flex-col items-start justify-start gap-2",
+            main && " min-w-[calc(100%-56px)] max-w-[calc(100%-56px)] "
           )}
         >
           <div
             className={twMerge(
-              "flex min-w-full max-w-full justify-start gap-2",
-              main
-                ? "flex-wrap items-center justify-between md:justify-start"
-                : "flex-col items-start"
+              "flex items-center justify-start gap-2  ",
+              main && " items-center justify-between md:justify-start",
+              !main && "h-full"
             )}
           >
-            <p className="text-[#D9D9D9] font-semibold text-[15px] capitalize line-clamp-1 flex flex-wrap items-center justify-start gap-2">
-              {user.name}
-              <span className="text-[#6E767D] text-[15px] text-nowrap line-clamp-1">
-                @{user.username}
-              </span>
-            </p>
-
+            <div className="flex h-full items-center justify-start gap-2 line-clamp-1">
+              <p className="text-neutral-700 dark:text-[#D9D9D9] font-semibold text-[15px] capitalize whitespace-nowrap">
+                {user.name!.length >= 7
+                  ? user.name?.slice(0, 7) + "..."
+                  : user.name}
+              </p>
+              {scrollWidth >= 250 && (
+                <span className="text-neutral-400 dark:text-[#6E767D] text-[14px]  whitespace-nowrap">
+                  {user.username!.length >= 6
+                    ? "@" + user.username?.slice(0, 6) + "..."
+                    : "@" + user.username}
+                </span>
+              )}
+            </div>
             {main && (
               <span className="text-sm text-[#6E767D] float-right">
                 {createdAt}
@@ -106,7 +113,7 @@ const RecommendedUserCard = ({
           {main && (
             <p
               className={twMerge(
-                " line-clamp-1 text-sm text-neutral-400 capitalize font-light",
+                " line-clamp-1 text-sm text-neutral-600 dark:text-neutral-400 capitalize font-light",
                 main ? " " : "hidden"
               )}
               dangerouslySetInnerHTML={{ __html: formatString(user.bio || "") }}

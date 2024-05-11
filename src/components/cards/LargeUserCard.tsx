@@ -47,7 +47,7 @@ const LargeUserCard = ({
     <article
       onClick={goToUser}
       className={twMerge(
-        "min-w-[300px] max-w-[300px] min-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-800 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-50",
+        "min-w-[300px] max-w-[300px] min-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-300 dark:border-neutral-800 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-50",
         main ? "max-h-fit" : "max-h-[300px]"
       )}
     >

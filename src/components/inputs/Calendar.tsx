@@ -25,13 +25,13 @@ const CustomCalendar = ({
         color="rgb(56 189 248 / .3)"
         classNames={{
           calendarWrapper:
-            "bg-transparent text-white rounded-md border-[1px] border-neutral-800 ",
+            "bg-transparent text-white rounded-md border-[1px] border-neutral-300 dark:border-neutral-800 ",
           day: "text-black",
         }}
         className="text-white    overflow-auto text-[10px] sm:text-[12px]"
-        maxDate={new Date()} 
+        maxDate={new Date()}
       />
-      <div className="flex flex-wrap items-center justify-center md:justify-between gap-3 md:gap-10 border-[1px] border-neutral-800 px-2 sm:px-3 py-2  rounded-md text-[12px] w-full md:w-fit md:text-sm">
+      <div className="flex flex-wrap items-center justify-center md:justify-between gap-3 md:gap-10 border-[1px] border-neutral-300 dark:border-neutral-800 px-2 sm:px-3 py-2  rounded-md text-[12px] w-full md:w-fit md:text-sm">
         <div className="flex items-center justify-center md:justify-start gap-2 text-sky-300 capitalize font-semibold w-full md:w-fit  ">
           <span>your birthday : </span>
           <span>{format(date, "dd-MMMM-yyyy")}</span>

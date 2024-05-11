@@ -13,6 +13,7 @@ import { GoHome } from "react-icons/go";
 import { twMerge } from "tailwind-merge";
 import ScrollHideShowComponent from "@/components/ui/ScrollComponent";
 import { usePathname } from "next/navigation";
+import { ModeToggle } from "@/components/inputs/ToggleTheme";
 const SideBar = () => {
   const { data: currentUser } = useCurrentUser();
   const pathname = usePathname();
@@ -55,15 +56,15 @@ const SideBar = () => {
     <ScrollHideShowComponent
       target={{
         className:
-          "space-y-2 transition-all min-w-full sticky bottom-2 flex items-end justify-start flex-col px-4  text-[19px] text-[#D9D9D9] pb-5 max-h-screen h-full overflow-auto overflow-x-hidden pb-5",
+          "space-y-2 z-10 transition-all min-w-full sticky bottom-2 flex items-end justify-start flex-col px-4  text-[19px] pb-5 max-h-screen h-full overflow-auto pb-5",
         inVisibleClassname: "translate-y-0 top-2",
         visibleClassname: "translate-y-0 top-2",
       }}
       className={twMerge(
-        "hidden md:block md:col-span-3 h-full items-start justify-end "
+        "hidden md:block md:col-span-3 h-full relative z-10 items-start justify-end "
       )}
       targetElement={
-        <div className=" min-w-fit md:max-w-[60px] lg:max-w-[85%] xl:max-w-[60%] flex flex-col items-start justify-end w-full overflow-hidden">
+        <div className="min-w-fit md:max-w-[60px] lg:max-w-[85%] xl:max-w-[60%] flex flex-col items-start justify-end w-full  relative z-10">
           <SideBarLogo />
           {items.map((item) => (
             <SideBarItem

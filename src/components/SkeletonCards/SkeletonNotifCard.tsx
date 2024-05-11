@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const SkeletonNotifCard = () => {
   return (
-    <motion.article className="flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all">
+    <motion.article className="flex flex-row items-start justify-start py-2 px-3 gap-4 border-b-[1px] border-neutral-300 dark:border-neutral-800 min-w-full max-w-full cursor-pointer hover:opacity-80 transition-all">
       <div className="w-fit max-w-fit flex items-start justify-start flex-col gap-2">
         <div className="min-w-[35px] min-h-[35px] rounded-lg drop-shadow-2xl skeleton"></div>
       </div>

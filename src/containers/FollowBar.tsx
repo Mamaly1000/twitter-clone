@@ -18,7 +18,7 @@ const FollowBar = () => {
         </div>
       }
       target={{
-        className: "min-w-full flex flex-col gap-5 sticky  ",
+        className: "min-w-full max-w-full flex flex-col gap-5 sticky  ",
         inVisibleClassname: "translate-y-0 top-2",
         visibleClassname: "translate-y-0 top-2",
       }}

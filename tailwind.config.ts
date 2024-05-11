@@ -29,8 +29,19 @@ const config: Config = {
       animation: {
         slideIn: "slide_in .3s linear 1 ",
       },
+      colors: {
+        light: "var(--background-color)",
+        "header-bg-primary": "var(--header-background-color)",
+        "text-primary": "var(--text-color)",
+        "link-primary": "var(--link-color)",
+        "btn-primary": "var(--button-color)",
+        "btn-text": "var(--button-text-color)",
+        accent: "var(--accent-color)",
+        highlight: "var(--highlight-color)",
+      },
     },
   },
   plugins: [],
+  darkMode: "class",
 };
 export default config;

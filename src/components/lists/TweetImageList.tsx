@@ -27,7 +27,7 @@ const TweetImageList = ({
           statusModal.onOpen(postId);
         }}
         className={twMerge(
-          "min-w-full mb-3 max-w-full h-auto grid grid-cols-2  rounded-lg overflow-hidden border-[1px] border-neutral-800 hover:border-neutral-500 items-start justify-start gap-1",
+          "min-w-full mb-3 max-w-full h-auto grid grid-cols-2  rounded-lg overflow-hidden border-[1px] border-neutral-300 dark:border-neutral-800 hover:border-neutral-500 items-start justify-start gap-1",
           Medias.length !== 3 && "grid-rows-2",
           Medias.length === 3 && "grid-rows-3",
           className

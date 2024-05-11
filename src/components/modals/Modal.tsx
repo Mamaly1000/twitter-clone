@@ -64,7 +64,7 @@ const Modal = ({
           {/*content*/}
           <motion.div
             className={twMerge(
-              "h-full max-h-screen lg:max-h-[90vh] lg:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-black outline-none focus:outline-none "
+              "h-full max-h-screen lg:max-h-[90vh] lg:h-auto border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-light dark:bg-black outline-none focus:outline-none "
             )}
             initial={{
               opacity: 0,

@@ -32,6 +32,7 @@ const SideBarItem = ({
   const { data: currentUser } = useCurrentUser();
   const loginModal = useLoginModal();
   const router = useRouter();
+
   const handleClick = useCallback(() => {
     if (onClick) {
       return onClick();
@@ -42,12 +43,18 @@ const SideBarItem = ({
       router.push(href);
     }
   }, [router, href, auth, loginModal, onClick, currentUser]);
+
   return (
     <div
       onClick={handleClick}
       className={twMerge(
-        "flex flex-row items-center justify-start gap-1 md:gap-3 p-2 hover:bg-slate-300 hover:bg-opacity-10 rounded-full cursor-pointer",
-        isActive ? "text-white" : "text-[#e9e7ea]",
+        `flex flex-row items-center justify-start gap-1 md:gap-3 p-2
+         hover:bg-slate-600 dark:hover:bg-slate-300 
+         hover:bg-opacity-10 dark:hover:bg-opacity-10 
+         rounded-full cursor-pointer`,
+        isActive
+          ? " text-text-primary dark:text-white"
+          : " text-gray-700 dark:text-[#e9e7ea]",
         className
       )}
     >
@@ -63,7 +70,9 @@ const SideBarItem = ({
         <Icon
           size={isActive ? iconSize + 5 : iconSize}
           className={twMerge(
-            isActive ? "font-extrabold text-white fill-white " : ""
+            isActive
+              ? "font-extrabold text-black dark:text-white fill-black dark:fill-white "
+              : ""
           )}
         />
         {!!!alert && isActive && (
@@ -84,7 +93,9 @@ const SideBarItem = ({
       </motion.div>
       <p
         className={twMerge(
-          " pe-3 cursor-pointer hidden font-[400] leading-[24px] text-[17px] lg:text-[20px] lg:block capitalize text-[#e7e9ea]",
+          ` pe-3 cursor-pointer hidden lg:block
+          font-[400] leading-[24px] text-[17px] lg:text-[20px]  capitalize 
+          text-gray-700 dark:text-[#e7e9ea] `,
           isActive && " font-bold",
           bottomBar && "hidden sm:block",
           mobile && "block"

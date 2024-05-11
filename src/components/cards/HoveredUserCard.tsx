@@ -40,7 +40,7 @@ const HoveredUserCard = ({
             setHover(false);
           }}
           className={twMerge(
-            "max-w-fit max-h-fit absolute z-[9000] bg-black rounded-lg drop-shadow-2xl",
+            "max-w-fit max-h-fit absolute z-[9000] bg-light dark:bg-black rounded-lg drop-shadow-2xl",
             className
           )}
         >

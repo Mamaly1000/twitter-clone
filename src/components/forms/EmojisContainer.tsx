@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import { debounce, isEmpty } from "lodash";
 import useEmoji from "@/hooks/useEmoji";
 import Loader from "../shared/Loader";
@@ -42,10 +42,10 @@ const EmojisContainer = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute top-[110%] w-[300px] h-[300px] max-h-[300px] max-w-[300px] rounded-lg bg-black border-[1px] border-neutral-800 p-2  flex-col items-start justify-start gap-2  hidden md:flex"
+          className="absolute top-[110%] w-[300px] h-[300px] max-h-[300px] max-w-[300px] rounded-lg bg-light dark:bg-black border-[1px] border-neutral-300 dark:border-neutral-800 p-2  flex-col items-start justify-start gap-2  hidden md:flex"
         >
           <SearchInput
-            className="sticky top-0 left-0 bg-black z-10"
+            className="sticky top-0 left-0 bg-light dark:bg-black z-10"
             name="emoji-search"
             onChange={(e) => {
               searchDebounce(e.target.value);
@@ -77,7 +77,7 @@ const EmojisContainer = ({
                     transition={{ delay: index / 10 + 0.01 }}
                     key={e.codePoint}
                     className={twMerge(
-                      "min-w-fit w-[40px] h-[40px] max-h-[40px] text-[20px] rounded-lg drop-shadow-2xl border-[1px] border-neutral-800 flex items-center justify-center "
+                      "min-w-fit w-[40px] h-[40px] max-h-[40px] text-[20px] rounded-lg drop-shadow-2xl border-[1px] border-neutral-300 dark:border-neutral-800 flex items-center justify-center "
                     )}
                     onClick={() => onChange(e.character)}
                     onPointerEnter={() => setHoveredCharacter(e)}
@@ -105,7 +105,7 @@ const EmojisContainer = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="min-w-full max-w-full flex items-center justify-start overflow-hidden sticky z-10 bottom-0 left-0 p-2 border-t-[1px] border-neutral-800 bg-black min-h-[50px] max-h-[50px] gap-3 text-sm font-semibold capitalize"
+                className="min-w-full max-w-full flex items-center justify-start overflow-hidden sticky z-10 bottom-0 left-0 p-2 border-t-[1px] border-neutral-300 dark:border-neutral-800 bg-light dark:bg-black min-h-[50px] max-h-[50px] gap-3 text-sm font-semibold capitalize"
               >
                 <span className="text-[20px] w-10 h-10  flex items-center justify-center">
                   {hoveredCharacter.character}

@@ -35,7 +35,14 @@ const DropDown = ({
       )}
     >
       <button
-        className="min-w-[35px]  w-[35px] h-[35px] min-h-[35px] max-w-[35px] max-h-[35px] rounded-full p-1 flex items-center justify-center hover:text-sky-500 hover:bg-sky-500 hover:bg-opacity-10  border-none outline-none focus-within:border-none focus:border-none"
+        className={twMerge(
+          `min-w-[35px] w-[35px] h-[35px] min-h-[35px] max-w-[35px] max-h-[35px]
+          rounded-full p-1
+          flex items-center justify-center
+          text-gray-600 dark:text-gray-300
+          hover:text-sky-500 hover:bg-sky-500 hover:bg-opacity-10
+          border-none outline-none focus-within:border-none focus:border-none `
+        )}
         onClick={onDropDown}
       >
         {children}
@@ -49,7 +56,7 @@ const DropDown = ({
             onMouseLeave={onClose}
             onPointerLeave={onClose}
             className={twMerge(
-              "absolute flex flex-col items-start justify-start gap-1 border-[1px] border-neutral-800 rounded-lg drop-shadow-2xl py-2 px-3 min-w-fit bg-black max-w-[90%] ",
+              "absolute flex flex-col items-start justify-start gap-1 border-[1px] border-neutral-300 dark:border-neutral-800 rounded-lg drop-shadow-2xl py-2 px-3 min-w-fit bg-light dark:bg-black max-w-[90%] ",
               position
             )}
           >

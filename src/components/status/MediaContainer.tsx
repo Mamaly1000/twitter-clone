@@ -56,7 +56,7 @@ const MediaContainer = ({
           <TweetActionBar
             postId={postId}
             className={twMerge(
-              "min-w-[100%] max-w-[100%] md:min-w-[70%] md:max-w-[70%] flex flex-row justify-between items-center p-6 bg-black fixed md:relative bottom-0 left-0 z-30 text-[20px] gap-5 sm:gap-10 text-[#728291]"
+              "min-w-[100%] max-w-[100%] md:min-w-[70%] md:max-w-[70%] flex flex-row justify-between items-center p-6 bg-light dark:bg-black fixed md:relative bottom-0 left-0 z-30 text-[20px] gap-5 sm:gap-10 text-[#728291]"
             )}
           />
         )}

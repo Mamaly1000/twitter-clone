@@ -1,3 +1,4 @@
+"use client";
 import SideBarItem from "@/components/Layout-components/SideBarItem";
 import SmallUserBio from "@/components/shared/SmallUserBio";
 import useCurrentUser from "@/hooks/useCurrentUser";
@@ -71,23 +72,26 @@ const MobileSideBar = () => {
     <div className="min-w-full min-h-screen max-h-screen max-w-full flex items-center justify-center fixed z-30  ">
       <div
         className={twMerge(
-          "absolute min-w-full min-h-full bg-black transition-all bg-opacity-40 top-0 left-0 z-10",
+          "absolute min-w-full min-h-full bg-light dark:bg-black transition-all bg-opacity-40 top-0 left-0 z-10",
           visible ? "opacity-100" : "opacity-0"
         )}
         onClick={() => {
           onClose();
         }}
-      ></div>
+      />
       <section
         className={twMerge(
-          "absolute left-0 top-0 z-30 h-screen min-w-[60%] max-w-[60%] sm:min-w-[400px] max-h-screen min-h-screen overflow-y-auto lg:hidden  bg-black transition-all  ",
+          `absolute left-0 top-0 z-30
+           h-screen min-w-[60%] max-w-[60%] sm:min-w-[400px] max-h-screen min-h-screen 
+           overflow-y-auto lg:hidden transition-all 
+            bg-light dark:bg-black`,
           visible ? "translate-x-[0px]" : "translate-x-[-500px]"
         )}
       >
         <div className="flex flex-col items-end min-w-full   max-w-full px-2  py-5 gap-5">
           <SmallUserBio />
-          <hr className="min-w-full min-h-[1px] bg-neutral-800 border-none" />
-          <div className=" transition-all min-w-full flex items-start justify-start flex-col text-[19px] text-[#D9D9D9]">
+          <hr className="min-w-full min-h-[.5px] bg-neutral-300 dark:bg-neutral-800  border-none" />
+          <div className=" transition-all min-w-full flex items-start justify-start flex-col text-[19px]  ">
             {items.map((item) => (
               <SideBarItem
                 key={item.href}

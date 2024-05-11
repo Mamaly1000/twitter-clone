@@ -24,6 +24,7 @@
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "next-cloudinary": "^5.13.0",
+    "next-themes": "^0.3.0",
     "query-string": "^8.2.0",
     "react": "^18",
     "react-date-range": "^2.0.0-alpha.4",

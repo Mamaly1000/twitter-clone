@@ -191,7 +191,7 @@ const TweetCard = ({
     <article
       onClick={goToPost}
       className={twMerge(
-        "min-w-full max-w-full border-b-[1px] border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0 relative ",
+        "min-w-full max-w-full border-b-[1px] border-neutral-300 dark:border-neutral-800  cursor-pointer  transition-all group flex items-center justify-center flex-col p-0 relative ",
         (hoveredUserId === post.userId &&
           post.id === hoveredPostId &&
           !isComment) ||
@@ -390,7 +390,7 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
+                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-300 dark:border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
                 >
                   <Avatar repost userId={post.repost.userId} />
                   <div className=" max-w-[calc(100%-32px)] min-w-[calc(100%-32px)] flex items-start justify-start flex-col gap-2">

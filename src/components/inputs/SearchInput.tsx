@@ -31,7 +31,7 @@ const SearchInput = ({
       <FiSearch className="text-[#71767b]" size={size} />
       <input
         className={twMerge(
-          "placeholder:text-[#71767b] bg-black outline-none focus-within:outline-none focus:outline-none focus-visible:outline-none border-none pe-2 capitalize text-white",
+          "placeholder:text-[#71767b] bg-light dark:bg-black outline-none focus-within:outline-none focus:outline-none focus-visible:outline-none border-none pe-2 capitalize text-white",
           inputClassName
         )}
         autoFocus={autoFocus}

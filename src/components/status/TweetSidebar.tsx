@@ -27,7 +27,7 @@ const TweetSidebar = ({
     <>
       <div
         className={twMerge(
-          "relative hidden lg:block z-20 min-h-screen sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] lg:max-h-screen overflow-y-auto bg-black lg:col-span-5 border-l-[1px] border-neutral-800 2xl:col-span-3 overflow-x-hidden"
+          "relative hidden lg:block z-20 min-h-screen sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] lg:max-h-screen overflow-y-auto bg-light dark:bg-black lg:col-span-5 border-l-[1px] border-neutral-300 dark:border-neutral-800 2xl:col-span-3 overflow-x-hidden"
         )}
       >
         {isLoading || userLoading ? (
@@ -54,7 +54,7 @@ const TweetSidebar = ({
       </div>
       <div
         className={twMerge(
-          "absolute top-0 ring-0 lg:hidden z-30 min-h-screen max-h-screen overflow-auto sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] overflow-y-auto bg-black transition-all min-w-full",
+          "absolute top-0 ring-0 lg:hidden z-30 min-h-screen max-h-screen overflow-auto sm:max-h-[calc(100vh-60px)] md:max-h-[calc(100vh-70px)] overflow-y-auto bg-light dark:bg-black transition-all min-w-full",
           !collapse
             ? "translate-x-[1000px] opacity-0"
             : "translate-x-0 opacity-100"

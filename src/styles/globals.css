@@ -5,7 +5,7 @@
 body,
 html {
   scroll-behavior: smooth;
-  @apply h-full bg-black;
+  @apply h-full bg-light dark:bg-black;
 }
 * {
   @apply transition-all;
@@ -46,6 +46,14 @@ html {
 }
 :root {
   --toastify-color-success: #0ea5e9;
+  --background-color: #ffffff;
+  --header-background-color: #e1e8ed;
+  --text-color: #14171a;
+  --link-color: #0ea5e9;
+  --button-color: #0ea5e9;
+  --button-text-color: #ffffff;
+  --accent-color: #0ea5e9;
+  --highlight-color: #e1e8ed;
 }
 .Toastify__toast-container--bottom-left {
   @apply fixed top-0 left-0 w-full h-fit md:left-5 md:top-[unset] md:bottom-5 md:w-fit md:min-w-[300px];

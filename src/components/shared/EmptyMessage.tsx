@@ -51,7 +51,7 @@ const EmptyMessage = ({
   }, [type]);
   if (!user) {
     return (
-      <p className="text-sm p-3 capitalize text-neutral-300 min-w-full text-center min-h-[150px] flex flex-col items-center justify-center">
+      <p className="text-sm p-3 capitalize text-neutral-500 dark:text-neutral-300 min-w-full text-center min-h-[150px] flex flex-col items-center justify-center ">
         <Image
           src={unAuthorizedImage.src}
           width={200}
@@ -64,7 +64,7 @@ const EmptyMessage = ({
   }
   return (
     user && (
-      <p className="text-sm capitalize p-4 text-neutral-300 min-w-full text-center min-h-[150px] flex flex-col items-center justify-center">
+      <p className="text-sm capitalize p-4 text-neutral-500 dark:text-neutral-300 min-w-full text-center min-h-[150px] flex flex-col items-center justify-center">
         <Image
           src={EmptyImage}
           width={200}

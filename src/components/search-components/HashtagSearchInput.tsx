@@ -26,7 +26,7 @@ const HashtagSearchInput = () => {
       animate={{
         top: scrolled && isScrolling ? 0 : "60px",
       }}
-      className="min-w-full z-10 sticky py-2 bg-black max-h-full flex items-center justify-between px-3 my-3 border-b-[1px] border-neutral-800"
+      className="min-w-full z-10 sticky py-2 bg-light dark:bg-black max-h-full flex items-center justify-between px-3 my-3 border-b-[1px] border-neutral-800"
     >
       <SearchInput
         disabled={isLoading}
@@ -36,7 +36,7 @@ const HashtagSearchInput = () => {
         autoFocus
         size={30}
         placeholder={"search #twitter"}
-        inputClassName="min-w-[calc(100%-32px)] max-w-[calc(100%-32px)] text-lg bg-black"
+        inputClassName="min-w-[calc(100%-32px)] max-w-[calc(100%-32px)] text-lg bg-light dark:bg-black"
       />
     </motion.div>
   );

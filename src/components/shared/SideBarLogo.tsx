@@ -13,7 +13,7 @@ const SideBarLogo = ({ className }: { className?: string }) => {
         className
       )}
     >
-      <BsTwitter size={24} color="white" />
+      <BsTwitter size={24} className="text-sky-500 dark:text-white" />
     </div>
   );
 };
