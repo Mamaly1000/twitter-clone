@@ -34,30 +34,31 @@ const LoginModal = () => {
     registerModal.onOpen();
   }, [onClose, registerModal]);
 
-  const onSubmit = form.handleSubmit(
-    async (values: z.infer<typeof loginSchema>) => {
-      try {
-        setLoading(true);
-        console.log(values);
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    try {
+      setLoading(true);
+      console.log(values);
 
-        await signIn("credentials", {
-          email: values.email,
-          password: values.password,
-        }).then(() => {
-          form.reset();
-          toast.success("wellcome back!");
-        });
-      } catch (error) {
-        console.log(error);
-        toast.error("something went wrong!");
-      } finally {
-        setLoading(false);
-      }
+      await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+      }).then(() => {
+        form.reset();
+        toast.success("wellcome back!");
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong!");
+    } finally {
+      setLoading(false);
     }
-  );
+  }; 
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-4 h-full"
+    >
       <Input
         register={form.register("email", {
           required: true,
@@ -77,7 +78,8 @@ const LoginModal = () => {
         value={form.watch("password")}
         disabled={isLoading}
       />
-    </div>
+      <button className="hidden" type="submit" />
+    </form>
   );
 
   const footerContent = (
@@ -103,7 +105,7 @@ const LoginModal = () => {
     <Modal
       actionLabel="Login"
       onClose={onClose}
-      onSubmit={onSubmit}
+      onSubmit={form.handleSubmit(onSubmit)}
       body={bodyContent}
       disabled={isLoading}
       footer={footerContent}

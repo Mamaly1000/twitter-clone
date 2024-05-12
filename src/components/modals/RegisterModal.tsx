@@ -89,7 +89,10 @@ const RegisterModal = () => {
   };
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-4"
+    >
       <Input
         register={form.register("name", {
           required: true,
@@ -99,7 +102,7 @@ const RegisterModal = () => {
         onChange={(e) => form.setValue("name", e.target.value)}
         value={form.watch("name")}
         disabled={isLoading}
-      />{" "}
+      />
       <Input
         register={form.register("username", {
           required: true,
@@ -109,7 +112,7 @@ const RegisterModal = () => {
         onChange={(e) => form.setValue("username", e.target.value)}
         value={form.watch("username")}
         disabled={isLoading}
-      />{" "}
+      />
       <Input
         register={form.register("email", {
           required: true,
@@ -139,7 +142,7 @@ const RegisterModal = () => {
         value={form.watch("password")}
         disabled={isLoading}
       />
-    </div>
+    </form>
   );
 
   const footerContent = (
@@ -154,7 +157,6 @@ const RegisterModal = () => {
             hover:underline
           "
         >
-          {" "}
           Sign in
         </span>
       </p>

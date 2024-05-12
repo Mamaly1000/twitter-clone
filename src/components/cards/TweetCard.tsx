@@ -301,7 +301,7 @@ const TweetCard = ({
             )}
             {!!!isComment && mutualReplies && (
               <motion.hr
-                className="z-0 w-[2px] bg-neutral-400 dark:bg-[#333639] border-none transition-all absolute top-0"
+                className="z-0 w-[2px] bg-neutral-300 dark:bg-[#333639] border-none transition-all absolute top-0"
                 animate={{ height }}
               />
             )}

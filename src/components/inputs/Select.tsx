@@ -28,23 +28,21 @@ const CountrySelect = ({
         isClearable
         options={allCountries}
         value={value}
-        onChange={(newval) => {
-          onChange(newval as SingleCountryType);
-        }}
+        onChange={(newval) => onChange(newval as SingleCountryType)}
         formatOptionLabel={(data) => {
           return (
             !!data.value &&
             !!data.city &&
             !!data.label && (
-              <div className="flex flex-row px-1 items-center justify-start text-white hover:text-sky-400 gap-2 min-w-full max-w-full line-clamp-1">
+              <div className="flex flex-row px-1 items-center justify-start text-text-primary dark:text-white hover:text-sky-400 gap-2 min-w-full max-w-full line-clamp-1">
                 <span className="text-nowrap flex items-center justify-center gap-1 text-inherit">
                   <FaEarthAsia size={12} />
                   {data.label},{" "}
                 </span>
-                <span className="text-neutral-300 text-inherit text-nowrap">
+                <span className="dark:text-neutral-300 text-neutral-500 text-inherit text-nowrap">
                   {data.region}
                 </span>
-                <span className="text-neutral-300 flex items-center justify-center gap-1 text-inherit text-nowrap">
+                <span className="dark:text-neutral-300 text-neutral-500 flex items-center justify-center gap-1 text-inherit text-nowrap">
                   <BiSolidCity size={12} />
                   {data.city}
                 </span>
@@ -53,24 +51,24 @@ const CountrySelect = ({
           );
         }}
         classNames={{
-          control: (base) =>
+          control: () =>
             twMerge(
-              base.className,
-              "p-3 border-2 border-neutral-300 bg-light dark:bg-black overflow-hidden"
+              "css-163ge8a-control p-3 border-2 border-neutral-300 overflow-hidden bg-light dark:bg-black"
             ),
           input: (base) =>
             twMerge(
               base.className,
-              " text-lg bg-light dark:bg-black text-white"
+              " text-lg text-text-primary dark:text-white"
             ),
           option: (base) =>
             twMerge(base.className, " text-lg bg-light dark:bg-black"),
           valueContainer: (base) =>
             twMerge(
               base.className,
-              " bg-light dark:bg-black text-white text-[12px] flex-row min-w-[70%] max-w-[70%] "
+              " bg-light dark:bg-black text-text-primary dark:text-white text-[12px] flex-row min-w-[70%] max-w-[70%] "
             ),
-          placeholder: (base) => twMerge(base.className, " text-neutral-300"),
+          placeholder: (base) =>
+            twMerge(base.className, " text-neutral-300 bg-light dark:bg-black"),
           container: (base) =>
             twMerge(base.className, " bg-light dark:bg-black"),
           indicatorsContainer: (base) =>
@@ -102,35 +100,6 @@ const CountrySelect = ({
             primary75: "rgb(56 189 248 / .75)",
           },
         })}
-        styles={{
-          container: (base) => {
-            return { ...base, background: "transparent", color: "#fff" };
-          },
-          control: (base) => {
-            return {
-              ...base,
-              background: "transparent",
-            };
-          },
-          input: (base) => {
-            return { ...base, background: "transparent", color: "#fff" };
-          },
-          menuList: (base) => {
-            return {
-              ...base,
-              background: "black",
-            };
-          },
-          option: (base) => {
-            return {
-              ...base,
-              ":hover": {
-                backgroundColor: "rgb(56 189 248 / .2)",
-                background: "rgb(56 189 248 / .2)",
-              },
-            };
-          },
-        }}
       />
     </div>
   );

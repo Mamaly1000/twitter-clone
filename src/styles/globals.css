@@ -44,6 +44,10 @@ html {
 .scroll-hidden::-webkit-scrollbar {
   @apply hidden;
 }
+.css-163ge8a-control {
+  background-color: transparent !important;
+  @apply bg-light dark:bg-black;
+}
 :root {
   --toastify-color-success: #0ea5e9;
   --background-color: #ffffff;

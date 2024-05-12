@@ -54,7 +54,7 @@ const MutualReplies = ({
               isTweet
               postId={mutualReplies[0]?.id}
             />
-            <hr className="w-[2px] absolute -top-[43px] rounded-full min-h-[40px] z-0 bg-neutral-400 dark:bg-[#333639] border-none transition-all" />
+            <hr className="w-[2px] absolute -top-[43px] rounded-full min-h-[40px] z-0 bg-neutral-300 dark:bg-[#333639] border-none transition-all" />
           </div>
           <div className="min-w-[calc(100%-52px)] max-w-[calc(100%-52px)] flex flex-col items-start justify-start gap-2 capitalize">
             <div className=" flex flex-wrap items-center justify-start gap-[6px] min-w-full max-w-full">
