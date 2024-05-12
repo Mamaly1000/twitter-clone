@@ -35,7 +35,7 @@ const TweetImageList = ({
       >
         {Medias.length === 1 && (
           <div className="col-span-2 row-span-2 flex flex-col gap-0">
-            <div className="relative bg-neutral-600  w-full aspect-video min-h-fit h-auto">
+            <div className="relative bg-neutral-300 dark:bg-neutral-600  w-full aspect-video min-h-fit h-auto">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -55,7 +55,7 @@ const TweetImageList = ({
         )}{" "}
         {Medias.length === 2 && (
           <>
-            <div className="col-span-1 row-span-2 relative bg-neutral-600 min-w-full   h-auto  aspect-video">
+            <div className="col-span-1 row-span-2 relative bg-neutral-300 dark:bg-neutral-600 min-w-full   h-auto  aspect-video">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -66,7 +66,7 @@ const TweetImageList = ({
                 className="object-cover w-full"
               />
             </div>
-            <div className="col-span-1 row-span-2 relative bg-neutral-600 min-w-full aspect-video">
+            <div className="col-span-1 row-span-2 relative bg-neutral-300 dark:bg-neutral-600 min-w-full aspect-video">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -82,7 +82,7 @@ const TweetImageList = ({
         {Medias.length === 3 && (
           <>
             <div className="col-span-2 row-span-1 grid grid-cols-2 flex-row items-start justify-start gap-1">
-              <div className="col-span-1   relative bg-neutral-600 min-w-full aspect-video  max-h-fit overflow-hidden">
+              <div className="col-span-1   relative bg-neutral-300 dark:bg-neutral-600 min-w-full aspect-video  max-h-fit overflow-hidden">
                 <Image
                   placeholder="blur"
                   loading="lazy"
@@ -93,7 +93,7 @@ const TweetImageList = ({
                   className="object-cover w-full max-h-fit"
                 />
               </div>
-              <div className="col-span-1   relative bg-neutral-600 min-w-full aspect-video  max-h-fit overflow-hidden  ">
+              <div className="col-span-1   relative bg-neutral-300 dark:bg-neutral-600 min-w-full aspect-video  max-h-fit overflow-hidden  ">
                 <Image
                   placeholder="blur"
                   loading="lazy"
@@ -105,7 +105,7 @@ const TweetImageList = ({
                 />
               </div>
             </div>
-            <div className=" col-span-2 row-span-2 relative bg-neutral-600 min-w-full   aspect-video h-auto">
+            <div className=" col-span-2 row-span-2 relative bg-neutral-300 dark:bg-neutral-600 min-w-full   aspect-video h-auto">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -120,7 +120,7 @@ const TweetImageList = ({
         )}{" "}
         {Medias.length === 4 && (
           <>
-            <div className="col-span-1 row-span-1 relative bg-neutral-600 min-w-full   h-auto aspect-video">
+            <div className="col-span-1 row-span-1 relative bg-neutral-300 dark:bg-neutral-600 min-w-full   h-auto aspect-video">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -132,7 +132,7 @@ const TweetImageList = ({
               />
             </div>
 
-            <div className="col-span-1 row-span-1 relative bg-neutral-600 min-w-full   h-auto aspect-video">
+            <div className="col-span-1 row-span-1 relative bg-neutral-300 dark:bg-neutral-600 min-w-full   h-auto aspect-video">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -144,7 +144,7 @@ const TweetImageList = ({
               />
             </div>
 
-            <div className="col-span-1 row-span-1 relative bg-neutral-600 min-w-full  h-auto aspect-video ">
+            <div className="col-span-1 row-span-1 relative bg-neutral-300 dark:bg-neutral-600 min-w-full  h-auto aspect-video ">
               <Image
                 placeholder="blur"
                 loading="lazy"
@@ -156,7 +156,7 @@ const TweetImageList = ({
               />
             </div>
 
-            <div className="col-span-1 row-span-1 relative bg-neutral-600 min-w-full h-auto aspect-video  ">
+            <div className="col-span-1 row-span-1 relative bg-neutral-300 dark:bg-neutral-600 min-w-full h-auto aspect-video  ">
               <Image
                 placeholder="blur"
                 loading="lazy"

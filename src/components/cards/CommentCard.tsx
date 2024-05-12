@@ -140,7 +140,7 @@ const CommentCard = ({
   return (
     <div
       className={twMerge(
-        `min-w-full px-5  cursor-pointer hover:bg-neutral-900 transition-all max-w-full`,
+        `min-w-full px-5  cursor-pointer dark:hover:bg-neutral-900 hover:bg-neutral-100/50 duration-300 transition-all max-w-full`,
         i === 0 ? "pt-4 pb-1" : "py-1",
         lastIndex === i && "pb-3"
       )}
@@ -159,11 +159,11 @@ const CommentCard = ({
           />
           <div className="absolute flex flex-col items-center justify-center gap-1 z-[1]">
             <motion.hr
-              className="w-[1.8px] rounded-md bg-neutral-300 bg-opacity-30 border-none transition-all  z-10"
+              className="w-[1.8px] rounded-md dark:bg-neutral-300 bg-neutral-400 bg-opacity-30 border-none transition-all  z-10"
               animate={{ height: lastIndex === i ? height - 20 : height }}
             />
             {lastIndex === i && (
-              <span className="flex flex-col text-neutral-300 text-opacity-50 text-lg gap-1 ">
+              <span className="flex flex-col text-neutral-400 dark:text-neutral-300 text-opacity-50 text-lg gap-1 ">
                 <BiDotsVertical />
               </span>
             )}
@@ -175,11 +175,11 @@ const CommentCard = ({
         >
           <div className="flex flex-col  items-start justify-start min-w-full max-w-full">
             <div className="flex items-center justify-between gap-1 min-w-full max-w-full">
-              <div className="w-fit max-w-[70%] line-clamp-1 text-nowrap whitespace-nowrap flex items-center justify-start">
+              <div className="w-fit max-w-[70%] line-clamp-1 gap-1 text-nowrap whitespace-nowrap flex items-center justify-start">
                 <p
                   onClick={goToUser}
                   className="
-                  text-white 
+                  dark:text-white  text-text-primary
                   font-semibold 
                   cursor-pointer 
                   hover:underline
@@ -227,7 +227,7 @@ const CommentCard = ({
               }}
               dangerouslySetInnerHTML={{ __html: formatString(comment.body) }}
               className={twMerge(
-                "text-[#e7e9ea] text-[15px]  my-2 leading-[20px] font-[400] capitalize ",
+                " dark:text-[#e7e9ea] text-text-primary text-[15px]  my-2 leading-[20px] font-[400] capitalize ",
                 direction.className
               )}
             ></p>

@@ -30,7 +30,7 @@ const Tabs = ({
   return (
     <section
       className={twMerge(
-        "tab-container overflow-y-hidden relative z-0 min-w-full max-w-full overflow-x-auto flex flex-row items-center justify-between  p-0 m-0 [&>button]:first:rounded-bl-md [&>button]:last:rounded-br-md",
+        "tab-container overflow-y-hidden relative z-0 min-w-full max-w-full overflow-x-auto flex flex-row items-center justify-between border-b-[1px] border-neutral-200 dark:border-neutral-800 p-0 m-0 [&>button]:first:rounded-bl-md [&>button]:last:rounded-br-md",
         className
       )}
     >

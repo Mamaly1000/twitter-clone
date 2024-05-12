@@ -44,21 +44,21 @@ const MutualReplies = ({
     return null;
   }
   return (
-    <div className="min-w-full max-w-full flex items-center justify-start px-2 pb-0 pt-3 gap-4 hover:bg-neutral-800 hover:bg-opacity-50">
+    <div className="min-w-full max-w-full flex items-center justify-start px-2 pb-0 pt-3 gap-4 dark:hover:bg-neutral-800/50 hover:bg-neutral-100/30  ">
       {mutualReplies.length === 1 && (
         <div className="min-w-full max-w-full flex items-start justify-start gap-3">
           <div className="relative flex items-center justify-center ">
             <Avatar
               userId={mutualReplies[0].user.id}
-              className="relative z-10 border-[#333639] border-[1px] border-opacity-50"
+              className="relative z-10 border-light dark:border-[#333639] border-[1px] border-opacity-50"
               isTweet
               postId={mutualReplies[0]?.id}
             />
-            <hr className="w-[2px] absolute -top-[43px] rounded-full min-h-[40px] z-0 bg-[#333639] border-none transition-all" />
+            <hr className="w-[2px] absolute -top-[43px] rounded-full min-h-[40px] z-0 bg-neutral-400 dark:bg-[#333639] border-none transition-all" />
           </div>
           <div className="min-w-[calc(100%-52px)] max-w-[calc(100%-52px)] flex flex-col items-start justify-start gap-2 capitalize">
             <div className=" flex flex-wrap items-center justify-start gap-[6px] min-w-full max-w-full">
-              <p className="text-[#e7e9ea] text-[15px] font-bold leading-[14px]">
+              <p className="text-text-primary dark:text-[#e7e9ea] text-[15px] font-bold leading-[14px]">
                 {mutualReplies[0].user.name}
               </p>
               <span className=" text-[#717678] text-[15px] font-normal leading-[14px] hidden sm:block">
@@ -71,7 +71,7 @@ const MutualReplies = ({
             {mutualReplies[0].body ? (
               <p
                 className={twMerge(
-                  "w-[289px] text-zinc-300 text-sm font-normal leading-[17px] min-w-full max-w-full",
+                  "w-[289px]  text-text-primary dark:text-zinc-300 text-sm font-normal leading-[17px] min-w-full max-w-full",
                   tweetdirection(mutualReplies[0].body).className
                 )}
                 style={{
@@ -104,7 +104,7 @@ const MutualReplies = ({
                   key={rep?.user.id}
                   userId={rep?.user.id}
                   className={twMerge(
-                    "min-w-[30px] max-w-[30px] min-h-[30px] max-h-[30px] h-[30px] w-[30px] absolute drop-shadow-2xl border-[1px] border-black",
+                    "min-w-[30px] max-w-[30px] min-h-[30px] max-h-[30px] h-[30px] w-[30px] absolute drop-shadow-2xl border-[1px] dark:border-black border-light",
                     i === 1 && `start-4 z-20`,
                     i === 2 && "start-8 z-30"
                   )}
@@ -125,7 +125,7 @@ const MutualReplies = ({
                 }`
               ),
             }}
-            className="max-w-[55%] gap-[2px] sm:max-w-[60%] md:max-w-[70%] flex flex-wrap gap-y-1 items-start justify-start text-[#72767A] font-[400] leading-[13px] text-[13px]"
+            className="max-w-[55%] gap-[2px] sm:max-w-[60%] md:max-w-[70%] flex flex-wrap gap-y-1 items-start justify-start text-neutral-400 dark:text-[#72767A] font-[400] leading-[13px] text-[13px]"
           ></p>
         </div>
       )}

@@ -3,20 +3,20 @@ import { Post, Repost, User } from "@prisma/client";
 import { format, formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/router";
 import React, { useCallback, useMemo, useState } from "react";
-import Avatar from "../shared/Avatar";
+import Avatar from "@/components/shared/Avatar";
 import { formatString, getStringDirectionality } from "@/libs/wordDetector";
 import { LiaReplySolid } from "react-icons/lia";
 import { twMerge } from "tailwind-merge";
-import MutualReplies from "../lists/MutualReplies";
-import TweetImageList from "../lists/TweetImageList";
+import MutualReplies from "@/components/lists/MutualReplies";
+import TweetImageList from "@/components/lists/TweetImageList";
 import { useStatus } from "@/hooks/useStatus";
-import TweetActionBar from "../shared/TweetActionBar";
-import AnimatedNumber from "../ui/AnimatedNumber";
+import TweetActionBar from "@/components/shared/TweetActionBar";
+import AnimatedNumber from "@/components/ui/AnimatedNumber";
 import { getShortUnit } from "@/libs/utils";
 import useMeasure from "react-use-measure";
 import { motion } from "framer-motion";
 import { useHoverUser } from "@/hooks/useHoverUser";
-import DropDown, { DropDownItemType } from "../ui/DropDown";
+import DropDown, { DropDownItemType } from "@/components/ui/DropDown";
 import { BiDotsHorizontal, BiShare } from "react-icons/bi";
 import { useSelectedDropdown } from "@/hooks/useSelectDropdown";
 import useFollow from "@/hooks/useFollow";
@@ -203,7 +203,7 @@ const TweetCard = ({
     >
       <div
         className={twMerge(
-          "flex flex-col items-start justify-start min-w-full max-w-full hover:bg-neutral-900",
+          "flex flex-col items-start justify-start min-w-full max-w-full dark:hover:bg-neutral-900 hover:bg-neutral-100 duration-300",
           isComment ? "px-5 pt-5  gap-4" : " p-2 ",
           !isComment && mutualReplies ? "pb-0" : "pb-0"
         )}
@@ -257,7 +257,9 @@ const TweetCard = ({
                 postId={post.id}
                 className={twMerge(
                   " relative  border-[2px] border-opacity-50",
-                  mutualReplies && !isComment && "border-[#333639]",
+                  mutualReplies &&
+                    !isComment &&
+                    "dark:border-[#333639] border-neutral-300",
                   isComment &&
                     !!post.parentId &&
                     "relative z-10 border-[#333639] border-[2px]  "
@@ -275,7 +277,7 @@ const TweetCard = ({
                 <div className="max-w-[60%] line-clamp-1 text-nowrap whitespace-nowrap flex flex-col items-start justify-start ">
                   <p
                     onClick={goToUser}
-                    className=" text-[#d9d9d9] font-semibold cursor-pointer hover:underline text-nowrap  "
+                    className=" text-text-primary dark:text-[#d9d9d9] font-semibold cursor-pointer hover:underline text-nowrap  "
                   >
                     {post.user.name}
                   </p>
@@ -299,7 +301,7 @@ const TweetCard = ({
             )}
             {!!!isComment && mutualReplies && (
               <motion.hr
-                className="z-0 w-[2px] bg-[#333639] border-none transition-all absolute top-0"
+                className="z-0 w-[2px] bg-neutral-400 dark:bg-[#333639] border-none transition-all absolute top-0"
                 animate={{ height }}
               />
             )}
@@ -325,7 +327,7 @@ const TweetCard = ({
                 <div className="w-fit max-w-[85%] flex items-center flex-wrap justify-start gap-1">
                   <p
                     onClick={goToUser}
-                    className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-[#d9d9d9]"
+                    className="text-[15px] capitalize font-bold cursor-pointer hover:text-sky-500 text-nowrap text-text-primary dark:text-[#d9d9d9]"
                   >
                     {post.user.name}
                   </p>
@@ -362,9 +364,9 @@ const TweetCard = ({
                 <p
                   className={twMerge(
                     isComment
-                      ? "text-lg capitalize min-w-full max-w-full" +
+                      ? "text-lg capitalize min-w-full max-w-full text-text-primary dark:text-[#d9d9d9] " +
                           tweetdirection.className
-                      : "text-[13px] sm:text-[17px] text-[#e7e9ea] font-[400] leading-[24px] capitalize   text-wrap max-w-full min-w-full " +
+                      : "text-[13px] sm:text-[17px] text-text-primary dark:text-[#d9d9d9] font-[400] leading-[24px] capitalize   text-wrap max-w-full min-w-full " +
                           tweetdirection.className,
                     post.repostId ? "" : "mb-3",
                     !isComment && "line-clamp-4 md:line-clamp-5"
@@ -390,7 +392,7 @@ const TweetCard = ({
                       router.push(`/posts/${post.repost?.postId}`);
                     }
                   }}
-                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-300 dark:border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
+                  className="overflow-hidden flex flex-row items-start justify-start p-2 rounded-md border-[1px] border-neutral-300 dark:border-neutral-800 drop-shadow-2xl text-[#687684] hover:border-neutral-400 dark:hover:border-neutral-600 mb-3 gap-3 min-w-full max-w-full "
                 >
                   <Avatar repost userId={post.repost.userId} />
                   <div className=" max-w-[calc(100%-32px)] min-w-[calc(100%-32px)] flex items-start justify-start flex-col gap-2">
@@ -400,7 +402,7 @@ const TweetCard = ({
                           e.stopPropagation();
                           router.push(`/users/${post.repost?.userId}`);
                         }}
-                        className="text-[#d9d9d9] capitalize font-bold hover:text-sky-500 max-w-[95%] overflow-hidden text-wrap whitespace-pre-wrap"
+                        className=" text-text-primary dark:text-[#d9d9d9] capitalize font-bold hover:text-sky-500 max-w-[95%] overflow-hidden text-wrap whitespace-pre-wrap"
                       >
                         {post.repost.user.name}
                       </p>
@@ -424,7 +426,7 @@ const TweetCard = ({
                           direction: reTweetdirection.dir,
                         }}
                         className={twMerge(
-                          "max-w-full min-w-full text-[14px] leading-[-.2px] capitalize font-light text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-3 md:line-clamp-4 text-balance",
+                          "max-w-full min-w-full text-[14px] leading-[-.2px] capitalize font-light text-text-primary dark:text-[#D9D9D9] whitespace-pre-wrap overflow-hidden line-clamp-3 md:line-clamp-4 text-balance",
                           reTweetdirection.className
                         )}
                       ></p>
@@ -448,7 +450,7 @@ const TweetCard = ({
                 <span className="flex items-center justify-center gap-1">
                   <AnimatedNumber
                     key={post.id + post.repostIds.toString()}
-                    className="text-white"
+                    className="dark:text-white text-black"
                   >
                     {post.repostIds.length || 0}
                   </AnimatedNumber>
@@ -457,7 +459,7 @@ const TweetCard = ({
                 <span className="flex items-center justify-center gap-1">
                   <AnimatedNumber
                     key={"comment-" + post.id + post.commentIds.toString()}
-                    className="text-white"
+                    className="dark:text-white text-black"
                   >
                     {post.commentIds.length || 0}
                   </AnimatedNumber>
@@ -470,7 +472,7 @@ const TweetCard = ({
                 <span className="flex items-center justify-center gap-1">
                   <AnimatedNumber
                     key={post.id + post.likedIds.toString()}
-                    className="text-white"
+                    className="dark:text-white text-black"
                   >
                     {post.likedIds.length || 0}
                   </AnimatedNumber>
@@ -479,7 +481,7 @@ const TweetCard = ({
                 <span className="flex items-center justify-center gap-1">
                   <AnimatedNumber
                     key={post.id + post.bookmarkedIds.toString()}
-                    className="text-white"
+                    className="dark:text-white text-black"
                   >
                     {post.bookmarkedIds.length || 0}
                   </AnimatedNumber>
