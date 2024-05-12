@@ -1,8 +1,8 @@
-import React from "react";
+import React, { FC } from "react";
 
-const UserFeedSkeletonCard = ({ main }: { main?: boolean }) => {
+const UserFeedSkeletonCard: FC<{ main?: boolean }> = () => {
   return (
-    <article className="min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-300 dark:border-neutral-800 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-50">
+    <article className="min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px] rounded-lg drop-shadow-2xl p-0 relative border-[1px] border-neutral-300 dark:border-neutral-800 cursor-pointer dark:hover:bg-neutral-900/50 hover:bg-neutral-100/50">
       <div className="aspect-video min-w-full max-w-full overflow-hidden rounded-t-lg min-h-[130px] max-h-[130px] relative skeleton"></div>
       <div className=" min-w-full max-w-full relative flex flex-col items-start justify-start gap-3 z-10 py-3 min-h-[170px]">
         <div className="min-w-full max-w-full flex items-center justify-end gap-2 px-3  relative">

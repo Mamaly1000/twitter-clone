@@ -7,7 +7,7 @@ const SmallUserCardSkeleton = ({ main }: { main?: boolean }) => {
       className={twMerge(
         "min-w-full flex items-center justify-between gap-2 max-w-full overflow-hidden",
         main
-          ? "px-3 border-b-[1px] border-neutral-300 dark:border-neutral-800 py-2 cursor-pointer hover:bg-neutral-800 hover:bg-opacity-60"
+          ? "px-3 border-b-[1px] border-neutral-300 dark:border-neutral-800 py-2 cursor-pointer dark:hover:bg-neutral-900/50 hover:bg-neutral-100/50"
           : "px-0"
       )}
     >

@@ -13,7 +13,7 @@ const SkeletonTweetCard = ({ isComment }: { isComment?: boolean }) => {
     >
       <div
         className={twMerge(
-          "flex flex-col pb-0 items-start justify-start min-w-full max-w-full hover:bg-neutral-900",
+          "flex flex-col pb-0 items-start justify-start min-w-full max-w-full dark:hover:bg-neutral-900/50 hover:bg-neutral-100/50",
           isComment ? "px-5 pt-5 gap-4" : "p-2"
         )}
       >
@@ -87,13 +87,13 @@ const SkeletonTweetCard = ({ isComment }: { isComment?: boolean }) => {
               )}
             </div>
             {isComment && (
-              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-300 dark:border-t-neutral-800 py-3">
+              <div className="min-w-full flex items-center justify-start gap-2 text-sm capitalize border-t-[1px] border-t-neutral-300 dark:border-t-neutral-800 py-3">
                 <span className="min-w-[60px] min-h-[20px] rounded-full drop-shadow-2xl skeleton"></span>
                 <span className="min-w-[60px] min-h-[20px] rounded-full drop-shadow-2xl skeleton"></span>
               </div>
             )}
             {isComment && (
-              <div className="min-w-full flex items-center justify-start gap-2 text-sm text-neutral-500 capitalize border-t-[1px] border-t-neutral-300 dark:border-t-neutral-800 py-3">
+              <div className="min-w-full flex items-center justify-start gap-2 text-sm capitalize border-t-[1px] border-t-neutral-300 dark:border-t-neutral-800 py-3">
                 <span className="min-w-[60px] min-h-[20px] rounded-full drop-shadow-2xl skeleton"></span>
                 <span className="min-w-[60px] min-h-[20px] rounded-full drop-shadow-2xl skeleton"></span>
               </div>

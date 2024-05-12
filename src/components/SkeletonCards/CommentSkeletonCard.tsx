@@ -17,7 +17,7 @@ const CommentSkeletonCard = ({
   return (
     <div
       className={twMerge(
-        `min-w-full px-5  cursor-pointer hover:bg-neutral-900 transition-all max-w-full`,
+        `min-w-full px-5  cursor-pointer dark:hover:bg-neutral-900/50 hover:bg-neutral-100/50 transition-all max-w-full`,
         i === 0 ? "pt-4 pb-1" : "py-1",
         lastIndex === i && "pb-3"
       )}
