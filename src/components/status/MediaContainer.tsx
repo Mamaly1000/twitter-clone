@@ -24,7 +24,7 @@ const MediaContainer = ({
     <div className={className}>
       <div className="w-full flex items-center justify-between gap-3 absolute top-3 z-30 px-3">
         <Button
-          className="w-10 h-10 rounded-lg max-w-10 flex items-center justify-center p-1"
+          className="w-10 h-10 rounded-lg max-w-10 flex items-center justify-center p-1 dark:text-white text-text-primary"
           secondary
           onClick={(e) => {
             e.stopPropagation();
@@ -43,7 +43,7 @@ const MediaContainer = ({
             setCollapse(!collapse);
           }}
         >
-          <MdOutlineKeyboardDoubleArrowRight size={15} className="text-white" />
+          <MdOutlineKeyboardDoubleArrowRight size={15} className="dark:text-white text-text-primary" />
         </Button>
       </div>
       <div className="w-full flex items-center justify-center flex-col  h-full  relative">

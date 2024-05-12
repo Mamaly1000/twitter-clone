@@ -87,7 +87,7 @@ const LoginModal = () => {
         <span
           onClick={onToggle}
           className="
-            text-white 
+            dark:text-white text-black
             cursor-pointer 
             hover:underline
           "

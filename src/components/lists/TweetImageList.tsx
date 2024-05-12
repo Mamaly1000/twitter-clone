@@ -47,7 +47,7 @@ const TweetImageList = ({
               />
             </div>
             {Medias[0].description && (
-              <p className="px-3 pt-2 pb-5 text-[13px] text-[#d9d9d9] text-left capitalize">
+              <p className="px-3 pt-2 pb-5 text-[13px] text-text-primary dark:text-[#d9d9d9] text-left capitalize">
                 * {Medias[0].description}
               </p>
             )}
