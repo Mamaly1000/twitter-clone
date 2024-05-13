@@ -63,6 +63,7 @@ const LoginModal = () => {
         register={form.register("email", {
           required: true,
         })}
+        autofocus
         name="email"
         placeholder="Email"
         onChange={(e) => form.setValue("email", e.target.value)}

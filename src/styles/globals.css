@@ -4,8 +4,7 @@
 :root,
 body,
 html {
-  scroll-behavior: smooth;
-  max-height: 100vh !important;
+  scroll-behavior: smooth; 
   @apply bg-light dark:bg-black overflow-hidden;
 }
 * {

@@ -10,6 +10,7 @@ interface InputProps {
   name: string;
   register?: any;
   className?: string;
+  autofocus?: boolean;
 }
 const Input = ({
   onChange,
@@ -20,12 +21,15 @@ const Input = ({
   value,
   name,
   register,
+  autofocus,
   className,
 }: InputProps) => {
   return (
     <div className={twMerge("w-full", className)}>
       {label && (
-        <p className="text-xl dark:text-white text-text-primary font-semibold mb-2">{label}</p>
+        <p className="text-xl dark:text-white text-text-primary font-semibold mb-2">
+          {label}
+        </p>
       )}
       <input
         name={name}
@@ -34,6 +38,7 @@ const Input = ({
         onChange={onChange}
         value={value}
         placeholder={placeholder}
+        autoFocus={autofocus}
         type={type}
         className={twMerge(
           "w-full p-4 text-lg bg-light dark:bg-black border-2 border-neutral-300 dark:border-neutral-800 rounded-md outline-none dark:text-white text-text-primary focus:border-sky-500 focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
