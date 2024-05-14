@@ -34,6 +34,7 @@ const Header = ({
   const handleBack = useCallback(() => {
     router.back();
   }, [router]);
+
   return (
     <motion.div
       className={twMerge(

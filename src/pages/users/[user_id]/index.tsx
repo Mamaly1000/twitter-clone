@@ -38,7 +38,7 @@ const UserPage = () => {
       <Header
         displayArrow
         label={user?.name || "User profile"}
-        subHeader={`${user?.posts?.length} tweets`}
+        subHeader={`${user?.posts?.length || 0} tweets`}
       />
       <UserHero id={userId} />
       <UserBio userId={userId} />

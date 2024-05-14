@@ -72,7 +72,7 @@ const MobileSideBar = () => {
     <div className="min-w-full min-h-screen max-h-screen max-w-full flex items-center justify-center fixed z-30  ">
       <div
         className={twMerge(
-          "absolute min-w-full min-h-full bg-light dark:bg-black transition-all bg-opacity-40 top-0 left-0 z-10",
+          "absolute min-w-full min-h-full bg-black/40 transition-all top-0 left-0 z-10",
           visible ? "opacity-100" : "opacity-0"
         )}
         onClick={() => {

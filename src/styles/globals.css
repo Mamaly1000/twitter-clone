@@ -4,8 +4,8 @@
 :root,
 body,
 html {
-  scroll-behavior: smooth; 
-  @apply bg-light dark:bg-black overflow-hidden;
+  scroll-behavior: smooth;
+  @apply bg-light dark:bg-black;
 }
 * {
   @apply transition-all;
