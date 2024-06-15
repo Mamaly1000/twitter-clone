@@ -49,7 +49,7 @@ export default async function handler(
         );
         where = {
           OR: isNewUser
-            ? []
+            ? [{ userId: { not: currentUser.currentUser.id } }]
             : [
                 {
                   userId: {
