@@ -1,5 +1,6 @@
+"use client";
 import { useLoginModal } from "@/hooks/useLoginModal";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import Modal from "./Modal";
 import Input from "../inputs/Input";
 import { useForm } from "react-hook-form";
@@ -27,7 +28,12 @@ const LoginModal = () => {
       password: "",
     },
   });
-  const [isLoading, setLoading] = useState(false);
+  const isLoading = form.formState.isSubmitting;
+
+  const email = form.watch("email");
+  const password = form.watch("password");
+
+  const isAllowSubmit = email.trim().length > 0 && password.trim().length >= 6;
 
   const onToggle = useCallback(() => {
     onClose();
@@ -35,24 +41,25 @@ const LoginModal = () => {
   }, [onClose, registerModal]);
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    try {
-      setLoading(true);
-      console.log(values);
-
-      await signIn("credentials", {
-        email: values.email,
-        password: values.password,
-      }).then(() => {
+    await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      callbackUrl: "/",
+      redirect: true,
+    })
+      .then(() => {
         form.reset();
         toast.success("wellcome back!");
+      })
+      .catch((err) => {
+        if (err?.response?.data?.message) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error("something went wrong!");
+        }
+        window.location.pathname = "/";
       });
-    } catch (error) {
-      console.log(error);
-      toast.error("something went wrong!");
-    } finally {
-      setLoading(false);
-    }
-  }; 
+  };
 
   const bodyContent = (
     <form
@@ -79,7 +86,7 @@ const LoginModal = () => {
         value={form.watch("password")}
         disabled={isLoading}
       />
-      <button className="hidden" type="submit" />
+      <button className="hidden" disabled={isAllowSubmit} type="submit" />
     </form>
   );
 
@@ -106,6 +113,7 @@ const LoginModal = () => {
     <Modal
       actionLabel="Login"
       onClose={onClose}
+      AllowSubmit={!isAllowSubmit}
       onSubmit={form.handleSubmit(onSubmit)}
       body={bodyContent}
       disabled={isLoading}

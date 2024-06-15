@@ -12,6 +12,7 @@ interface ModalProps {
   footer?: React.ReactElement;
   actionLabel?: string;
   disabled?: boolean;
+  AllowSubmit?: boolean;
 }
 const Modal = ({
   actionLabel,
@@ -22,6 +23,7 @@ const Modal = ({
   footer,
   isOpen,
   title,
+  AllowSubmit,
 }: ModalProps) => {
   const [visible, setVisible] = useState(false);
 
@@ -36,7 +38,7 @@ const Modal = ({
   }, [onClose, disabled, setVisible]);
 
   const handleSubmit = useCallback(() => {
-    if (disabled) {
+    if (disabled || AllowSubmit) {
       return;
     }
     if (onSubmit) {
@@ -104,7 +106,7 @@ const Modal = ({
             <div className="flex flex-col gap-2 p-10">
               {!!actionLabel && (
                 <Button
-                  disabled={disabled}
+                  disabled={disabled || AllowSubmit}
                   secondary
                   fullWidth
                   large

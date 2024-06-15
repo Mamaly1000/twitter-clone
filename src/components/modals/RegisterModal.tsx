@@ -47,13 +47,26 @@ const RegisterModal = () => {
     },
   });
 
+  const email = form.watch("email");
+  const formLocation = form.watch("location");
+  const name = form.watch("name");
+  const password = form.watch("password");
+  const username = form.watch("username");
+
+  const isAllowSubmit =
+    email.trim().length > 0 &&
+    formLocation.trim().length > 0 &&
+    name.trim().length > 0 &&
+    username.trim().length > 0 &&
+    password.trim().length >= 6;
+
   const [location, setLocation] = useState<SingleCountryType>({
     city: "",
     label: "",
     region: "",
     value: "",
   });
-  const [isLoading, setLoading] = useState(false);
+  const isLoading = form.formState.isSubmitting;
 
   const onToggle = useCallback(() => {
     if (isLoading) {
@@ -66,7 +79,6 @@ const RegisterModal = () => {
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     try {
-      setLoading(true);
       await axios.post("/api/register", values).then(async (res) => {
         await signIn("credentials", {
           email: values.email,
@@ -83,8 +95,6 @@ const RegisterModal = () => {
     } catch (error) {
       console.log(error);
       toast.error("something went wrong!");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -171,6 +181,7 @@ const RegisterModal = () => {
       body={bodyContent}
       disabled={isLoading}
       isOpen={isOpen}
+      AllowSubmit={!isAllowSubmit}
       footer={footerContent}
       title="Create an account"
     />

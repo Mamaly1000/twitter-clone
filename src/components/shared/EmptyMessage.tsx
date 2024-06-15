@@ -1,3 +1,4 @@
+"use client"
 import useCurrentUser from "@/hooks/useCurrentUser";
 import React, { ReactNode, useMemo } from "react";
 import unAuthorizedImage from "../../../public/images/unauthorized-image.png";

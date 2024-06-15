@@ -5,6 +5,7 @@ import { difference, without } from "lodash";
 import HashtagHandler from "@/libs/HashtagHandler";
 import { MediaType } from "@/components/forms/UploadedImagesForm";
 import { PostsType } from "@/hooks/usePosts";
+import { Prisma } from "@prisma/client";
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -33,7 +34,7 @@ export default async function handler(
 
       const skip = (+(page || 1) - 1) * +(limit || 15);
 
-      let where = {};
+      let where: Prisma.PostWhereInput | undefined = {};
 
       if (user_id && !search) {
         where = {
@@ -42,22 +43,28 @@ export default async function handler(
       }
 
       if (currentUser && !user_id && !search) {
+        const isNewUser = !!(
+          currentUser.currentUser.followerIds.length === 0 ||
+          currentUser.currentUser.followingIds.length === 0
+        );
         where = {
-          OR: [
-            {
-              userId: {
-                in: currentUser.currentUser.followerIds,
-              },
-            },
-            {
-              userId: {
-                in: currentUser.currentUser.followingIds,
-              },
-            },
-            {
-              userId: currentUser.currentUser.id,
-            },
-          ],
+          OR: isNewUser
+            ? []
+            : [
+                {
+                  userId: {
+                    in: currentUser.currentUser.followerIds,
+                  },
+                },
+                {
+                  userId: {
+                    in: currentUser.currentUser.followingIds,
+                  },
+                },
+                {
+                  userId: currentUser.currentUser.id,
+                },
+              ],
         };
       }
       if (search && user_id) {

@@ -5,7 +5,7 @@ import EmptyState from "@/components/shared/EmptyState";
 import Header from "@/containers/Header";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useRouter } from "next/router";
-import React, { Suspense } from "react";
+import React from "react";
 
 const UsersPage = () => {
   const router = useRouter();
@@ -21,14 +21,12 @@ const UsersPage = () => {
           title="your followers"
         />
       )}
-      <Suspense>
-        <UsersList
-          main
-          emptyType={!!router.query.search ? "user-search" : "users"}
-          params={{ type: "all", search: router.query.search as string }}
-          title="people"
-        />
-      </Suspense>
+      <UsersList
+        main
+        emptyType={!!router.query.search ? "user-search" : "users"}
+        params={{ type: "all", search: router.query.search as string }}
+        title="people"
+      />
       {router.query.search && <EmptyState resetUrl="users" />}
     </>
   );
