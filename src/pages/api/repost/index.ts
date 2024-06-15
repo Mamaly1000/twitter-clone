@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { difference, includes, without } from "lodash";
 import HashtagHandler from "@/libs/HashtagHandler";
 import { MediaType } from "@/components/forms/UploadedImagesForm";
+import { Media } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,9 +32,28 @@ export default async function handler(
       return res.status(200).json(reposts);
     }
     if (req.method === "POST") {
-      const { quote, postId, hashtags, mentions, medias } = req.body;
+      const {
+        quote,
+        postId,
+        hashtags,
+        mentions,
+        medias,
+      }: {
+        quote?: string;
+        postId?: string;
+        hashtags?: string[];
+        mentions?: string[];
+        medias?: MediaType[];
+      } = req.body;
+      // validations for body data
       if (!postId) {
         return res.status(404).json({ message: "Invalid user or tweet id!" });
+      }
+      if (quote && quote.trim().length === 0) {
+        return res.status(400).json({ message: "Invalid quote!" });
+      }
+      if (!quote && !(medias || medias!.length > 0)) {
+        return res.status(400).json({ message: "Invalid media or quoto!" });
       }
       // find the user location
       const userLocation = await prisma.field.findFirst({
@@ -168,7 +188,7 @@ export default async function handler(
                       postId: newPost.id,
                       actionUserId: currentUser.currentUser.id,
                       isSeen: false,
-                      type: "REPOST", 
+                      type: "REPOST",
                     },
                   ]
                 : [
@@ -186,7 +206,7 @@ export default async function handler(
                       postId: newPost.id,
                       actionUserId: currentUser.currentUser.id,
                       isSeen: false,
-                      type: "REPOST", 
+                      type: "REPOST",
                     },
                   ],
           });

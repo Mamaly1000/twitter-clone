@@ -1,3 +1,4 @@
+"use client";
 import { isEmpty } from "lodash";
 import React from "react";
 import LargeUserCard from "../cards/LargeUserCard";

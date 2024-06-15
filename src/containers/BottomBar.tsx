@@ -46,7 +46,7 @@ const BottomBar = () => {
   return (
     <motion.section
       className={twMerge(
-        "fixed flex md:hidden items-center justify-between gap-1 px-2 min-w-full z-20 min-h-[60px] max-h-[60px] border-t-[1px] dark:border-neutral-800 border-neutral-300 sm:min-h-[70px]  bg-light dark:bg-black sm:max-h-[70px] bottom-0 left-0 transition-all backdrop-blur-2xl"
+        "fixed flex md:hidden items-center justify-between gap-1 px-2 min-w-full z-[2] min-h-[60px] max-h-[60px] border-t-[1px] dark:border-neutral-800 border-neutral-300 sm:min-h-[70px]  bg-light dark:bg-black sm:max-h-[70px] bottom-0 left-0 transition-all backdrop-blur-2xl"
       )}
       animate={{ opacity: isScrolling ? 0.5 : 1 }}
     >

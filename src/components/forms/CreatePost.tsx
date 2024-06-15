@@ -76,6 +76,8 @@ const CreatePost = ({
     },
   });
 
+  const form_body = form.watch("body");
+
   const onSubmit = form.handleSubmit(
     async (values: z.infer<typeof createPostSchema>) => {
       if (isRepost) {
@@ -84,11 +86,13 @@ const CreatePost = ({
           if (currentUser) {
             await axios
               .post(`/api/repost`, {
-                quote: values.body?.trim(),
+                quote: !!(values?.body!.trim()?.length > 0)
+                  ? values.body?.trim()
+                  : undefined,
                 postId: postId,
                 hashtags,
                 mentions: values.mentionIds,
-                medias: Images.images,
+                medias: Images.images.length > 0 ? Images.images : undefined,
               })
               .then((res) => {
                 toast.success(res.data.message);
@@ -161,8 +165,7 @@ const CreatePost = ({
         } catch (error: any) {
           if (error.response.data.message) {
             toast.error(error.response.data.message);
-          }
-          toast.error("something went wrong!");
+          } else toast.error("something went wrong!");
         } finally {
           setLoading(false);
         }
@@ -184,8 +187,11 @@ const CreatePost = ({
   );
 
   const direction = useMemo(() => {
-    return getStringDirectionality(form.watch("body"));
-  }, [form.watch("body"), onChange]);
+    return getStringDirectionality(form_body);
+  }, [form_body, onChange]);
+
+  const canTweet =
+    isLoading || !(form_body.trim().length > 5 || Images.images.length > 0);
 
   return (
     <motion.div
@@ -196,12 +202,12 @@ const CreatePost = ({
     >
       {currentUser ? (
         <motion.div className="flex flex-col justify-start items-start gap-1 text-text-primary dark:text-white  px-5 py-3">
-          <div className="min-w-full max-w-full flex items-start justify-start gap-4">
+          <div className="min-w-full max-w-full flex items-start justify-start gap-4 overflow-hidden">
             <div>
               <Avatar userId={currentUser?.id} />
             </div>
             <div className="max-w-full w-full flex items-start justify-start gap-3 flex-col pb-2">
-              {form.watch("body").length > 0 && (
+              {form_body.length > 0 && (
                 <motion.p
                   style={{
                     direction: direction.dir,
@@ -211,9 +217,9 @@ const CreatePost = ({
                     direction.className
                   )}
                   dangerouslySetInnerHTML={{
-                    __html: formatString(form.watch("body")),
+                    __html: formatString(form_body),
                   }}
-                  key={form.watch("body")}
+                  key={form_body}
                 ></motion.p>
               )}
               <textarea
@@ -223,9 +229,9 @@ const CreatePost = ({
                 disabled={isLoading}
                 aria-placeholder={placeholder}
                 onChange={onChange}
-                value={form.watch("body")}
+                value={form_body}
                 className={twMerge(
-                  "disabled:opacity-80 peer resize-none mt-3 w-full bg-light dark:bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-text-primary dark:text-white max-w-full overflow-hidden  placeholder:capitalize",
+                  "disabled:opacity-80   peer resize-none mt-3 w-full bg-light dark:bg-black ring-0 outline-none text-[20px] placeholder-neutral-500 text-text-primary dark:text-white max-w-full overflow-hidden  placeholder:capitalize",
                   direction.className
                 )}
                 maxLength={300}
@@ -251,25 +257,19 @@ const CreatePost = ({
               />
               <EmojiWidget
                 onChange={(val) => {
-                  form.setValue("body", form.watch("body") + " " + val);
+                  form.setValue("body", form_body + " " + val);
                 }}
               />
             </section>
             <section className="max-w-fit flex items-center justify-end gap-2 flex-wrap">
-              {form.watch("body").length > 0 && (
+              {form_body.length > 0 && (
                 <CircularProgressBar
                   size={25}
-                  currentValue={form.watch("body").length}
+                  currentValue={form_body.length}
                   limit={300}
                 />
               )}
-              <Button
-                disabled={
-                  isLoading ||
-                  !(form.watch("body").length > 5 || Images.images.length > 0)
-                }
-                onClick={onSubmit}
-              >
+              <Button disabled={canTweet} onClick={onSubmit}>
                 Tweet
               </Button>
             </section>

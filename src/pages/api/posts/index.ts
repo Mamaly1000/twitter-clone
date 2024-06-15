@@ -14,7 +14,7 @@ export default async function handler(
   }
   try {
     if (req.method === "GET") {
-      const currentUser = await serverAuth(req, res); 
+      const currentUser = await serverAuth(req, res);
       const {
         page,
         user_id,
@@ -200,6 +200,15 @@ export default async function handler(
         },
       });
       const { body, hashtags, mentions, medias } = req.body;
+      // validations for body data
+      if (body && body.trim().length === 0) {
+        return res.status(400).json({ message: "Invalid tweet body!" });
+      }
+      if (!body && !!(!medias || medias!.length === 0)) {
+        return res
+          .status(400)
+          .json({ message: "Invalid media or tweet body!" });
+      }
       const newPost = await prisma.post.create({
         data: { body: !!body ? body : "", userId: user.currentUser.id },
       });

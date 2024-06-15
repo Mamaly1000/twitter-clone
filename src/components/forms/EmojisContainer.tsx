@@ -30,10 +30,6 @@ const EmojisContainer = ({
           className="absolute top-[110%] rounded-lg flex-col items-start justify-start gap-2 hidden md:flex "
         >
           <div
-            className="w-[100000px] h-[100000px] absolute top-[-5000px] left-[-5000px]"
-            onClick={onClose}
-          />
-          <div
             onClick={(e) => {
               e.stopPropagation();
             }}

@@ -1,5 +1,6 @@
+"use client";
 import { isEmpty } from "lodash";
-import React from "react"; 
+import React from "react";
 import HashtagCard from "../cards/HashtagCard";
 import HashtagPagination from "../shared/HashtagPagination";
 import useHashtags from "@/hooks/useHashtags";

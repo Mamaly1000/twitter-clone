@@ -102,6 +102,13 @@ export default async function handler(
         },
       });
       const { body, hashtags, mentions, medias } = req.body;
+      // validations for body data 
+      if (body && body.trim().length === 0) {
+        return res.status(400).json({ message: "Invalid comment!" });
+      }
+      if (!body && !!(!medias || medias!.length === 0)) {
+        return res.status(400).json({ message: "Invalid media or comment!" });
+      }
       const currentPost = await prisma.post.findUnique({
         where: {
           id: post_id as string,
@@ -197,7 +204,7 @@ export default async function handler(
       } catch (error) {
         console.log("error in handling hashtags", error);
       }
-      // handle post notification 
+      // handle post notification
       if (targetPost) {
         try {
           let mentionedUsers: string[] = without(
@@ -212,7 +219,7 @@ export default async function handler(
           const allowCreateNotif = !!(
             currentUser.currentUser.id === targetPost.userId &&
             mentionedUsers.length === 0
-          ); 
+          );
           if (!allowCreateNotif) {
             await prisma.notification
               .createMany({

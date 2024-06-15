@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import RecommendedUserCard from "../cards/RecommendedUserCard";
 import { isEmpty } from "lodash";

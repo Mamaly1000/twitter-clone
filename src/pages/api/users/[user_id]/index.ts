@@ -78,7 +78,16 @@ export default async function handler(
             },
           },
         ],
-      }, 
+      },
+      select: {
+        bio: true,
+        createdAt: true,
+        id: true,
+        followingIds: true,
+        followerIds: true,
+        name: true,
+        username: true,
+      },
       skip: 3,
     });
 
