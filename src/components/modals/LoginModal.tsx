@@ -44,21 +44,16 @@ const LoginModal = () => {
     await signIn("credentials", {
       email: values.email,
       password: values.password,
-      callbackUrl: "/",
       redirect: true,
-    })
-      .then(() => {
+      callbackUrl: "/",
+    }).then((val) => {
+      if (val) {
         form.reset();
         toast.success("wellcome back!");
-      })
-      .catch((err) => {
-        if (err?.response?.data?.message) {
-          toast.error(err.response.data.message);
-        } else {
-          toast.error("something went wrong!");
-        }
-        window.location.pathname = "/";
-      });
+      } else {
+        toast.error("Sth went wrong!");
+      }
+    });
   };
 
   const bodyContent = (

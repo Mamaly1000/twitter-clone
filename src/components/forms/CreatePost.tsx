@@ -183,11 +183,13 @@ const CreatePost = ({
       );
       setHashtags(getHashtags(event.target.value));
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [form, setMentions, getMentions, setHashtags, getHashtags]
   );
 
   const direction = useMemo(() => {
     return getStringDirectionality(form_body);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form_body, onChange]);
 
   const canTweet =
