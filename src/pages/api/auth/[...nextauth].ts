@@ -17,7 +17,6 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           console.log("error in checking credentials", credentials);
-
           throw new Error("Invalid credentials");
         }
 

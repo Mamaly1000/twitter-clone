@@ -46,13 +46,6 @@ const LoginModal = () => {
       password: values.password,
       redirect: true,
       callbackUrl: "/",
-    }).then((val) => {
-      if (val) {
-        form.reset();
-        toast.success("wellcome back!");
-      } else {
-        toast.error("Sth went wrong!");
-      }
     });
   };
 
