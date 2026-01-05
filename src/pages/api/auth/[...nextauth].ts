@@ -16,7 +16,6 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          console.log("error in checking credentials", credentials);
           throw new Error("Invalid credentials");
         }
 
@@ -27,8 +26,6 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user || !user?.hashedPassword) {
-          console.log("error in checking user", user);
-
           throw new Error("Invalid credentials");
         }
 
@@ -38,7 +35,6 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isCorrectPassword) {
-          console.log("error in checking password", isCorrectPassword);
           throw new Error("Invalid credentials");
         }
 
